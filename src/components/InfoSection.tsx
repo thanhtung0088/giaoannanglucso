@@ -1,6 +1,6 @@
 import React from 'react';
-// Chú ý: ../types hướng ra ngoài thư mục components để vào thư mục src
-import { Subject, Grade } from '../types'; 
+// Đường dẫn đúng: ra khỏi components (..) -> vào thư mục types -> file types
+import { Subject, Grade } from '../types/types'; 
 
 interface InfoSectionProps {
   subject: Subject;
