@@ -1,41 +1,38 @@
-
 import React from 'react';
 
 interface AdvancedOptionsProps {
   analyzeOnly: boolean;
   includeReport: boolean;
-  onUpdate: (field: string, val: boolean) => void;
+  onUpdate: (field: string, value: boolean) => void;
 }
 
 const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({ analyzeOnly, includeReport, onUpdate }) => {
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
-      <div className="flex items-center mb-6">
-        <svg className="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-        </svg>
-        <h2 className="text-lg font-bold text-blue-900">Tùy chọn nâng cao</h2>
+    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-all hover:shadow-md">
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-1.5 h-8 bg-[#0047ab] rounded-full"></div>
+        <h3 className="text-xl font-black text-gray-800 uppercase tracking-wider">Tùy chọn nâng cao</h3>
       </div>
-      
-      <div className="flex flex-wrap gap-x-12 gap-y-4">
-        <label className="flex items-center space-x-3 cursor-pointer group">
+
+      <div className="space-y-4">
+        <label className="flex items-center space-x-4 p-4 bg-gray-50 rounded-2xl cursor-pointer hover:bg-gray-100 transition-colors">
           <input 
             type="checkbox" 
             checked={analyzeOnly}
             onChange={(e) => onUpdate('analyzeOnly', e.target.checked)}
-            className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 transition cursor-pointer" 
+            className="w-5 h-5 rounded-lg text-blue-600 focus:ring-blue-500 border-gray-300" 
           />
-          <span className="text-slate-700 text-sm font-medium group-hover:text-blue-600 transition">Chỉ phân tích, không chỉnh sửa</span>
+          <span className="text-sm font-bold text-gray-700">Chỉ phân tích nội dung (Không soạn mới)</span>
         </label>
-        
-        <label className="flex items-center space-x-3 cursor-pointer group">
+
+        <label className="flex items-center space-x-4 p-4 bg-gray-50 rounded-2xl cursor-pointer hover:bg-gray-100 transition-colors">
           <input 
             type="checkbox" 
             checked={includeReport}
             onChange={(e) => onUpdate('includeReport', e.target.checked)}
-            className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 transition cursor-pointer" 
+            className="w-5 h-5 rounded-lg text-blue-600 focus:ring-blue-500 border-gray-300" 
           />
-          <span className="text-slate-700 text-sm font-medium group-hover:text-blue-600 transition">Kèm báo cáo chi tiết</span>
+          <span className="text-sm font-bold text-gray-700">Bao gồm báo cáo năng lực số chi tiết</span>
         </label>
       </div>
     </div>
