@@ -4,6 +4,12 @@
 
 body {
   margin: 0;
-  font-family: 'Inter', sans-serif;
-  background-color: #f8fbff;
+  padding: 0;
+  background-color: #f1f5f9;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Hiệu ứng mượt cho các nút */
+button {
+  transition: all 0.2s;
 }

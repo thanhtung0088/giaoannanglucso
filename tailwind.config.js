@@ -7,8 +7,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        'thcs-blue': '#0052cc',
-        'thcs-dark': '#003d99',
+        'thcs-blue': '#1e40af', // Màu xanh đậm THCS
+        'thcs-light': '#3b82f6',
       }
     },
   },
