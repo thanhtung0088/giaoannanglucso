@@ -1,0 +1,17 @@
+# .gitignore
+# Các thư mục thư viện
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# CÁC FILE CHỨA MẬT KHẨU/API KEY (BẮT BUỘC CÓ DÒNG NÀY)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Các file rác hệ thống
+.DS_Store
+thumbs.db
