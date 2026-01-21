@@ -2,7 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 
 const App: React.FC = () => {
-  const dsMonHoc = ["Toán", "Ngữ văn", "Tiếng Anh", "Vật lí", "Hóa học", "Sinh học", "Lịch sử", "Địa lí", "GD Kinh tế và Pháp luật", "Tin học", "Công nghệ", "Khoa học tự nhiên", "Lịch sử và Địa lí", "Hoạt động trải nghiệm", "Giáo dục địa phương"];
+  // ĐÃ CẬP NHẬT: Thêm GDCD và sắp xếp lại danh mục môn học
+  const dsMonHoc = [
+    "Toán", "Ngữ văn", "Tiếng Anh", "Vật lí", "Hóa học", "Sinh học", 
+    "Lịch sử", "Địa lí", "GD Công dân", "GD Kinh tế và Pháp luật", 
+    "Tin học", "Công nghệ", "Khoa học tự nhiên", "Lịch sử và Địa lí", 
+    "Hoạt động trải nghiệm", "Giáo dục địa phương"
+  ];
   const dsKhoi = Array.from({ length: 12 }, (_, i) => `Lớp ${i + 1}`);
 
   const [schoolLogo, setSchoolLogo] = useState<string | null>(null);
@@ -107,8 +113,9 @@ const App: React.FC = () => {
             </div>
           </div>
 
+          {/* Nút này hiện tại chỉ là giao diện, cần gắn hàm xử lý để gọi API AI */}
           <button className="w-full bg-[#1e40af] hover:bg-blue-900 text-white font-black py-4 rounded-xl shadow-xl uppercase tracking-[0.3em] text-[10px] transition-all shrink-0">
-             ▲ Bắt đầu soạn bài với Gemini 2.5
+              ▲ Bắt đầu soạn bài với Gemini 2.5
           </button>
         </div>
 
