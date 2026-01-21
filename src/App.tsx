@@ -14,32 +14,41 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [aiResponse, setAiResponse] = useState("");
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  // Cập nhật state để chứa nhiều file
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [customPrompt, setCustomPrompt] = useState("");
   const tailieuRef = useRef<HTMLInputElement>(null);
 
-  const getPromptMau = () => `Hãy đóng vai chuyên gia, soạn [${tabHienTai}] cho môn [${monHoc}], [${khoiLop}].
-- Tên bài: [Nhập tên bài]
-- Số tiết: [Số tiết]
-- Yêu cầu: Tích hợp năng lực số, chuẩn 5512/7991.`;
+  const getPromptMau = () => `Đóng vai chuyên gia, soạn [${tabHienTai}] bài [Tên bài dạy], [Số tiết] tiết, môn ${monHoc} khối ${khoiLop}. Yêu cầu: Chuẩn 5512/7991, tích hợp năng lực số 2026.`;
 
   const handleAiAction = async () => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    if (!apiKey) return alert("Thầy hãy cập nhật API Key mới trên Vercel!");
+    if (!apiKey) return alert("Thầy cần cấu hình API Key!");
 
     setLoading(true);
     setIsChatOpen(true);
-    setAiResponse("🚀 Gemini 2.5 Flash đang khởi tạo dữ liệu...");
+    setAiResponse("🤖 Đang kết nối Gemini 2.5 Flash... Hệ thống đang phân tích các tệp đính kèm.");
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" }); // Mã model ổn định nhất hiện tại cho 2.5 preview
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-      const result = await model.generateContent([customPrompt || getPromptMau(), ...(selectedFile ? [await fileToPart(selectedFile)] : [])]);
+      // Xử lý tất cả các file đã chọn
+      const fileParts = await Promise.all(selectedFiles.map(file => fileToPart(file)));
+      
+      const result = await model.generateContent([
+        customPrompt || getPromptMau(),
+        ...fileParts
+      ]);
+      
       setAiResponse(result.response.text());
-      confetti({ particleCount: 150, spread: 100 });
+      confetti({ particleCount: 150, spread: 80, origin: { y: 0.8 } });
     } catch (error: any) {
-      setAiResponse(`LỖI: ${error.message}. Thầy hãy đổi Key mới vì Key cũ đã bị lộ (leaked).`);
+      if (error.message.includes("429")) {
+        setAiResponse("⚠️ HẾT HẠN MỨC: Thầy vui lòng đợi 60 giây rồi nhấn lại nhé!");
+      } else {
+        setAiResponse(`❌ LỖI: ${error.message}`);
+      }
     } finally { setLoading(false); }
   };
 
@@ -48,101 +57,166 @@ const App: React.FC = () => {
     return { inlineData: { data: base64 as string, mimeType: file.type } };
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files).slice(0, 4); // Giới hạn tối đa 4 file
+      setSelectedFiles(filesArray);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-blue-800 to-slate-900 text-white font-sans selection:bg-yellow-400 selection:text-black">
+    <div className="h-screen bg-[#f1f5f9] text-slate-800 font-sans selection:bg-blue-500 selection:text-white overflow-hidden flex flex-col">
       
-      {/* HEADER 3D */}
-      <header className="py-6 px-10 flex justify-between items-center backdrop-blur-md bg-white/5 border-b border-white/10 sticky top-0 z-50 shadow-2xl">
-        <div className="flex items-center gap-4 group cursor-pointer">
-          <div className="p-3 bg-gradient-to-tr from-yellow-400 to-orange-500 rounded-2xl shadow-[0_0_20px_rgba(251,191,36,0.5)] group-hover:rotate-12 transition-all duration-500">
-            <span className="text-2xl">🎓</span>
+      {/* HEADER GỌN NHẸ */}
+      <header className="py-3 px-8 flex justify-between items-center bg-white border-b border-slate-200 shadow-sm z-50">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <span className="text-xl">⚡</span>
           </div>
           <div>
-            <h1 className="text-xl font-black tracking-tighter uppercase italic">Quân Sư Giáo Dục 2.5</h1>
-            <p className="text-[9px] font-bold opacity-60 tracking-[0.3em]">NGUYỄN THANH TÙNG - 2026</p>
+            <h1 className="text-md font-black uppercase italic text-blue-900 tracking-tight">Quân Sư 2.5 Flash</h1>
+            <p className="text-[7px] font-bold opacity-50 uppercase tracking-[0.3em]">Nguyễn Thanh Tùng • v10.0</p>
           </div>
         </div>
-        <div className="flex gap-4">
-            <div className="bg-white/10 px-4 py-2 rounded-xl border border-white/20 text-[10px] font-black uppercase animate-pulse text-yellow-400">Gemini 2.5 Flash Online</div>
+        <div className="flex items-center gap-3 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
+          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+          <span className="text-[8px] font-black uppercase text-blue-600 tracking-tighter">Hệ thống tối ưu Desktop</span>
         </div>
       </header>
 
-      <main className="p-8 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <main className="flex-1 p-4 grid grid-cols-12 gap-4 overflow-hidden">
         
-        {/* LEFT COLUMN: CONTROL PANEL */}
-        <div className="lg:col-span-4 space-y-6">
-          <div className="bg-white/10 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/20 shadow-3xl hover:border-blue-400 transition-all duration-500 group">
-            <h2 className="text-xs font-black uppercase text-blue-300 mb-6 flex items-center gap-2">
-                <span className="w-2 h-5 bg-blue-500 rounded-full inline-block"></span> Cấu hình hệ thống
+        {/* PANEL TRÁI: ĐIỀU KHIỂN (GỌN LẠI) */}
+        <div className="col-span-3 flex flex-col gap-4 overflow-y-auto pr-1 custom-scrollbar">
+          <div className="bg-white p-5 rounded-[2rem] border border-slate-200 shadow-sm space-y-4">
+            <h2 className="text-[9px] font-black uppercase text-blue-600 flex items-center gap-2">
+              <span className="w-1.5 h-4 bg-blue-600 rounded-full"></span> Thiết lập nhanh
             </h2>
             
-            <div className="space-y-4">
-                <select value={monHoc} onChange={(e)=>setMonHoc(e.target.value)} className="w-full bg-slate-800/50 border border-white/10 rounded-2xl p-4 text-sm font-bold focus:ring-4 focus:ring-blue-500/50 outline-none transition-all">
-                  {dsMonHoc.map(m => <option key={m} className="bg-slate-900">{m}</option>)}
+            <div className="space-y-3">
+                <select value={monHoc} onChange={(e)=>setMonHoc(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-bold outline-none focus:ring-2 ring-blue-500/20">
+                  {dsMonHoc.map(m => <option key={m}>{m}</option>)}
                 </select>
-                <select value={khoiLop} onChange={(e)=>setKhoiLop(e.target.value)} className="w-full bg-slate-800/50 border border-white/10 rounded-2xl p-4 text-sm font-bold focus:ring-4 focus:ring-blue-500/50 outline-none transition-all">
-                  {dsKhoi.map(k => <option key={k} className="bg-slate-900">{k}</option>)}
+                <select value={khoiLop} onChange={(e)=>setKhoiLop(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-bold outline-none focus:ring-2 ring-blue-500/20">
+                  {dsKhoi.map(k => <option key={k}>{k}</option>)}
                 </select>
             </div>
 
-            <div className="mt-8 space-y-3">
-                <button onClick={() => setCustomPrompt(getPromptMau())} className="w-full py-4 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl font-black text-[10px] uppercase shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-orange-500/40">
-                    📝 Lệnh Prompt mẫu
-                </button>
-                <div onClick={() => tailieuRef.current?.click()} className="w-full py-8 border-2 border-dashed border-white/20 rounded-[2rem] flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-all">
-                    <span className="text-2xl mb-2">{selectedFile ? '✅' : '➕'}</span>
-                    <p className="text-[8px] font-black uppercase opacity-50 tracking-widest">{selectedFile ? selectedFile.name : 'Đính kèm tài liệu'}</p>
-                    <input type="file" ref={tailieuRef} className="hidden" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} />
+            <button 
+              onClick={() => setCustomPrompt(getPromptMau())} 
+              className="w-full py-3.5 bg-gradient-to-r from-orange-400 to-orange-600 text-white rounded-xl font-black text-[9px] uppercase shadow-md hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+            >
+              📝 Lệnh Prompt mẫu
+            </button>
+          </div>
+
+          {/* KHU VỰC ĐÍNH KÈM 4 FILE */}
+          <div className="bg-white p-5 rounded-[2rem] border border-slate-200 shadow-sm flex-1 flex flex-col">
+            <h2 className="text-[9px] font-black uppercase text-blue-600 mb-3 flex items-center gap-2">
+              <span className="w-1.5 h-4 bg-blue-600 rounded-full"></span> Tài liệu ({selectedFiles.length}/4)
+            </h2>
+            <div 
+              onClick={() => tailieuRef.current?.click()} 
+              className="py-6 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-all mb-3"
+            >
+              <span className="text-xl mb-1">➕</span>
+              <p className="text-[8px] font-black uppercase opacity-40">Tải tối đa 4 file</p>
+              <input type="file" ref={tailieuRef} className="hidden" multiple onChange={handleFileChange} />
+            </div>
+            
+            <div className="space-y-2 overflow-y-auto max-h-[150px] pr-1">
+              {selectedFiles.map((file, idx) => (
+                <div key={idx} className="flex items-center gap-2 p-2 bg-slate-50 rounded-lg border border-slate-100 animate-in fade-in slide-in-from-left-2">
+                  <span className="text-[10px]">📄</span>
+                  <p className="text-[8px] font-bold truncate flex-1">{file.name}</p>
+                  <button onClick={(e) => { e.stopPropagation(); setSelectedFiles(prev => prev.filter((_, i) => i !== idx)) }} className="text-red-400 hover:text-red-600 text-[10px]">✕</button>
                 </div>
+              ))}
             </div>
           </div>
 
-          <button onClick={handleAiAction} disabled={loading} className="w-full py-6 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] shadow-[0_15px_30px_rgba(37,99,235,0.4)] hover:shadow-blue-500/60 active:translate-y-1 transition-all">
-            {loading ? "Đang xử lý 3S..." : "🚀 Kích hoạt AI 2.5 Flash"}
+          <button 
+            onClick={handleAiAction} 
+            disabled={loading} 
+            className={`w-full py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl transition-all ${loading ? 'bg-slate-300 text-slate-500' : 'bg-blue-700 text-white hover:bg-blue-800'}`}
+          >
+            {loading ? "Đang xử lý..." : "🚀 Kích hoạt AI"}
           </button>
         </div>
 
-        {/* RIGHT COLUMN: TABS & EDITOR */}
-        <div className="lg:col-span-8 flex flex-col gap-6">
-          <div className="flex p-2 bg-black/20 rounded-[2rem] backdrop-blur-md border border-white/5">
+        {/* PANEL PHẢI: SOẠN THẢO (RỘNG HƠN) */}
+        <div className="col-span-9 flex flex-col gap-4 overflow-hidden">
+          <div className="flex p-1 bg-white rounded-2xl border border-slate-200 shadow-sm">
             {["GIAO_AN", "PPT", "DE_KIEM_TRA"].map(id => (
-              <button key={id} onClick={() => setTabHienTai(id)} className={`flex-1 py-4 rounded-3xl text-[10px] font-black uppercase transition-all duration-500 ${tabHienTai === id ? 'bg-gradient-to-r from-blue-500 to-indigo-500 shadow-xl scale-100' : 'opacity-40 hover:opacity-100 scale-95'}`}>
+              <button 
+                key={id} 
+                onClick={() => setTabHienTai(id)} 
+                className={`flex-1 py-3 rounded-xl text-[9px] font-black uppercase transition-all ${tabHienTai === id ? 'bg-blue-700 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'}`}
+              >
                 {id.replace("_", " ")}
               </button>
             ))}
           </div>
 
-          <div className="bg-white/5 backdrop-blur-2xl rounded-[3rem] border border-white/10 p-1 flex-1 shadow-inner relative">
+          <div className="bg-white rounded-[2.5rem] border border-slate-200 flex flex-col flex-1 shadow-sm overflow-hidden relative">
+            <div className="px-6 py-3 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
+               <span className="text-[8px] font-black uppercase opacity-40 tracking-widest">Không gian làm việc chuyên gia</span>
+               <div className="flex gap-2">
+                <button onClick={() => setCustomPrompt("")} className="text-[8px] font-black text-slate-400 hover:text-red-500 uppercase px-3 py-1">Làm mới</button>
+               </div>
+            </div>
             <textarea 
-                value={customPrompt} onChange={(e) => setCustomPrompt(e.target.value)}
-                placeholder="Nội dung yêu cầu soạn thảo..."
-                className="w-full h-full bg-transparent p-10 text-sm font-medium outline-none resize-none placeholder:text-white/20 min-h-[400px]"
+                value={customPrompt} 
+                onChange={(e) => setCustomPrompt(e.target.value)}
+                placeholder="Nội dung yêu cầu từ Lệnh Prompt mẫu sẽ hiện ở đây..."
+                className="w-full flex-1 bg-transparent p-8 text-[13px] leading-relaxed outline-none resize-none font-medium text-slate-700"
             />
-            <button onClick={() => {}} className="absolute bottom-8 right-8 p-4 bg-white/10 rounded-2xl hover:bg-blue-500 transition-all opacity-0 group-hover:opacity-100">📋 Copy</button>
+            
+            <div className="absolute bottom-6 right-6 flex gap-3">
+              <button 
+                onClick={() => { navigator.clipboard.writeText(customPrompt); alert("Đã copy lệnh!"); }}
+                className="p-3 bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 transition-all text-[10px]" title="Copy lệnh"
+              >
+                📋
+              </button>
+              <button 
+                onClick={handleAiAction}
+                className="px-6 py-3 bg-blue-700 text-white rounded-xl font-black text-[9px] uppercase shadow-lg hover:bg-blue-800 transition-all"
+              >
+                Chạy ngay
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-              <button onClick={() => {}} className="py-4 bg-white/10 rounded-2xl text-[9px] font-black uppercase border border-white/10 hover:bg-white/20">🎨 Gợi ý Canva</button>
-              <button onClick={() => saveAs(new Blob([aiResponse]), "KetQua.docx")} className="py-4 bg-green-600/20 rounded-2xl text-[9px] font-black uppercase border border-green-500/30 hover:bg-green-600 transition-all text-green-400">📥 Xuất file Word</button>
+          <div className="flex justify-end">
+              <button 
+                onClick={() => saveAs(new Blob([aiResponse]), "Soan_Bai_2026.docx")} 
+                className="px-8 py-4 bg-green-600 text-white rounded-2xl text-[10px] font-black uppercase hover:bg-green-700 transition-all shadow-lg flex items-center gap-2"
+              >
+                📥 Xuất File Word chuẩn hóa
+              </button>
           </div>
         </div>
       </main>
 
-      {/* CHATBOT AI FLOAT */}
-      <div className={`fixed bottom-10 right-10 z-[100] transition-all duration-700 ${isChatOpen ? 'w-[600px] opacity-100 translate-y-0' : 'w-0 opacity-0 translate-y-20 overflow-hidden'}`}>
-          <div className="bg-slate-900/90 backdrop-blur-3xl rounded-[3rem] border border-blue-500/30 shadow-[0_30px_60px_rgba(0,0,0,0.5)] flex flex-col h-[70vh]">
-            <div className="p-6 border-b border-white/10 flex justify-between items-center bg-blue-600/20 rounded-t-[3rem]">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Kết quả Gemini 2.5 Flash</span>
-                <button onClick={() => setIsChatOpen(false)} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-red-500 transition-all">✕</button>
+      {/* KẾT QUẢ AI (FLOAT) */}
+      <div className={`fixed bottom-6 right-6 z-[100] transition-all duration-500 transform ${isChatOpen ? 'w-[90vw] md:w-[600px] opacity-100 translate-y-0 scale-100' : 'w-0 opacity-0 translate-y-10 scale-95 pointer-events-none'}`}>
+          <div className="bg-white rounded-[2.5rem] border border-blue-200 shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex flex-col h-[70vh]">
+            <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-blue-700 rounded-t-[2.5rem] text-white">
+                <div className="flex items-center gap-2">
+                  <span className="animate-pulse">🤖</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest">Sản phẩm giáo dục số</span>
+                </div>
+                <button onClick={() => setIsChatOpen(false)} className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-red-500 transition-all">✕</button>
             </div>
-            <div className="p-10 overflow-y-auto text-sm leading-relaxed whitespace-pre-wrap font-medium custom-scrollbar italic text-slate-200">
-                {aiResponse || "Hệ thống đã sẵn sàng phục vụ thầy Tùng."}
+            <div className="p-8 overflow-y-auto text-[13px] leading-relaxed whitespace-pre-wrap font-medium text-slate-700 bg-blue-50/30">
+                {aiResponse || "Mời thầy sử dụng 'Lệnh Prompt mẫu' để bắt đầu."}
             </div>
           </div>
       </div>
 
       {!isChatOpen && (
-          <button onClick={() => setIsChatOpen(true)} className="fixed bottom-10 right-10 w-20 h-20 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-full shadow-[0_10px_40px_rgba(37,99,235,0.6)] flex items-center justify-center text-3xl hover:scale-110 active:scale-90 transition-all z-[101] animate-bounce">🤖</button>
+          <button onClick={() => setIsChatOpen(true)} className="fixed bottom-6 right-6 w-16 h-16 bg-blue-700 text-white rounded-full shadow-2xl flex items-center justify-center text-2xl hover:scale-110 active:scale-90 transition-all z-[101]">🤖</button>
       )}
     </div>
   );
