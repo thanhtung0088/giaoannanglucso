@@ -5,11 +5,9 @@ import { saveAs } from "file-saver";
 import confetti from 'canvas-confetti';
 
 const App: React.FC = () => {
-  // 1. DỮ LIỆU DANH MỤC
   const dsMonHoc = ["Toán", "Ngữ văn", "Tiếng Anh", "Vật lí", "Hóa học", "Sinh học", "Lịch sử", "Địa lí", "GD Công dân", "GD Kinh tế và Pháp luật", "Tin học", "Công nghệ", "Khoa học tự nhiên", "Lịch sử và Địa lí", "Hoạt động trải nghiệm", "Giáo dục địa phương"];
   const dsKhoi = Array.from({ length: 12 }, (_, i) => `Lớp ${i + 1}`);
 
-  // 2. TRẠNG THÁI
   const [monHoc, setMonHoc] = useState(dsMonHoc[0]);
   const [khoiLop, setKhoiLop] = useState(dsKhoi[0]);
   const [tabHienTai, setTabHienTai] = useState("GIAO_AN"); 
@@ -20,141 +18,132 @@ const App: React.FC = () => {
   const [customPrompt, setCustomPrompt] = useState("");
   const tailieuRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-  }, []);
+  const getPromptMau = () => `Hãy đóng vai chuyên gia, soạn [${tabHienTai}] cho môn [${monHoc}], [${khoiLop}].
+- Tên bài: [Nhập tên bài]
+- Số tiết: [Số tiết]
+- Yêu cầu: Tích hợp năng lực số, chuẩn 5512/7991.`;
 
-  // 3. LOGIC XỬ LÝ FILE
-  const fileToGenerativePart = async (file: File) => {
-    const base64EncodedDataPromise = new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve((reader.result as string).split(',')[1]);
-      reader.readAsDataURL(file);
-    });
-    return { inlineData: { data: await base64EncodedDataPromise as string, mimeType: file.type } };
-  };
-
-  // 4. KÍCH HOẠT GEMINI 2.5 FLASH (SỬA LỖI KEY)
   const handleAiAction = async () => {
-    // Lấy Key từ biến môi trường của Vite
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    
-    if (!apiKey) {
-      setAiResponse("LỖI CẤU HÌNH: Thầy Tùng ơi, hệ thống chưa tìm thấy Key trong code. Thầy hãy kiểm tra file .env hoặc cài đặt trên Vercel nhé!");
-      setIsChatOpen(true);
-      return;
-    }
+    if (!apiKey) return alert("Thầy hãy cập nhật API Key mới trên Vercel!");
 
     setLoading(true);
     setIsChatOpen(true);
-    setAiResponse("Đang kết nối siêu máy chủ Gemini 2.5 Flash...");
+    setAiResponse("🚀 Gemini 2.5 Flash đang khởi tạo dữ liệu...");
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
-      // Sử dụng model 2.5-flash theo đúng cập nhật mới nhất
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" }); // Mã model ổn định nhất hiện tại cho 2.5 preview
 
-      const defaultPrompt = `Hãy soạn ${tabHienTai} môn ${monHoc} lớp ${khoiLop} chuẩn Năng lực số 2026.`;
-      const finalPrompt = customPrompt || defaultPrompt;
-      
-      const promptParts: any[] = [finalPrompt];
-      if (selectedFile) {
-        const filePart = await fileToGenerativePart(selectedFile);
-        promptParts.push(filePart);
-      }
-
-      const result = await model.generateContent(promptParts);
+      const result = await model.generateContent([customPrompt || getPromptMau(), ...(selectedFile ? [await fileToPart(selectedFile)] : [])]);
       setAiResponse(result.response.text());
+      confetti({ particleCount: 150, spread: 100 });
     } catch (error: any) {
-      console.error(error);
-      setAiResponse(`LỖI KẾT NỐI: ${error.message || "Vui lòng kiểm tra lại tính hợp lệ của API Key trên Vercel."}`);
-    } finally {
-      setLoading(false);
-    }
+      setAiResponse(`LỖI: ${error.message}. Thầy hãy đổi Key mới vì Key cũ đã bị lộ (leaked).`);
+    } finally { setLoading(false); }
   };
 
-  // 5. XUẤT FILE WORD
-  const handleExportWord = async () => {
-    if (!aiResponse) return;
-    const doc = new Document({
-      sections: [{
-        children: [
-          new Paragraph({ text: `KẾT QUẢ SOẠN THẢO - GEMINI 2.5 FLASH`, heading: HeadingLevel.HEADING_1, alignment: AlignmentType.CENTER }),
-          ...aiResponse.split("\n").map(line => new Paragraph({ children: [new TextRun(line)], spacing: { before: 100 } })),
-        ],
-      }],
-    });
-    const blob = await Packer.toBlob(doc);
-    saveAs(blob, `Soan_Bai_Tung_2026.docx`);
+  const fileToPart = async (file: File) => {
+    const base64 = await new Promise((r) => { const reader = new FileReader(); reader.onload = () => r((reader.result as string).split(',')[1]); reader.readAsDataURL(file); });
+    return { inlineData: { data: base64 as string, mimeType: file.type } };
   };
 
   return (
-    <div className="h-screen bg-slate-50 flex flex-col overflow-hidden font-sans">
-      {/* HEADER */}
-      <div className="bg-[#1e40af] text-white py-3 px-8 flex justify-between items-center shadow-lg z-50">
-        <div className="flex items-center gap-3">
-          <span className="text-xl">⚡</span>
-          <h1 className="text-sm font-black uppercase">Trợ lý Giáo dục Số v7.0</h1>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-blue-800 to-slate-900 text-white font-sans selection:bg-yellow-400 selection:text-black">
+      
+      {/* HEADER 3D */}
+      <header className="py-6 px-10 flex justify-between items-center backdrop-blur-md bg-white/5 border-b border-white/10 sticky top-0 z-50 shadow-2xl">
+        <div className="flex items-center gap-4 group cursor-pointer">
+          <div className="p-3 bg-gradient-to-tr from-yellow-400 to-orange-500 rounded-2xl shadow-[0_0_20px_rgba(251,191,36,0.5)] group-hover:rotate-12 transition-all duration-500">
+            <span className="text-2xl">🎓</span>
+          </div>
+          <div>
+            <h1 className="text-xl font-black tracking-tighter uppercase italic">Quân Sư Giáo Dục 2.5</h1>
+            <p className="text-[9px] font-bold opacity-60 tracking-[0.3em]">NGUYỄN THANH TÙNG - 2026</p>
+          </div>
         </div>
-        <div className="text-[10px] font-bold bg-green-500/20 border border-green-400 px-3 py-1 rounded-full text-green-300">
-          Gemini 2.5 Flash Online
+        <div className="flex gap-4">
+            <div className="bg-white/10 px-4 py-2 rounded-xl border border-white/20 text-[10px] font-black uppercase animate-pulse text-yellow-400">Gemini 2.5 Flash Online</div>
         </div>
-      </div>
+      </header>
 
-      {/* TABS */}
-      <div className="flex bg-white border-b border-slate-200">
-        {["GIAO_AN", "PPT", "DE_KIEM_TRA"].map(id => (
-          <button key={id} onClick={() => setTabHienTai(id)} className={`flex-1 py-4 text-[10px] font-black uppercase transition-all ${tabHienTai === id ? 'text-blue-700 border-b-4 border-blue-700 bg-blue-50' : 'text-slate-400'}`}>
-            {id.replace("_", " ")}
-          </button>
-        ))}
-      </div>
+      <main className="p-8 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* LEFT COLUMN: CONTROL PANEL */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="bg-white/10 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/20 shadow-3xl hover:border-blue-400 transition-all duration-500 group">
+            <h2 className="text-xs font-black uppercase text-blue-300 mb-6 flex items-center gap-2">
+                <span className="w-2 h-5 bg-blue-500 rounded-full inline-block"></span> Cấu hình hệ thống
+            </h2>
+            
+            <div className="space-y-4">
+                <select value={monHoc} onChange={(e)=>setMonHoc(e.target.value)} className="w-full bg-slate-800/50 border border-white/10 rounded-2xl p-4 text-sm font-bold focus:ring-4 focus:ring-blue-500/50 outline-none transition-all">
+                  {dsMonHoc.map(m => <option key={m} className="bg-slate-900">{m}</option>)}
+                </select>
+                <select value={khoiLop} onChange={(e)=>setKhoiLop(e.target.value)} className="w-full bg-slate-800/50 border border-white/10 rounded-2xl p-4 text-sm font-bold focus:ring-4 focus:ring-blue-500/50 outline-none transition-all">
+                  {dsKhoi.map(k => <option key={k} className="bg-slate-900">{k}</option>)}
+                </select>
+            </div>
 
-      {/* INPUT */}
-      <div className="flex-1 p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 overflow-hidden">
-        <div className="lg:col-span-3 flex flex-col gap-4">
-          <div className="bg-white p-6 rounded-[2rem] shadow-xl border border-slate-100 flex-1 flex flex-col">
-            <textarea 
-              value={customPrompt}
-              onChange={(e) => setCustomPrompt(e.target.value)}
-              placeholder="Thầy Tùng nhập yêu cầu hoặc dán Lệnh Prompt mẫu vào đây..."
-              className="w-full flex-1 bg-slate-50 border-2 border-slate-100 rounded-3xl p-6 text-xs font-medium focus:border-blue-500 outline-none transition-all resize-none mb-4 shadow-inner"
-            />
-            <div className="flex gap-4">
-              <div onClick={() => tailieuRef.current?.click()} className="flex-1 h-16 border-2 border-dashed rounded-2xl flex items-center justify-center cursor-pointer hover:bg-slate-50">
-                <span className="text-[10px] font-bold text-slate-400 uppercase">{selectedFile ? `✓ ${selectedFile.name}` : "＋ Tải tài liệu"}</span>
-                <input type="file" ref={tailieuRef} className="hidden" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} />
-              </div>
-              <button onClick={handleAiAction} disabled={loading} className="flex-1 bg-blue-700 text-white rounded-2xl font-black uppercase text-[11px] shadow-lg hover:bg-blue-800 transition-all">
-                {loading ? "Đang xử lý..." : "🚀 Kích hoạt AI"}
-              </button>
+            <div className="mt-8 space-y-3">
+                <button onClick={() => setCustomPrompt(getPromptMau())} className="w-full py-4 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl font-black text-[10px] uppercase shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-orange-500/40">
+                    📝 Lệnh Prompt mẫu
+                </button>
+                <div onClick={() => tailieuRef.current?.click()} className="w-full py-8 border-2 border-dashed border-white/20 rounded-[2rem] flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-all">
+                    <span className="text-2xl mb-2">{selectedFile ? '✅' : '➕'}</span>
+                    <p className="text-[8px] font-black uppercase opacity-50 tracking-widest">{selectedFile ? selectedFile.name : 'Đính kèm tài liệu'}</p>
+                    <input type="file" ref={tailieuRef} className="hidden" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} />
+                </div>
             </div>
           </div>
+
+          <button onClick={handleAiAction} disabled={loading} className="w-full py-6 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] shadow-[0_15px_30px_rgba(37,99,235,0.4)] hover:shadow-blue-500/60 active:translate-y-1 transition-all">
+            {loading ? "Đang xử lý 3S..." : "🚀 Kích hoạt AI 2.5 Flash"}
+          </button>
         </div>
 
-        {/* SIDEBAR */}
-        <div className="lg:col-span-1 bg-[#0f172a] p-6 rounded-[2rem] text-white shadow-2xl flex flex-col justify-between">
-          <div className="space-y-4">
-            <h4 className="text-[10px] font-black uppercase text-yellow-400 border-b border-white/10 pb-2">Công cụ xuất bản</h4>
-            <button onClick={handleExportWord} className="w-full p-4 bg-blue-600 rounded-2xl text-xs font-black hover:bg-blue-500">📥 Tải file Word</button>
+        {/* RIGHT COLUMN: TABS & EDITOR */}
+        <div className="lg:col-span-8 flex flex-col gap-6">
+          <div className="flex p-2 bg-black/20 rounded-[2rem] backdrop-blur-md border border-white/5">
+            {["GIAO_AN", "PPT", "DE_KIEM_TRA"].map(id => (
+              <button key={id} onClick={() => setTabHienTai(id)} className={`flex-1 py-4 rounded-3xl text-[10px] font-black uppercase transition-all duration-500 ${tabHienTai === id ? 'bg-gradient-to-r from-blue-500 to-indigo-500 shadow-xl scale-100' : 'opacity-40 hover:opacity-100 scale-95'}`}>
+                {id.replace("_", " ")}
+              </button>
+            ))}
           </div>
-          <p className="text-[8px] text-center opacity-40 font-bold uppercase tracking-widest">Nguyễn Thanh Tùng - 2026</p>
+
+          <div className="bg-white/5 backdrop-blur-2xl rounded-[3rem] border border-white/10 p-1 flex-1 shadow-inner relative">
+            <textarea 
+                value={customPrompt} onChange={(e) => setCustomPrompt(e.target.value)}
+                placeholder="Nội dung yêu cầu soạn thảo..."
+                className="w-full h-full bg-transparent p-10 text-sm font-medium outline-none resize-none placeholder:text-white/20 min-h-[400px]"
+            />
+            <button onClick={() => {}} className="absolute bottom-8 right-8 p-4 bg-white/10 rounded-2xl hover:bg-blue-500 transition-all opacity-0 group-hover:opacity-100">📋 Copy</button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+              <button onClick={() => {}} className="py-4 bg-white/10 rounded-2xl text-[9px] font-black uppercase border border-white/10 hover:bg-white/20">🎨 Gợi ý Canva</button>
+              <button onClick={() => saveAs(new Blob([aiResponse]), "KetQua.docx")} className="py-4 bg-green-600/20 rounded-2xl text-[9px] font-black uppercase border border-green-500/30 hover:bg-green-600 transition-all text-green-400">📥 Xuất file Word</button>
+          </div>
         </div>
+      </main>
+
+      {/* CHATBOT AI FLOAT */}
+      <div className={`fixed bottom-10 right-10 z-[100] transition-all duration-700 ${isChatOpen ? 'w-[600px] opacity-100 translate-y-0' : 'w-0 opacity-0 translate-y-20 overflow-hidden'}`}>
+          <div className="bg-slate-900/90 backdrop-blur-3xl rounded-[3rem] border border-blue-500/30 shadow-[0_30px_60px_rgba(0,0,0,0.5)] flex flex-col h-[70vh]">
+            <div className="p-6 border-b border-white/10 flex justify-between items-center bg-blue-600/20 rounded-t-[3rem]">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Kết quả Gemini 2.5 Flash</span>
+                <button onClick={() => setIsChatOpen(false)} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-red-500 transition-all">✕</button>
+            </div>
+            <div className="p-10 overflow-y-auto text-sm leading-relaxed whitespace-pre-wrap font-medium custom-scrollbar italic text-slate-200">
+                {aiResponse || "Hệ thống đã sẵn sàng phục vụ thầy Tùng."}
+            </div>
+          </div>
       </div>
 
-      {/* CHATBOX */}
-      {isChatOpen && (
-        <div className="fixed bottom-24 right-6 w-[90vw] md:w-[600px] bg-white rounded-[2rem] shadow-2xl border border-slate-200 flex flex-col max-h-[60vh] z-50 animate-in slide-in-from-bottom-5">
-          <div className="bg-blue-700 p-4 text-white flex justify-between items-center rounded-t-[2rem]">
-            <span className="font-black text-[10px]">KẾT QUẢ SOẠN THẢO</span>
-            <button onClick={() => setIsChatOpen(false)} className="text-xs">✕</button>
-          </div>
-          <div className="p-6 overflow-y-auto text-sm whitespace-pre-wrap text-slate-800 font-medium">
-            {aiResponse}
-          </div>
-        </div>
+      {!isChatOpen && (
+          <button onClick={() => setIsChatOpen(true)} className="fixed bottom-10 right-10 w-20 h-20 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-full shadow-[0_10px_40px_rgba(37,99,235,0.6)] flex items-center justify-center text-3xl hover:scale-110 active:scale-90 transition-all z-[101] animate-bounce">🤖</button>
       )}
-      <button onClick={() => setIsChatOpen(!isChatOpen)} className="fixed bottom-6 right-6 w-14 h-14 bg-blue-700 text-white rounded-full shadow-2xl flex items-center justify-center border-4 border-white z-50 text-2xl">🤖</button>
     </div>
   );
 };
