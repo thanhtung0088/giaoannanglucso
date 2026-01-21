@@ -1,31 +1,25 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import mammoth from "mammoth";
-import { saveAs } from "file-saver";
+import confetti from 'canvas-confetti';
 
 const App: React.FC = () => {
-  // --- STATE HỆ THỐNG ---
-  const [subject, setSubject] = useState("Toán");
-  const [grade, setGrade] = useState("Lớp 10");
-  const [planFile, setPlanFile] = useState<File | null>(null);
-  const [resultText, setResultText] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
-  
-  // --- STATE LOGO & CHATBOX ---
+  const dsMonHoc = ["Toán", "Ngữ văn", "Tiếng Anh", "Vật lí", "Hóa học", "Sinh học", "Lịch sử", "Địa lí", "GD Kinh tế và Pháp luật", "Tin học", "Công nghệ", "Khoa học tự nhiên", "Lịch sử và Địa lí", "Hoạt động trải nghiệm", "Giáo dục địa phương"];
+  const dsKhoi = Array.from({ length: 12 }, (_, i) => `Lớp ${i + 1}`);
+
   const [schoolLogo, setSchoolLogo] = useState<string | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [chatInput, setChatInput] = useState("");
-  const [chatMessages, setChatMessages] = useState<{role: string, text: string}[]>([]);
-  
-  const logoInputRef = useRef<HTMLInputElement>(null);
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chatMessages]);
+    const end = Date.now() + 3 * 1000;
+    const frame = () => {
+      confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#1e40af', '#fbbf24'] });
+      confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#1e40af', '#fbbf24'] });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    };
+    frame();
+  }, []);
 
-  // Xử lý tải Logo
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -34,206 +28,147 @@ const App: React.FC = () => {
     }
   };
 
-  // Xử lý Soạn giáo án
-  const handleStartAI = async () => {
-    if (!planFile) return alert("Vui lòng chọn file giáo án!");
-    setIsProcessing(true);
-    try {
-      const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      const arrayBuffer = await planFile.arrayBuffer();
-      const { value } = await mammoth.extractRawText({ arrayBuffer });
-      
-      const prompt = `Bạn là chuyên gia giáo dục số. Hãy soạn lại giáo án môn ${subject} ${grade} tích hợp năng lực số dựa trên nội dung này: ${value}`;
-      const result = await model.generateContent(prompt);
-      setResultText(result.response.text());
-    } catch (error) {
-      alert("Lỗi kết nối AI. Kiểm tra API Key!");
-    } finally { setIsProcessing(false); }
-  };
-
-  // Xử lý Chatbox
-  const sendChatMessage = async () => {
-    if (!chatInput.trim()) return;
-    const userMsg = { role: "user", text: chatInput };
-    setChatMessages(prev => [...prev, userMsg]);
-    const currentInput = chatInput;
-    setChatInput("");
-
-    try {
-      const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      const result = await model.generateContent(currentInput);
-      setChatMessages(prev => [...prev, { role: "ai", text: result.response.text() }]);
-    } catch (error) {
-      setChatMessages(prev => [...prev, { role: "ai", text: "Trợ lý đang bận, thử lại sau nhé!" }]);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-[#f0f4f8] font-sans pb-20">
-      {/* 1. TOP BAR */}
-      <div className="bg-[#1e40af] text-white py-2 px-6 flex justify-between items-center text-[11px] font-bold shadow-sm">
-        <div className="flex items-center gap-2 uppercase tracking-wider">
-          <span className="text-lg">🎓</span> SOẠN GIÁO ÁN NĂNG LỰC SỐ - BY NGUYỄN THANH TÙNG
+    <div className="h-screen bg-[#f8fafc] font-sans text-slate-900 flex flex-col overflow-hidden relative">
+      
+      {/* 1. THANH TOP NAVIGATION */}
+      <div className="bg-[#1e40af] text-white py-1.5 px-8 flex justify-between items-center shadow-md shrink-0 z-10">
+        <div className="flex items-center gap-2">
+          <div className="bg-white/10 p-1 rounded-lg text-xs">🎓</div>
+          <div>
+            <h2 className="text-[9px] font-black uppercase leading-none">Soạn giáo án năng lực số</h2>
+            <p className="text-[7px] font-bold opacity-60 uppercase">Nguyễn Thanh Tùng</p>
+          </div>
         </div>
-        <div className="bg-yellow-400 text-blue-900 px-4 py-1 rounded-full animate-pulse">
-          POWERED BY GEMINI AI
+        <div className="bg-yellow-400 text-blue-900 px-3 py-0.5 rounded-full text-[8px] font-black uppercase">
+          Gemini 2.5 Flash
         </div>
       </div>
 
-      {/* 2. BANNER VỚI LOGO CÓ THỂ THAY THẾ */}
-      <div className="bg-gradient-to-r from-[#1e3a8a] via-[#2563eb] to-[#1e40af] h-72 flex items-center px-12 relative shadow-2xl overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/circuit-board.png')]"></div>
-        
-        {/* Hình tròn Logo - Nhấn vào để chọn ảnh */}
+      {/* 2. BANNER THU GỌN */}
+      <div className="bg-[#1e40af] h-20 flex items-center px-12 relative overflow-hidden border-b-2 border-yellow-400 shadow-lg shrink-0">
         <div 
-          onClick={() => logoInputRef.current?.click()}
-          className="relative z-10 w-40 h-40 bg-white rounded-full flex items-center justify-center cursor-pointer border-4 border-white/30 shadow-2xl hover:scale-105 transition-all overflow-hidden"
-          title="Bấm để thay đổi Logo trường"
+          onClick={() => fileInputRef.current?.click()}
+          className="relative z-10 w-14 h-14 bg-white rounded-full flex items-center justify-center border-2 border-white/40 shadow-xl cursor-pointer hover:scale-105 transition-all overflow-hidden shrink-0"
         >
           {schoolLogo ? (
-            <img src={schoolLogo} className="w-full h-full object-cover" alt="Logo" />
+            <img src={schoolLogo} alt="Logo" className="w-full h-full object-contain p-1" />
           ) : (
-            <div className="text-blue-900 text-center p-4">
-              <span className="text-3xl">📷</span>
-              <p className="text-[10px] font-black uppercase mt-1">Chọn Logo</p>
-            </div>
+            <span className="text-lg">🏫</span>
           )}
-          <input type="file" ref={logoInputRef} className="hidden" accept="image/*" onChange={handleLogoUpload} />
+          <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleLogoChange} />
+        </div>
+        
+        <div className="ml-6 z-10 flex-1">
+          <h1 className="text-xl font-black text-yellow-400 italic uppercase leading-none">Chào mừng quý thầy cô !</h1>
+          <p className="text-white text-[9px] font-bold tracking-[0.2em] opacity-80 uppercase mt-1">THCS Bình Hòa - Năm mới thắng lợi 2026</p>
         </div>
 
-        {/* Chữ chào mừng lấp lánh */}
-        <div className="ml-12 z-10">
-          <h1 className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-200 drop-shadow-2xl">
-            Chào mừng quý thầy cô !
-          </h1>
-          <p className="text-white text-2xl font-bold mt-3 tracking-widest opacity-90 uppercase">
-            THCS BÌNH HÒA - VỮNG BƯỚC TƯƠNG LAI
-          </p>
-        </div>
-
-        <div className="ml-auto z-10 bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-3xl text-white shadow-xl">
-          <p className="text-xs font-black opacity-60 uppercase text-center">Năm học</p>
-          <p className="text-4xl font-black text-yellow-400">2025 - 2026</p>
+        <div className="z-10 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-1.5 rounded-xl text-white text-center">
+            <p className="text-base font-black text-yellow-400 italic leading-none">2026</p>
+            <p className="text-[6px] font-bold uppercase opacity-50">Năm mới thắng lợi</p>
         </div>
       </div>
 
-      {/* 3. NỘI DUNG CHÍNH (Dựa trên ảnh image_b6729d.jpg) */}
-      <div className="max-w-7xl mx-auto -mt-10 px-6 grid grid-cols-1 lg:grid-cols-4 gap-8 relative z-20">
-        <div className="lg:col-span-3 space-y-6">
-          <div className="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-gray-100">
-            <div className="grid grid-cols-2 gap-12">
-              <div className="space-y-6">
-                <h3 className="text-blue-800 font-black text-xs uppercase flex items-center gap-2">
-                  <span className="w-1.5 h-4 bg-blue-600 rounded-full"></span> Thông tin kế hoạch bài dạy
-                </h3>
-                <div className="space-y-4">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Môn học đào tạo</label>
-                    <select value={subject} onChange={e => setSubject(e.target.value)} className="w-full border-b-2 border-gray-100 py-2 font-bold focus:border-blue-600 outline-none">
-                        <option>Toán</option><option>Ngữ Văn</option><option>Tin học</option>
-                    </select>
-                </div>
-                <div className="space-y-4">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Khối lớp thực hiện</label>
-                    <select value={grade} onChange={e => setGrade(e.target.value)} className="w-full border-b-2 border-gray-100 py-2 font-bold focus:border-blue-600 outline-none">
-                        <option>Lớp 10</option><option>Lớp 11</option><option>Lớp 12</option>
-                    </select>
-                </div>
+      {/* 3. VÙNG NỘI DUNG CHÍNH */}
+      <div className="max-w-6xl mx-auto w-full flex-1 p-4 grid grid-cols-1 lg:grid-cols-4 gap-4 overflow-hidden">
+        
+        {/* Cột trái: Form nhập liệu */}
+        <div className="lg:col-span-3 flex flex-col gap-4">
+          <div className="bg-slate-300/50 backdrop-blur-xl p-5 rounded-[1.5rem] shadow-lg border border-white/40 flex-1 flex flex-col justify-center">
+            <h3 className="text-blue-900 font-black text-[10px] uppercase border-l-4 border-blue-700 pl-3 mb-6">Thông tin bài dạy</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-1">
+                <label className="text-[8px] font-black text-slate-500 uppercase">Môn học (CT 2018)</label>
+                <select className="w-full border-b border-slate-400/50 py-1 font-bold text-xs outline-none bg-transparent">
+                  {dsMonHoc.map(m => <option key={m}>{m}</option>)}
+                </select>
               </div>
-
-              <div className="space-y-6">
-                <h3 className="text-blue-800 font-black text-xs uppercase flex items-center gap-2">
-                  <span className="w-1.5 h-4 bg-blue-600 rounded-full"></span> Tài liệu đầu vào
-                </h3>
-                <label className="block w-full bg-gray-50 border-2 border-dashed border-gray-200 rounded-3xl p-10 text-center cursor-pointer hover:bg-blue-50 transition-all">
-                  <input type="file" className="hidden" onChange={e => setPlanFile(e.target.files?.[0] || null)} />
-                  <span className="text-xs font-black text-gray-400 uppercase tracking-tighter">
-                    {planFile ? planFile.name : "Kéo thả hoặc chọn file giáo án (.docx)"}
-                  </span>
-                </label>
+              <div className="space-y-1">
+                <label className="text-[8px] font-black text-slate-500 uppercase">Khối lớp thực hiện</label>
+                <select className="w-full border-b border-slate-400/50 py-1 font-bold text-xs outline-none bg-transparent">
+                  {dsKhoi.map(k => <option key={k}>{k}</option>)}
+                </select>
               </div>
             </div>
-
-            <button 
-              onClick={handleStartAI}
-              disabled={isProcessing}
-              className="w-full mt-12 bg-blue-700 hover:bg-blue-900 text-white font-black py-5 rounded-2xl shadow-xl shadow-blue-200 uppercase tracking-[0.3em] transition-all transform active:scale-95"
-            >
-              {isProcessing ? "🚀 HỆ THỐNG ĐANG XỬ LÝ..." : "▲ BẮT ĐẦU SOẠN GIÁO ÁN"}
-            </button>
           </div>
 
-          {resultText && (
-            <div className="bg-white p-12 rounded-[2.5rem] shadow-2xl border-t-8 border-blue-700 animate-fadeIn">
-              <div className="flex justify-between items-center mb-8">
-                <h2 className="text-2xl font-black text-blue-900 uppercase">Kết quả giáo án AI</h2>
-                <button onClick={() => saveAs(new Blob([resultText]), "GiaoAn.txt")} className="bg-green-600 text-white px-8 py-2 rounded-xl font-bold text-xs hover:bg-green-700">TẢI FILE WORD</button>
+          <div className="bg-slate-300/50 backdrop-blur-xl p-5 rounded-[1.5rem] shadow-lg border border-white/40 flex-1 flex flex-col justify-center">
+            <h3 className="text-blue-900 font-black text-[10px] uppercase border-l-4 border-blue-700 pl-3 mb-6">Tài liệu đính kèm</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="border border-dashed border-slate-400 rounded-xl p-5 text-center hover:bg-white/30 transition-all cursor-pointer flex flex-col justify-center items-center">
+                <p className="text-[9px] font-black text-slate-700 uppercase">Tải lên giáo án (.docx)</p>
+                <p className="text-[7px] text-slate-500 font-bold uppercase mt-1 italic">Bắt buộc</p>
               </div>
-              <div className="prose max-w-none text-gray-700 whitespace-pre-wrap leading-relaxed font-medium">{resultText}</div>
+              <div className="border border-dashed border-slate-400 rounded-xl p-5 text-center hover:bg-white/30 transition-all cursor-pointer flex flex-col justify-center items-center">
+                <p className="text-[9px] font-black text-slate-700 uppercase">Phân phối chương trình</p>
+                <p className="text-[7px] text-slate-500 font-bold uppercase mt-1 italic">Tùy chọn</p>
+              </div>
             </div>
-          )}
+          </div>
+
+          <button className="w-full bg-[#1e40af] hover:bg-blue-900 text-white font-black py-4 rounded-xl shadow-xl uppercase tracking-[0.3em] text-[10px] transition-all shrink-0">
+             ▲ Bắt đầu soạn bài với Gemini 2.5
+          </button>
         </div>
 
-        {/* SIDEBAR */}
-        <div className="space-y-6">
-            <div className="bg-[#1e3a8a] p-8 rounded-[2rem] text-white shadow-xl">
-                <h4 className="font-black uppercase text-xs mb-6 text-yellow-400 tracking-widest underline underline-offset-8">Hướng dẫn nhanh</h4>
-                <ul className="space-y-5 text-xs font-bold opacity-90">
-                    <li className="flex gap-3 items-start"><span className="bg-white text-blue-900 w-5 h-5 flex items-center justify-center rounded-full shrink-0">1</span> Click vào vòng tròn trắng để dán Logo trường.</li>
-                    <li className="flex gap-3 items-start"><span className="bg-white text-blue-900 w-5 h-5 flex items-center justify-center rounded-full shrink-0">2</span> Chọn môn và tải file giáo án mẫu.</li>
-                    <li className="flex gap-3 items-start"><span className="bg-white text-blue-900 w-5 h-5 flex items-center justify-center rounded-full shrink-0">3</span> Nhấn nút xanh để AI bắt đầu tích hợp năng lực số.</li>
-                </ul>
+        {/* Cột phải: Hướng dẫn & Miền năng lực */}
+        <div className="flex flex-col gap-4 overflow-hidden">
+          {/* Thẻ Hướng dẫn nhanh */}
+          <div className="bg-[#1e3a8a] p-5 rounded-[1.5rem] text-white shadow-xl border border-white/10 flex-1 flex flex-col">
+            <h4 className="font-black uppercase text-[10px] mb-4 text-yellow-400 border-b border-white/10 pb-2">Hướng dẫn nhanh</h4>
+            <div className="space-y-4 flex-1 flex flex-col justify-center">
+              {[
+                {t: "Chọn môn học và khối lớp.", icon: "1"},
+                {t: "Bắt buộc: Tải lên file giáo án (.docx hoặc .pdf).", icon: "2"},
+                {t: "Tùy chọn: Tải file PPCT nếu muốn AI tham khảo năng lực cụ thể.", icon: "3"}
+              ].map((item, i) => (
+                <div key={i} className="flex gap-3 items-start">
+                  <span className="bg-blue-600 w-5 h-5 flex items-center justify-center rounded-full text-[10px] font-black shrink-0 border border-white/20 shadow-md">{item.icon}</span>
+                  <p className="text-[9px] font-bold uppercase opacity-90 leading-tight">{item.t}</p>
+                </div>
+              ))}
             </div>
+          </div>
+
+          {/* Thẻ Miền năng lực số */}
+          <div className="bg-white/90 backdrop-blur-xl p-5 rounded-[1.5rem] shadow-lg border border-slate-200 flex-1 flex flex-col overflow-hidden">
+            <h4 className="text-blue-900 font-black uppercase text-[10px] mb-4 border-b border-slate-100 pb-2 tracking-wide">Miền năng lực số</h4>
+            <div className="space-y-3 flex-1 flex flex-col justify-center overflow-y-auto pr-1">
+              {[
+                "Khai thác dữ liệu và thông tin",
+                "Giao tiếp và Hợp tác",
+                "Sáng tạo nội dung số",
+                "An toàn số",
+                "Giải quyết vấn đề",
+                "Ứng dụng AI"
+              ].map((text, i) => (
+                <div key={i} className="flex items-center gap-3 group">
+                  <span className="text-blue-500 text-xs shrink-0 group-hover:scale-125 transition-transform">●</span>
+                  <p className="text-[9px] font-bold text-slate-700 uppercase leading-tight">{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* 4. CHATBOX AI HỖ TRỢ GIÁO VIÊN */}
-      <div className="fixed bottom-8 right-8 z-[100]">
+      {/* CHATBOX AI */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <button onClick={() => setIsChatOpen(!isChatOpen)} className="w-12 h-12 bg-blue-700 text-white rounded-full shadow-2xl flex items-center justify-center border-2 border-white transform hover:scale-110 transition-all">
+          <span className="text-xl">🤖</span>
+        </button>
         {isChatOpen && (
-          <div className="bg-white w-[350px] h-[500px] rounded-[2rem] shadow-2xl border border-gray-100 flex flex-col mb-4 overflow-hidden animate-slideUp">
-            <div className="bg-blue-700 p-5 text-white font-black flex justify-between items-center shadow-lg">
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 bg-green-400 rounded-full animate-ping"></span>
-                <span>TRỢ LÝ GIÁO VIÊN AI</span>
-              </div>
-              <button onClick={() => setIsChatOpen(false)} className="text-2xl opacity-70 hover:opacity-100">×</button>
+          <div className="absolute bottom-14 right-0 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-fadeIn">
+            <div className="bg-blue-700 p-2 text-white text-[8px] font-black uppercase flex justify-between">
+               <span>Quân sư Gemini 2.5</span>
+               <button onClick={() => setIsChatOpen(false)}>✕</button>
             </div>
-            <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-gray-50/50">
-              {chatMessages.length === 0 && (
-                <div className="text-center text-gray-400 mt-20">
-                  <p className="text-3xl mb-2">👋</p>
-                  <p className="text-[10px] font-bold uppercase">Chào thầy cô, tôi có thể giúp gì ạ?</p>
-                </div>
-              )}
-              {chatMessages.map((m, i) => (
-                <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] p-4 rounded-2xl text-[11px] leading-relaxed font-bold shadow-sm ${m.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'}`}>
-                    {m.text}
-                  </div>
-                </div>
-              ))}
-              <div ref={chatEndRef} />
-            </div>
-            <div className="p-4 border-t bg-white flex gap-2">
-              <input 
-                value={chatInput} 
-                onChange={e => setChatInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && sendChatMessage()}
-                className="flex-1 bg-gray-100 rounded-2xl px-5 py-3 text-xs outline-none focus:ring-2 ring-blue-500/20 font-bold" 
-                placeholder="Nhập câu hỏi của thầy cô..." 
-              />
-              <button onClick={sendChatMessage} className="bg-blue-600 text-white w-10 h-10 rounded-2xl flex items-center justify-center hover:bg-blue-800 transition-colors shadow-lg">➤</button>
+            <div className="h-32 p-3 bg-slate-50 text-[9px] font-bold italic text-slate-500 uppercase leading-relaxed">
+               Chào mừng năm mới 2026! Quân sư đã sẵn sàng hỗ trợ thầy cô.
             </div>
           </div>
         )}
-        <button 
-          onClick={() => setIsChatOpen(!isChatOpen)}
-          className="w-20 h-20 bg-blue-700 rounded-full shadow-[0_10px_40px_rgba(30,64,175,0.4)] flex flex-col items-center justify-center text-white hover:scale-110 transition-transform active:scale-95 border-4 border-white"
-        >
-          <span className="text-3xl">🤖</span>
-          <span className="text-[8px] font-black uppercase mt-0.5">Hỏi AI</span>
-        </button>
       </div>
     </div>
   );

@@ -15,3 +15,5 @@ dist-ssr/
 # Các file rác hệ thống
 .DS_Store
 thumbs.db
+.vercel
+.env*.local
