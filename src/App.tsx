@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google-generative-ai"; // Đảm bảo đã cài gói này
 import { saveAs } from "file-saver";
 import confetti from 'canvas-confetti';
 
@@ -13,7 +13,7 @@ const App: React.FC = () => {
   const [khoiLop, setKhoiLop] = useState(dsKhoi[5]); // Mặc định lớp 6
   const [doiTuong, setDoiTuong] = useState(dsDoiTuong[3]);
   const [soTiet, setSoTiet] = useState("1");
-  const [tenBai, setTenBai] = useState("[Tên bài học]");
+  const [tenBai, setTenBai] = useState("Lợi ích của mạng máy tính"); // Thêm tên bài mẫu
   
   const [customPrompt, setCustomPrompt] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ const App: React.FC = () => {
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 2. ĐỊNH NGHĨA 4 LUỒNG SOẠN THẢO AI
+  // 2. ĐỊNH NGHĨA 4 LUỒNG SOẠN THẢO AI & THÊM PROMPT TẠO ẢNH
   const menuPrompts = [
     {
       title: "📝 SOẠN KHBD 5512",
@@ -44,6 +44,7 @@ const App: React.FC = () => {
     }
   ];
 
+  // HÀM XỬ LÝ CHÍNH CỦA AI (Soạn thảo)
   const handleAiAction = async () => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
     if (!apiKey) return alert("Thầy hãy kiểm tra API Key!");
@@ -54,13 +55,42 @@ const App: React.FC = () => {
       const result = await model.generateContent(customPrompt);
       setAiResponse(result.response.text());
       confetti({ particleCount: 150, spread: 70 });
-    } catch (e: any) { setAiResponse("Lỗi hệ thống: " + e.message); }
-    finally { setLoading(false); }
+    } catch (e: any) { 
+      // Xử lý thông báo lỗi quota rõ ràng hơn
+      if (e.message.includes("429")) {
+         setAiResponse("⚠️ HẾT LƯỢT DÙNG MIỄN PHÍ: Thầy Tùng vui lòng đợi 1 phút hoặc đổi API Key khác nhé!");
+      } else {
+         setAiResponse("❌ LỖI HỆ THỐNG: " + e.message);
+      }
+    } finally { setLoading(false); }
   };
+
+  // HÀM XỬ LÝ TẠO PROMPT CHO AI TẠO HÌNH ẢNH
+  const handleGenerateImagePrompt = async () => {
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+    if (!apiKey) return alert("Thầy hãy kiểm tra API Key!");
+    setLoading(true); setIsChatOpen(true);
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" }); 
+      
+      const imageGenPrompt = `Trong vai một nhà thiết kế hình ảnh AI chuyên nghiệp, hãy tạo một PROMPT SIÊU CHI TIẾT để tạo ra một hình ảnh phù hợp với nội dung bài giảng sau đây:\n\n"""\n${customPrompt}\n"""\n\nPROMPT cần bao gồm các yếu tố:\n- Phong cách nghệ thuật (Art style: photorealistic, cartoon, watercolor, 3D render...)\n- Chủ thể chính (Main subject)\n- Bối cảnh (Setting)\n- Màu sắc (Color palette)\n- Chi tiết phụ (Secondary details)\n- Yếu tố cảm xúc (Emotional tone)\n- Độ phân giải (Resolution: 4K, 8K)\n- Tỷ lệ khung hình (Aspect Ratio: 16:9, 3:2, 1:1)\n\nVí dụ: "photorealistic, a futuristic classroom with holographic projections, students interacting with AI robots, vibrant blue and silver color scheme, intricate details on circuits, joyful atmosphere, 8K, cinematic lighting, --ar 16:9"`;
+      
+      const result = await model.generateContent(imageGenPrompt);
+      setAiResponse("✨ PROMPT TẠO HÌNH ẢNH (Dùng cho Midjourney, DALL-E, Stable Diffusion):\n\n" + result.response.text());
+    } catch (e: any) { 
+      if (e.message.includes("429")) {
+         setAiResponse("⚠️ HẾT LƯỢT DÙNG MIỄN PHÍ: Thầy Tùng vui lòng đợi 1 phút hoặc đổi API Key khác để tạo Prompt hình ảnh nhé!");
+      } else {
+         setAiResponse("❌ LỖI KHI TẠO PROMPT HÌNH ẢNH: " + e.message);
+      }
+    } finally { setLoading(false); }
+  };
+
 
   return (
     <div className="h-screen bg-[#020817] text-slate-200 overflow-hidden flex flex-col font-sans">
-      {/* HEADER - Theo phong cách ảnh e4e313 */}
+      {/* HEADER */}
       <header className="h-20 bg-[#0f172a]/80 backdrop-blur-md border-b border-blue-900/50 px-10 flex justify-between items-center shrink-0">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(37,99,235,0.5)]">⚡</div>
@@ -84,8 +114,9 @@ const App: React.FC = () => {
             <select value={khoiLop} onChange={(e)=>setKhoiLop(e.target.value)} className="w-full bg-black border border-slate-700 rounded-xl p-3 text-sm font-bold text-white outline-none">
               {dsKhoi.map(k => <option key={k}>{k}</option>)}
             </select>
+            <input type="text" placeholder="Tên bài học..." value={tenBai} onChange={(e)=>setTenBai(e.target.value)} className="w-full bg-black border border-slate-700 rounded-xl p-3 text-sm text-white" />
             <div className="grid grid-cols-2 gap-2">
-               <input type="text" placeholder="Tiết..." value={soTiet} onChange={(e)=>setSoTiet(e.target.value)} className="bg-black border border-slate-700 rounded-xl p-3 text-xs text-white" />
+               <input type="text" placeholder="Số tiết..." value={soTiet} onChange={(e)=>setSoTiet(e.target.value)} className="bg-black border border-slate-700 rounded-xl p-3 text-xs text-white" />
                <select value={doiTuong} onChange={(e)=>setDoiTuong(e.target.value)} className="bg-black border border-slate-700 rounded-xl p-3 text-xs text-white">
                   {dsDoiTuong.map(d => <option key={d}>{d}</option>)}
                </select>
@@ -119,8 +150,8 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <button onClick={handleAiAction} className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-sm uppercase shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:scale-[1.02] active:scale-95 transition-all">
-             🚀 KÍCH HOẠT HỆ THỐNG
+          <button onClick={handleAiAction} disabled={loading} className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-sm uppercase shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:scale-[1.02] active:scale-95 transition-all">
+             {loading ? "⚡ ĐANG XỬ LÝ..." : "🚀 KÍCH HOẠT HỆ THỐNG"}
           </button>
         </aside>
 
@@ -135,15 +166,21 @@ const App: React.FC = () => {
             <textarea 
               value={customPrompt} 
               onChange={(e) => setCustomPrompt(e.target.value)}
-              className="w-full flex-1 bg-transparent p-10 text-lg text-slate-300 outline-none resize-none leading-relaxed" 
+              className="w-full flex-1 bg-transparent p-10 text-lg text-slate-300 outline-none resize-none leading-relaxed custom-scrollbar" 
               placeholder="Nhập yêu cầu chi tiết hoặc chọn mẫu lệnh để bắt đầu..."
             />
 
             {/* BỘ NÚT CHỨC NĂNG DƯỚI WORKSPACE */}
             <div className="absolute bottom-8 right-8 flex gap-3">
-               <button className="px-6 py-3 bg-purple-600 text-white rounded-xl text-[10px] font-black uppercase flex items-center gap-2 shadow-lg">🎨 Minh họa AI</button>
-               <button onClick={() => window.open('https://www.canva.com', '_blank')} className="px-6 py-3 bg-[#8b5cf6] text-white rounded-xl text-[10px] font-black uppercase flex items-center gap-2 shadow-lg">🎨 Canva</button>
-               <button onClick={() => saveAs(new Blob([aiResponse]), "HoSo_GiaoVien.docx")} className="px-6 py-3 bg-[#10b981] text-white rounded-xl text-[10px] font-black uppercase flex items-center gap-2 shadow-lg">♻️ Xuất file hồ sơ</button>
+               <button onClick={handleGenerateImagePrompt} disabled={loading} className="px-6 py-3 bg-purple-600 text-white rounded-xl text-[10px] font-black uppercase flex items-center gap-2 shadow-lg hover:bg-purple-500 transition-all">
+                  🎨 MINH HỌA AI
+               </button>
+               <button onClick={() => window.open('https://www.canva.com', '_blank')} className="px-6 py-3 bg-[#8b5cf6] text-white rounded-xl text-[10px] font-black uppercase flex items-center gap-2 shadow-lg hover:bg-[#7c3aed] transition-all">
+                  🎨 CANVA
+               </button>
+               <button onClick={() => saveAs(new Blob([aiResponse]), "HoSo_GiaoVien.docx")} className="px-6 py-3 bg-[#10b981] text-white rounded-xl text-[10px] font-black uppercase flex items-center gap-2 shadow-lg hover:bg-[#047857] transition-all">
+                  ♻️ XUẤT FILE HỒ SƠ
+               </button>
             </div>
           </div>
         </section>
@@ -160,7 +197,7 @@ const App: React.FC = () => {
                 </div>
                 <button onClick={() => setIsChatOpen(false)} className="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center hover:bg-red-600 transition-all">✕</button>
              </div>
-             <div className="p-16 overflow-y-auto text-xl leading-relaxed text-slate-300 whitespace-pre-wrap">
+             <div className="p-16 overflow-y-auto text-xl leading-relaxed text-slate-300 whitespace-pre-wrap custom-scrollbar">
                 {loading ? (
                   <div className="flex flex-col items-center justify-center h-full gap-4">
                      <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
