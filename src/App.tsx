@@ -41,18 +41,32 @@ const App: React.FC = () => {
     }
   ];
 
+  // KÍCH HOẠT BỘ NÃO GEMINI 2.5 FLASH ỔN ĐỊNH
   const handleAiAction = async () => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
     if (!apiKey) return alert("Thầy vui lòng cấu hình API Key!");
-    setLoading(true); setIsChatOpen(true);
+    if (!customPrompt.trim()) return alert("Workspace đang trống, hãy chọn mẫu lệnh!");
+
+    setLoading(true); 
+    setIsChatOpen(true); 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      // Sử dụng model 2.5 flash theo yêu cầu tính ổn định của Thầy
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-2.5-flash",
+        generationConfig: {
+          maxOutputTokens: 8192,
+          temperature: 0.5,
+        }
+      });
       const result = await model.generateContent(customPrompt);
       setAiResponse(result.response.text());
-      confetti({ particleCount: 150, spread: 70 });
-    } catch (e: any) { setAiResponse("❌ Lỗi: " + e.message); }
-    finally { setLoading(false); }
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    } catch (e: any) { 
+      setAiResponse("❌ Lỗi hệ thống: " + e.message); 
+    } finally { 
+      setLoading(false); 
+    }
   };
 
   return (
@@ -65,10 +79,9 @@ const App: React.FC = () => {
         <div className="w-24 h-24 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-full flex items-center justify-center shadow-2xl border-4 border-white text-5xl">🤖</div>
       </div>
 
-      {/* HEADER NGỌC BÍCH GLASS - CHIỀU CAO LỚN */}
+      {/* HEADER NGỌC BÍCH GLASS - PHÓNG TO LOGO */}
       <header className="h-44 bg-emerald-700/90 backdrop-blur-xl border-b-[4px] border-emerald-900 px-10 flex justify-between items-center shrink-0 shadow-2xl z-50">
         <div className="flex items-center gap-8">
-          {/* KHUNG TRÒN PHÓNG TO ĐỂ DÁN LOGO */}
           <div onClick={() => avatarInputRef.current?.click()} className="w-28 h-28 rounded-full border-[5px] border-white/40 overflow-hidden cursor-pointer bg-emerald-800 flex items-center justify-center shadow-2xl hover:scale-105 transition-all">
             {avatar ? <img src={avatar} alt="Logo" className="w-full h-full object-cover" /> : <span className="text-[11px] text-white/80 font-black uppercase text-center">DÁN<br/>LOGO</span>}
             <input type="file" ref={avatarInputRef} className="hidden" onChange={handleAvatarChange} />
@@ -80,7 +93,7 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* DÒNG CHỮ CHÀO MỪNG TO THÊM TÍ - MÀU VÀNG CAM */}
+        {/* CHÀO MỪNG PHÓNG TO - VÀNG CAM SANG TRỌNG */}
         <div className="bg-gradient-to-r from-orange-500 via-amber-400 to-orange-600 px-28 py-6 rounded-3xl text-white font-black text-4xl shadow-[0_20px_60px_rgba(234,88,12,0.6)] animate-pulse tracking-[0.1em] border-2 border-white/30 uppercase text-center">
            Chào mừng quý thầy cô !
         </div>
@@ -130,9 +143,9 @@ const App: React.FC = () => {
           <div className="bg-[#1e293b] rounded-2xl border border-slate-700 flex-1 flex flex-col min-h-0 overflow-hidden shadow-2xl">
             <div className="bg-[#0f172a] px-8 py-5 border-b border-slate-700 uppercase italic font-black text-[11px] text-emerald-500">📁 Hồ sơ tài liệu</div>
             <div className="p-8 flex-1 flex flex-col">
-              <div onClick={() => fileInputRef.current?.click()} className="flex-1 border-2 border-dashed border-slate-700 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-500/5 transition-all">
-                <span className="text-6xl mb-2 text-emerald-500 font-light">+</span>
-                <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Nạp tài liệu tham khảo</p>
+              <div onClick={() => fileInputRef.current?.click()} className="flex-1 border-2 border-dashed border-slate-700 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-500/5 transition-all group">
+                <span className="text-6xl mb-2 text-emerald-500 font-light group-hover:scale-110 transition-transform">+</span>
+                <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest text-center px-4">Đưa tài liệu minh chứng vào đây</p>
                 <input type="file" ref={fileInputRef} className="hidden" multiple />
               </div>
             </div>
@@ -149,16 +162,39 @@ const App: React.FC = () => {
               <span className="text-[11px] font-black text-orange-500 tracking-[0.4em] uppercase italic">WORKSPACE NGUYỄN THANH TÙNG</span>
               <button onClick={() => setCustomPrompt("")} className="text-[10px] font-black text-slate-500 hover:text-red-500 uppercase tracking-widest transition-colors">LÀM MỚI BẢNG</button>
             </div>
-            <textarea value={customPrompt} onChange={(e) => setCustomPrompt(e.target.value)} className="w-full flex-1 bg-transparent p-16 text-2xl text-slate-200 outline-none resize-none leading-relaxed font-medium placeholder:text-slate-600 custom-scrollbar" placeholder="Nội dung chuyên sâu..." />
+            <textarea value={customPrompt} onChange={(e) => setCustomPrompt(e.target.value)} className="w-full flex-1 bg-transparent p-16 text-2xl text-slate-200 outline-none resize-none leading-relaxed font-medium placeholder:text-slate-600 custom-scrollbar" placeholder="Nội dung soạn giảng sẽ hiển thị tại đây..." />
             
             <div className="absolute bottom-12 right-12 flex gap-6">
-               <button onClick={() => alert("Kích hoạt trợ lý vẽ ảnh...")} className="px-12 py-5 bg-purple-600 hover:bg-purple-500 text-white rounded-2xl text-[11px] font-black uppercase shadow-2xl transition-all">🎨 MINH HỌA AI</button>
+               <button onClick={() => alert("Chuẩn bị Prompt minh họa...")} className="px-12 py-5 bg-purple-600 hover:bg-purple-500 text-white rounded-2xl text-[11px] font-black uppercase shadow-2xl transition-all">🎨 MINH HỌA AI</button>
                <button onClick={() => window.open('https://www.canva.com', '_blank')} className="px-12 py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-[11px] font-black uppercase shadow-2xl transition-all italic">🎨 CANVA</button>
-               <button onClick={() => saveAs(new Blob([aiResponse]), "HoSo_NangLucSo.docx")} className="px-12 py-5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-[11px] font-black uppercase shadow-2xl transition-all">♻️ XUẤT HỒ SƠ</button>
+               <button onClick={() => saveAs(new Blob([aiResponse]), "GiaoAn_Digital_Pro.docx")} className="px-12 py-5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-[11px] font-black uppercase shadow-2xl transition-all">♻️ XUẤT HỒ SƠ</button>
             </div>
           </div>
         </section>
       </main>
+
+      {/* MODAL HIỂN THỊ KẾT QUẢ AI */}
+      {isChatOpen && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-xl z-[1000] flex items-center justify-center p-10">
+          <div className="bg-[#020817] w-full max-w-7xl h-[85vh] rounded-[2.5rem] border border-emerald-500/30 flex flex-col overflow-hidden shadow-2xl">
+             <div className="p-10 border-b border-slate-800 flex justify-between items-center bg-emerald-800 text-white shrink-0">
+                <div className="flex items-center gap-4">
+                  <span className="text-3xl animate-pulse">⚡</span>
+                  <span className="font-black uppercase text-sm tracking-[0.2em] italic">Hệ thống Gemini 2.5 Flash - Trạng thái ổn định</span>
+                </div>
+                <button onClick={() => setIsChatOpen(false)} className="px-10 py-3 rounded-full bg-white/10 hover:bg-white/30 transition-all font-black text-[10px] uppercase border border-white/20">✕ Đóng kết quả</button>
+             </div>
+             <div className="p-20 overflow-y-auto text-2xl leading-[1.8] text-slate-300 whitespace-pre-wrap font-medium custom-scrollbar">
+                {loading ? (
+                   <div className="flex flex-col items-center justify-center h-full gap-10">
+                      <div className="w-24 h-24 border-[10px] border-emerald-500/10 border-t-emerald-500 rounded-full animate-spin"></div>
+                      <p className="text-[12px] font-black text-emerald-500 tracking-[0.6em] uppercase animate-pulse">Đang kiến tạo giáo án số...</p>
+                   </div>
+                ) : aiResponse}
+             </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
