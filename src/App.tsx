@@ -134,7 +134,6 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
     if (type === 'khbd') {
       return `Bạn là chuyên gia xây dựng Kế hoạch bài dạy theo Chương trình GDPT 2018.\n\nHãy soạn KẾ HOẠCH BÀI DẠY (KHBD) theo Công văn 5512/BGDĐT-GDTrH, Phụ lục 4, đảm bảo đầy đủ và đúng chuẩn.\nYêu cầu bắt buộc:\n* Đúng cấu trúc KHBD theo CV 5512 – Phụ lục 4\n* Dạy học theo định hướng phát triển phẩm chất và năng lực\n* TÍCH HỢP:\n  * Năng lực số\n  * Quyền con người\n  * Lồng ghép Giáo dục Quốc phòng – An ninh\n  * Học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh\n\nCấu trúc KHBD gồm:\n1. MỤC TIÊU BÀI HỌC\n   * Phẩm chất\n   * Năng lực chung\n   * Năng lực đặc thù\n2. THIẾT BỊ DẠY HỌC VÀ HỌC LIỆU\n3. TIẾN TRÌNH DẠY HỌC:\n   * Hoạt động 1: Mở đầu\n   * Hoạt động 2: Hình thành kiến thức\n   * Hoạt động 3: Luyện tập\n   * Hoạt động 4: Vận dụng\n4. ĐIỀU CHỈNH – BỔ SUNG (nếu có)\n\nTrình bày ngôn ngữ hành chính – sư phạm, đúng để in nộp hồ sơ chuyên môn. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc.\n${mucDo}\n${context}`;
     }
-    // Các prompt khác giữ nguyên (em rút gọn để code ngắn)
     return "";
   };
 
@@ -173,7 +172,6 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
       const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const result = await model.generateContent(`Hãy trả lời với tư cách một Trợ lý AI giáo dục dễ thương, thân thiện. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc và in ấn.\n${customPrompt}`);
       setAiResponse(result.response.text());
-      // Pháo hoa tung bay khi soạn thành công
       confetti({
         particleCount: 200,
         spread: 90,
@@ -241,7 +239,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
       </header>
 
       <main className="flex-1 grid grid-cols-12 gap-10 p-10 overflow-hidden">
-        <aside className="col-span-3 space-y-10 flex flex-col min-h-0">
+        <aside className="col-span-3 space-y-10 flex flex-col min-h-0 relative z-10">
           <div className="bg-gradient-to-br from-slate-700/85 to-slate-800/85 backdrop-blur-xl rounded-3xl p-7 border border-white/20 shadow-2xl shadow-cyan-500/30 space-y-5 shrink-0">
             <h2 className="text-xl font-black text-cyan-300 uppercase italic tracking-wide">⚙️ CẤU HÌNH THIẾT KẾ</h2>
             <select value={monHoc} onChange={(e) => setMonHoc(e.target.value)} className="w-full bg-slate-800/70 border border-cyan-400/40 rounded-xl p-4 text-base font-bold text-white italic focus:ring-2 focus:ring-cyan-400/60 transition">
@@ -261,7 +259,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
               📜 CHỌN LỆNH MẪU (5) ▼
             </button>
             {showPromptMenu && (
-              <div className="absolute top-0 left-0 w-96 bg-slate-800/95 backdrop-blur-xl border border-cyan-400/30 rounded-2xl z-[200] shadow-2xl shadow-cyan-500/40 font-black italic overflow-hidden mt-14">
+              <div className="fixed top-[140px] left-[20%] w-96 bg-slate-800/95 backdrop-blur-xl border border-cyan-400/30 rounded-2xl z-[300] shadow-2xl shadow-cyan-500/40 font-black italic overflow-hidden">
                 <button onClick={() => { setCustomPrompt(getHardcodedPrompt('khbd')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-cyan-700/50 border-b border-cyan-400/30 text-base transition">
                   🔹 SOẠN KẾ HOẠCH BÀI DẠY (KHBD) THEO CV 5512 – GDPT 2018
                 </button>
