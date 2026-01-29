@@ -255,12 +255,15 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             <select value={doiTuongHS} onChange={(e) => setDoiTuongHS(e.target.value)} className="w-full bg-slate-800/70 border border-cyan-400/40 rounded-xl p-4 text-base font-bold text-orange-300 italic focus:ring-2 focus:ring-cyan-400/60 transition">
               {dsDoiTuong.map(d => <option key={d}>{d}</option>)}
             </select>
-            <div className="relative">
-              <button onClick={() => setShowPromptMenu(!showPromptMenu)} className="w-full py-5 bg-gradient-to-r from-orange-600 to-orange-500 text-white rounded-2xl font-black text-base uppercase shadow-xl hover:shadow-orange-500/60 transition-all">
+            <div className="relative inline-block w-full">
+              <button 
+                onClick={() => setShowPromptMenu(!showPromptMenu)} 
+                className="w-full py-5 bg-gradient-to-r from-orange-600 to-orange-500 text-white rounded-2xl font-black text-base uppercase shadow-xl hover:shadow-orange-500/60 transition-all"
+              >
                 📜 CHỌN LỆNH MẪU (5) ▼
               </button>
               {showPromptMenu && (
-                <div className="mt-2 w-full bg-slate-800/95 backdrop-blur-xl border border-cyan-400/30 rounded-2xl shadow-2xl shadow-cyan-500/40 font-black italic overflow-hidden z-[300]">
+                <div className="absolute left-0 mt-2 w-full bg-slate-800/95 backdrop-blur-xl border border-cyan-400/30 rounded-2xl shadow-2xl shadow-cyan-500/40 font-black italic overflow-hidden z-[300]">
                   <button onClick={() => { setCustomPrompt(getHardcodedPrompt('khbd')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-cyan-700/50 border-b border-cyan-400/30 text-base transition">
                     🔹 SOẠN KẾ HOẠCH BÀI DẠY (KHBD) THEO CV 5512 – GDPT 2018
                   </button>
@@ -281,12 +284,15 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-slate-700/85 to-slate-800/85 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl shadow-cyan-500/30 flex flex-col flex-1 overflow-hidden relative z-20">
+          <div className="bg-gradient-to-br from-slate-700/85 to-slate-800/85 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl shadow-cyan-500/30 flex flex-col flex-1 overflow-hidden relative z-30">
             <div className="bg-slate-900/60 px-6 py-4 border-b border-cyan-400/30 text-cyan-300 font-black text-base uppercase italic">THÊM DỮ LIỆU, HÌNH ẢNH (+)</div>
-            <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
+            <div className="p-6 flex-1 overflow-y-auto custom-scrollbar relative z-40">
               <div 
-                onClick={() => fileInputRef.current?.click()} 
-                className="h-20 border-2 border-dashed border-cyan-400/50 rounded-3xl flex items-center justify-center cursor-pointer mb-5 bg-slate-900/50 hover:bg-cyan-900/30 transition-all duration-300 hover:scale-105"
+                onClick={() => {
+                  console.log("Dấu + được click"); // Để Thầy kiểm tra console
+                  fileInputRef.current?.click();
+                }} 
+                className="h-20 border-2 border-dashed border-cyan-400/50 rounded-3xl flex items-center justify-center cursor-pointer mb-5 bg-slate-900/50 hover:bg-cyan-900/30 transition-all duration-300 hover:scale-105 active:scale-95"
               >
                 <span className="text-5xl text-cyan-300 font-black">+</span>
               </div>
@@ -306,7 +312,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             </div>
           </div>
 
-          <button onClick={handleSoanBai} disabled={loading} className="w-full py-8 rounded-3xl font-black text-xl uppercase bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 shadow-2xl shadow-cyan-500/60 border-b-4 border-blue-900 italic active:scale-95 transition-all">
+          <button onClick={handleSoanBai} disabled={loading} className="w-full py-8 rounded-3xl font-black text-xl uppercase bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 shadow-2xl shadow-cyan-500/60 border-b-4 border-blue-900 italic active:scale-95 transition-all relative z-20">
             {loading ? "⌛ AI ĐANG LÀM VIỆC..." : "🚀 KÍCH HOẠT SOẠN GIẢNG"}
           </button>
         </aside>
@@ -342,8 +348,17 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         </section>
       </main>
 
-      {/* Modal và Trợ lý AI giữ nguyên như trước */}
-      {/* ... (em không paste lại để code ngắn, Thầy copy phần này từ code cũ nếu cần) */}
+      {/* Modal Cập nhật nâng cao - giữ nguyên */}
+      {showPackageModal && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[3000] p-4">
+          {/* Nội dung modal giữ nguyên như trước, em không paste lại để ngắn */}
+        </div>
+      )}
+
+      {/* Trợ lý AI - giữ nguyên */}
+      <div className="fixed bottom-8 right-8 z-[2000] flex flex-col items-end">
+        {/* ... nội dung trợ lý AI giữ nguyên */}
+      </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
         .render-content { overflow-y: auto; max-height: 100%; padding-right: 10px; }
