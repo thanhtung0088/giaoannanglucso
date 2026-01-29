@@ -26,7 +26,7 @@ const App: React.FC = () => {
   const [isChatLoading, setIsChatLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(localStorage.getItem("permanent_logo_fixed_v2"));
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(localStorage.getItem("permanent_logo_v73"));
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -34,7 +34,7 @@ const App: React.FC = () => {
       reader.onload = (event) => {
         const base64 = event.target?.result as string;
         setAvatarUrl(base64);
-        localStorage.setItem("permanent_logo_fixed_v2", base64);
+        localStorage.setItem("permanent_logo_v73", base64);
       };
       reader.readAsDataURL(e.target.files[0]);
     }
@@ -56,10 +56,10 @@ Yêu cầu bắt buộc:
   * Lồng ghép Giáo dục Quốc phòng – An ninh
   * Học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh
 Cấu trúc KHBD gồm:
-- Mục tiêu bài học (Phẩm chất, Năng lực chung, Năng lực đặc thù)
-- Thiết bị dạy học và học liệu
-- Tiến trình dạy học: (Hoạt động 1: Mở đầu; Hoạt động 2: Hình thành kiến thức; Hoạt động 3: Luyện tập; Hoạt động 4: Vận dụng)
-- Điều chỉnh – bổ sung (nếu có)
+1. Mục tiêu bài học (Phẩm chất, Năng lực chung, Năng lực đặc thù)
+2. Thiết bị dạy học và học liệu
+3. Tiến trình dạy học: (HĐ 1: Mở đầu; HĐ 2: Hình thành kiến thức; HĐ 3: Luyện tập; HĐ 4: Vận dụng)
+4. Điều chỉnh – bổ sung (nếu có)
 Trình bày ngôn ngữ hành chính – sư phạm, đúng để in nộp hồ sơ chuyên môn.`;
 
     if (type === 'ppt') return `Bạn là chuyên gia thiết kế bài giảng số và mỹ thuật sư phạm.
@@ -89,11 +89,7 @@ Yêu cầu:
 - Đúng ma trận và đặc tả theo CV 7991
 - Đánh giá mức độ nhận thức: Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao
 - Câu hỏi gắn với thực tiễn, năng lực, phẩm chất
-Sản phẩm gồm:
-- Ma trận đề
-- Bảng đặc tả
-- Đề kiểm tra
-- Đáp án – thang điểm chi tiết
+Sản phẩm gồm: Ma trận đề; Bảng đặc tả; Đề kiểm tra; Đáp án – thang điểm chi tiết
 Ngôn ngữ chuẩn, dùng được cho kiểm tra định kỳ / giữa kỳ / cuối kỳ.`;
 
     if (type === 'ontap') return `Bạn là giáo viên giàu kinh nghiệm, am hiểu chương trình GDPT 2018.
@@ -101,7 +97,7 @@ Ngôn ngữ chuẩn, dùng được cho kiểm tra định kỳ / giữa kỳ / 
 Hãy soạn ĐỀ CƯƠNG ÔN TẬP cho học sinh ${thongTin}, đảm bảo:
 Yêu cầu:
 - Hệ thống kiến thức ngắn gọn – dễ nhớ
-- Phân chia rõ: Kiến thức trọng tâm, Kỹ năng cần đạt, Dạng bài thường gặp
+- Phân chia rõ: Kiến thức trọng tâm; Kỹ năng cần đạt; Dạng bài thường gặp
 - Có câu hỏi gợi ý ôn luyện
 - Phù hợp đánh giá theo định hướng năng lực
 Trình bày mạch lạc, dễ in phát cho học sinh.`;
@@ -119,13 +115,13 @@ Trình bày mạch lạc, dễ in phát cho học sinh.`;
       const result = await model.generateContent(customPrompt);
       setAiResponse(result.response.text());
       confetti({ particleCount: 150, spread: 70 });
-    } catch (e: any) { setAiResponse("Lỗi AI: " + e.message); } finally { setLoading(false); }
+    } catch (e: any) { setAiResponse("Lỗi: " + e.message); } finally { setLoading(false); }
   };
 
   const handleAssistantChat = async () => {
     if (!chatInput.trim()) return;
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
-    if (!apiKey) return alert("Nhập API Key trước!");
+    if (!apiKey) return alert("Nhập API Key!");
     const newHistory = [...chatHistory, { role: "user", text: chatInput }];
     setChatHistory(newHistory);
     setChatInput("");
@@ -136,7 +132,7 @@ Trình bày mạch lạc, dễ in phát cho học sinh.`;
       const result = await model.generateContent(chatInput);
       setChatHistory([...newHistory, { role: "ai", text: result.response.text() }]);
     } catch (e) {
-      setChatHistory([...newHistory, { role: "ai", text: "Lỗi kết nối. Thầy kiểm tra API Key nhé!" }]);
+      setChatHistory([...newHistory, { role: "ai", text: "Lỗi kết nối AI!" }]);
     } finally { setIsChatLoading(false); }
   };
 
@@ -149,7 +145,7 @@ Trình bày mạch lạc, dễ in phát cho học sinh.`;
     <div className="h-screen bg-slate-600 text-slate-100 overflow-hidden flex flex-col font-sans">
       <header className="h-32 bg-emerald-700 px-10 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
         <div className="flex items-center gap-6">
-          <div onClick={() => avatarInputRef.current?.click()} className="w-24 h-24 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:scale-105 transition-all shadow-xl">
+          <div onClick={() => avatarInputRef.current?.click()} className="w-24 h-24 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer shadow-xl">
              {avatarUrl ? <img src={avatarUrl} className="w-full h-full object-cover" /> : <span className="text-xs text-white font-black uppercase">LOGO</span>}
              <input type="file" ref={avatarInputRef} className="hidden" accept="image/*" onChange={handleAvatarChange} />
           </div>
@@ -158,38 +154,38 @@ Trình bày mạch lạc, dễ in phát cho học sinh.`;
             <p className="text-xs font-bold text-emerald-200 uppercase mt-2 italic">Giáo viên: NGUYỄN THANH TÙNG</p>
           </div>
         </div>
-        <div className="bg-orange-600 px-10 py-3 rounded-2xl text-white font-black text-2xl shadow-2xl uppercase animate-pulse border-2 border-orange-400">Chào mừng quý thầy cô !</div>
+        <div className="bg-orange-600 px-10 py-3 rounded-2xl text-white font-black text-2xl shadow-2xl uppercase border-2 border-orange-400">Chào mừng quý thầy cô !</div>
         <div className="flex gap-4">
-           <button onClick={() => alert("Mở trình quay màn hình...")} className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl hover:bg-red-600 transition-colors">📹</button>
-           <button onClick={() => alert("Mở quét mã QR...")} className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl hover:bg-blue-600 transition-colors">🔳</button>
+           <button className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl hover:bg-red-600 transition-colors">📹</button>
+           <button className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl hover:bg-blue-600 transition-colors">🔳</button>
         </div>
       </header>
 
       <main className="flex-1 grid grid-cols-12 gap-6 p-6 overflow-hidden">
         <aside className="col-span-3 space-y-6 flex flex-col min-h-0">
           <div className="bg-[#1e293b] rounded-3xl p-6 border border-slate-500 shadow-2xl space-y-4 shrink-0">
-            <h2 className="text-xs font-black text-emerald-400 uppercase italic tracking-widest">⚙️ Thiết lập bài dạy</h2>
+            <h2 className="text-xs font-black text-emerald-400 uppercase italic">⚙️ Thiết lập bài dạy</h2>
             <select value={monHoc} onChange={(e)=>setMonHoc(e.target.value)} className="w-full bg-slate-900 border border-slate-600 rounded-xl p-4 text-sm font-bold text-white outline-none">
               {dsMonHoc.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
             <select value={khoiLop} onChange={(e)=>setKhoiLop(e.target.value)} className="w-full bg-slate-900 border border-slate-600 rounded-xl p-4 text-sm font-bold text-white outline-none">
               {dsKhoi.map(k => <option key={k} value={k}>{k}</option>)}
             </select>
-            <input type="text" value={tenBai} onChange={(e)=>setTenBai(e.target.value)} className="w-full bg-slate-900 border border-slate-600 rounded-xl p-4 text-sm font-bold text-white outline-none" placeholder="Tên bài dạy..." />
+            <input type="text" value={tenBai} onChange={(e)=>setTenBai(e.target.value)} className="w-full bg-slate-900 border border-slate-600 rounded-xl p-4 text-sm font-bold text-white outline-none" placeholder="Nhập tên bài dạy..." />
             <div className="grid grid-cols-2 gap-3">
-              <input type="text" value={soTiet} onChange={(e)=>setSoTiet(e.target.value)} className="bg-slate-900 border border-slate-600 rounded-xl p-4 text-sm font-bold text-white outline-none" placeholder="Số tiết..." />
+              <input type="text" value={soTiet} onChange={(e)=>setSoTiet(e.target.value)} className="bg-slate-900 border border-slate-600 rounded-xl p-4 text-sm font-bold text-white outline-none" placeholder="1" />
               <select value={doiTuongHS} onChange={(e)=>setDoiTuongHS(e.target.value)} className="bg-slate-900 border border-slate-600 rounded-xl p-4 text-xs font-bold text-white outline-none">
                 {dsDoiTuong.map(d => <option key={d} value={d}>{d}</option>)}
               </select>
             </div>
             <div className="relative">
-              <button onClick={() => setShowPromptMenu(!showPromptMenu)} className="w-full py-5 bg-orange-600 text-white rounded-2xl font-black text-xs uppercase shadow-xl hover:bg-orange-500 transition-all">📜 LỆNH PROMPT MẪU ▼</button>
+              <button onClick={() => setShowPromptMenu(!showPromptMenu)} className="w-full py-5 bg-orange-600 text-white rounded-2xl font-black text-xs uppercase shadow-xl hover:bg-orange-500">📜 LỆNH PROMPT MẪU ▼</button>
               {showPromptMenu && (
-                <div className="absolute top-full left-0 w-full bg-slate-800 border border-slate-500 rounded-2xl mt-2 overflow-hidden z-[100] shadow-2xl">
-                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('5512')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] font-black uppercase text-white border-b border-slate-700 italic">📑 SOẠN KHBD CV 5512</button>
-                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('ppt')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] font-black uppercase text-white border-b border-slate-700 italic">💻 BÀI GIẢNG PPT</button>
-                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('7991')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] font-black uppercase text-white border-b border-slate-700 italic">✍️ ĐỀ KIỂM TRA 7991</button>
-                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('ontap')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] font-black uppercase text-white italic">📚 ĐỀ CƯƠNG ÔN TẬP</button>
+                <div className="absolute top-full left-0 w-full bg-slate-800 border border-slate-500 rounded-2xl mt-2 overflow-hidden z-[100] shadow-2xl font-black italic">
+                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('5512')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] text-white border-b border-slate-700">📑 SOẠN KHBD CV 5512</button>
+                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('ppt')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] text-white border-b border-slate-700">💻 BÀI GIẢNG PPT</button>
+                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('7991')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] text-white border-b border-slate-700">✍️ ĐỀ KIỂM TRA 7991</button>
+                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('ontap')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] text-white italic">📚 ĐỀ CƯƠNG ÔN TẬP</button>
                 </div>
               )}
             </div>
@@ -197,18 +193,21 @@ Trình bày mạch lạc, dễ in phát cho học sinh.`;
 
           <div className="bg-[#1e293b] rounded-3xl border border-slate-500 flex-1 flex flex-col min-h-0 overflow-hidden shadow-2xl">
             <div className="bg-slate-900 px-6 py-4 border-b border-slate-700 text-emerald-400 font-black italic text-xs uppercase underline underline-offset-8">📁 Hồ sơ tài liệu (+)</div>
-            <div className="p-5 flex-1 flex flex-col overflow-hidden">
-              <div onClick={() => fileInputRef.current?.click()} className="h-20 shrink-0 border-2 border-dashed border-slate-500 rounded-2xl flex items-center justify-center cursor-pointer mb-4 bg-slate-800/60 hover:border-emerald-500 transition-all">
+            <div className="p-5 flex-1 flex flex-col min-h-0">
+              <div onClick={() => fileInputRef.current?.click()} className="h-24 shrink-0 border-2 border-dashed border-slate-500 rounded-2xl flex items-center justify-center cursor-pointer mb-4 bg-slate-800/60 hover:border-emerald-500 transition-all">
                 <span className="text-4xl text-emerald-500 font-bold">+</span>
                 <input type="file" ref={fileInputRef} className="hidden" multiple onChange={(e) => { if(e.target.files) setSelectedFiles(prev => [...prev, ...Array.from(e.target.files!)]); }} />
               </div>
-              <div className="flex-1 overflow-y-auto space-y-2 custom-scrollbar">
-                {selectedFiles.map((f, i) => (
-                  <div key={i} className="bg-slate-900 p-3 rounded-xl border border-slate-700 text-[10px] flex justify-between items-center italic">
-                    <span className="truncate w-40 text-emerald-300 font-bold">📄 {f.name}</span>
-                    <button onClick={() => setSelectedFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-red-500 font-black">✕</button>
+              {/* PHẦN FIX LỖI HIỂN THỊ FILE */}
+              <div className="flex-1 overflow-y-auto pr-1 space-y-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#10b981 #1e293b' }}>
+                {selectedFiles.length > 0 ? selectedFiles.map((f, i) => (
+                  <div key={i} className="bg-slate-900 p-3 rounded-xl border border-slate-700 text-[10px] flex justify-between items-center italic animate-in fade-in slide-in-from-left-2">
+                    <span className="truncate w-44 text-emerald-300 font-bold">📄 {f.name}</span>
+                    <button onClick={() => setSelectedFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-red-500 font-black hover:text-red-400">✕</button>
                   </div>
-                ))}
+                )) : (
+                  <div className="text-[10px] text-slate-500 italic text-center mt-4">Chưa có tài liệu gán vào</div>
+                )}
               </div>
             </div>
           </div>
@@ -242,40 +241,39 @@ Trình bày mạch lạc, dễ in phát cho học sinh.`;
                 {loading ? (
                   <div className="h-full flex flex-col items-center justify-center space-y-8 animate-pulse">
                      <div className="w-16 h-16 border-8 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                     <p className="font-black text-lg text-orange-400 uppercase">Đang kiến tạo giáo án...</p>
+                     <p className="font-black text-lg text-orange-400 uppercase">Đang soạn giáo án...</p>
                   </div>
                 ) : (
-                  <div className="text-xl leading-loose text-slate-100 whitespace-pre-wrap font-medium">{aiResponse || "Hệ thống sẵn sàng..."}</div>
+                  <div className="text-xl leading-loose text-slate-100 whitespace-pre-wrap font-medium">{aiResponse || "Hệ thống đã sẵn sàng..."}</div>
                 )}
              </div>
           </div>
         </section>
       </main>
 
-      {isChatOpen && (
-        <div className="fixed bottom-32 right-10 w-96 h-[500px] bg-slate-800 border-4 border-emerald-600 rounded-3xl shadow-2xl z-[2000] flex flex-col overflow-hidden animate-in slide-in-from-bottom-5">
-           <div className="bg-emerald-600 p-4 flex justify-between items-center text-white font-black uppercase text-[10px] tracking-widest"><span>Trợ lý AI Thầy Tùng</span><button onClick={() => setIsChatOpen(false)}>✕</button></div>
-           <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-900 custom-scrollbar">
-              {chatHistory.map((msg, i) => (
-                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                   <div className={`max-w-[80%] p-3 rounded-2xl text-[11px] font-bold ${msg.role === 'user' ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-700 text-emerald-300 border border-emerald-900'}`}>{msg.text}</div>
-                </div>
-              ))}
-              {isChatLoading && <div className="text-[10px] text-emerald-500 animate-pulse font-black italic">Đang phân tích dữ liệu...</div>}
-              <div ref={chatEndRef} />
-           </div>
-           <div className="p-4 bg-slate-800 flex gap-2 border-t border-slate-700">
-              <input type="text" value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAssistantChat()} placeholder="Gõ câu hỏi tại đây..." className="flex-1 bg-slate-900 rounded-xl px-4 py-2 text-xs text-white outline-none border border-slate-600 focus:ring-2 ring-emerald-500" />
-              <button onClick={handleAssistantChat} className="bg-emerald-600 px-4 rounded-xl text-white font-black text-xs hover:bg-emerald-500 shadow-lg">GỬI</button>
-           </div>
-        </div>
-      )}
-
       <div onClick={() => setIsChatOpen(!isChatOpen)} className="fixed bottom-10 right-10 z-[2001] animate-bounce cursor-pointer">
         <div className="w-20 h-20 bg-emerald-500 rounded-full shadow-2xl flex items-center justify-center border-4 border-white/30 hover:scale-125 transition-all">
            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" className="w-12 h-12" alt="AI Bot" />
         </div>
       </div>
+      
+      {isChatOpen && (
+        <div className="fixed bottom-32 right-10 w-96 h-[500px] bg-slate-800 border-4 border-emerald-600 rounded-3xl shadow-2xl z-[2000] flex flex-col overflow-hidden">
+           <div className="bg-emerald-600 p-4 flex justify-between items-center text-white font-black uppercase text-[10px] tracking-widest"><span>Trợ lý AI Thầy Tùng</span><button onClick={() => setIsChatOpen(false)}>✕</button></div>
+           <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-900 custom-scrollbar">
+              {chatHistory.map((msg, i) => (
+                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                   <div className={`max-w-[80%] p-3 rounded-2xl text-[11px] font-bold ${msg.role === 'user' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-emerald-300 border border-emerald-900'}`}>{msg.text}</div>
+                </div>
+              ))}
+              <div ref={chatEndRef} />
+           </div>
+           <div className="p-4 bg-slate-800 flex gap-2 border-t border-slate-700">
+              <input type="text" value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAssistantChat()} placeholder="Hỏi trợ lý..." className="flex-1 bg-slate-900 rounded-xl px-4 py-2 text-xs text-white outline-none border border-slate-600" />
+              <button onClick={handleAssistantChat} className="bg-emerald-600 px-4 rounded-xl text-white font-black text-xs hover:bg-emerald-500">GỬI</button>
+           </div>
+        </div>
+      )}
     </div>
   );
 };
