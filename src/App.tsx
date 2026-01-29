@@ -20,7 +20,6 @@ const App: React.FC = () => {
   const [showPromptMenu, setShowPromptMenu] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   
-  // Trạng thái cho Hộp Chat AI
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
   const [chatHistory, setChatHistory] = useState<{role: string, text: string}[]>([]);
@@ -41,13 +40,61 @@ const App: React.FC = () => {
     }
   };
 
+  // KHÔI PHỤC NGUYÊN KHỐI 100% PROMPT CỦA THẦY TÙNG
   const getHardcodedPrompt = (type: string) => {
     const bai = tenBai || "[Tên bài dạy]";
     const thongTin = `cho môn ${monHoc}, ${khoiLop}, bài "${bai}" (${soTiet} tiết), đối tượng học sinh ${doiTuongHS}.`;
-    if (type === '5512') return `Bạn là chuyên gia xây dựng Kế hoạch bài dạy theo Chương trình GDPT 2018. Hãy soạn KẾ HOẠCH BÀI DẠY (KHBD) theo Công văn 5512/BGDĐT-GDTrH, Phụ lục 4 ${thongTin}. Yêu cầu bắt buộc: Đúng cấu trúc CV 5512, tích hợp năng lực số, quyền con người. Trình bày I, II, III, không dùng dấu sao.`;
-    if (type === 'ppt') return `Soạn nội dung PowerPoint 10 slide ${thongTin}. Mỗi slide gồm tiêu đề và nội dung ngắn gọn.`;
-    if (type === '7991') return `Soạn ĐỀ KIỂM TRA chuẩn CV 7991 cho ${thongTin}.`;
-    if (type === 'ontap') return `Soạn ĐỀ CƯƠNG ÔN TẬP cho ${thongTin}.`;
+    
+    if (type === '5512') return `Bạn là chuyên gia xây dựng Kế hoạch bài dạy theo Chương trình GDPT 2018.
+
+Hãy soạn KẾ HOẠCH BÀI DẠY (KHBD) theo Công văn 5512/BGDĐT-GDTrH, Phụ lục 4 ${thongTin}, đảm bảo đầy đủ và đúng chuẩn.
+Yêu cầu bắt buộc:
+- Đúng cấu trúc KHBD theo CV 5512 – Phụ lục 4
+- Dạy học theo định hướng phát triển phẩm chất và năng lực
+- TÍCH HỢP:
+  + Năng lực số
+  + Quyền con người
+  + Lồng ghép Giáo dục Quốc phòng – An ninh
+  + Học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh
+Cấu trúc KHBD gồm:
+1. Mục tiêu bài học (Phẩm chất, Năng lực chung, Năng lực đặc thù)
+2. Thiết bị dạy học và học liệu
+3. Tiến trình dạy học: (HĐ 1: Mở đầu; HĐ 2: Hình thành kiến thức; HĐ 3: Luyện tập; HĐ 4: Vận dụng)
+4. Điều chỉnh – bổ sung (nếu có)
+Trình bày ngôn ngữ hành chính – sư phạm, đúng để in nộp hồ sơ chuyên môn.`;
+
+    if (type === 'ppt') return `Bạn là chuyên gia thiết kế bài giảng số và mỹ thuật sư phạm.
+
+Hãy soạn BÀI GIẢNG TRÌNH CHIẾU (PowerPoint) phục vụ bài học ${thongTin}, đảm bảo:
+Yêu cầu:
+- Ít nhất 10 slide
+- Nội dung bám sát KHBD
+- Dạy học theo định hướng phát triển năng lực
+- AI tự chọn màu sắc – bố cục đẹp – dễ nhìn
+- Phù hợp học sinh theo chương trình GDPT 2018
+Mỗi slide gồm: Tiêu đề; Nội dung ngắn gọn (gạch đầu dòng); Gợi ý hình ảnh / sơ đồ / biểu tượng minh họa
+Cấu trúc gợi ý: Slide 1: Tiêu đề; Slide 2: Mục tiêu; Slide 3–8: Nội dung trọng tâm; Slide 9: Hoạt động – câu hỏi tương tác; Slide 10: Tổng kết – liên hệ thực tiễn`;
+
+    if (type === '7991') return `Bạn là chuyên gia ra đề và đánh giá học sinh theo định hướng phát triển năng lực.
+
+Hãy soạn ĐỀ KIỂM TRA theo Công văn 7991/BGDĐT-GDTrH ${thongTin}, đảm bảo:
+Yêu cầu:
+- Đúng ma trận và đặc tả theo CV 7991
+- Đánh giá mức độ nhận thức: Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao
+- Câu hỏi gắn với thực tiễn, năng lực, phẩm chất
+Sản phẩm gồm: Ma trận đề; Bảng đặc tả; Đề kiểm tra; Đáp án – thang điểm chi tiết
+Ngôn ngữ chuẩn, dùng được cho kiểm tra định kỳ / giữa kỳ / cuối kỳ.`;
+
+    if (type === 'ontap') return `Bạn là giáo viên giàu kinh nghiệm, am hiểu chương trình GDPT 2018.
+
+Hãy soạn ĐỀ CƯƠNG ÔN TẬP cho học sinh ${thongTin}, đảm bảo:
+Yêu cầu:
+- Hệ thống kiến thức ngắn gọn – dễ nhớ
+- Phân chia rõ: Kiến thức trọng tâm; Kỹ năng cần đạt; Dạng bài thường gặp
+- Có câu hỏi gợi ý ôn luyện
+- Phù hợp đánh giá theo định hướng năng lực
+Trình bày mạch lạc, dễ in phát cho học sinh.`;
+
     return "";
   };
 
@@ -59,7 +106,7 @@ const App: React.FC = () => {
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ 
         model: "gemini-1.5-flash",
-        systemInstruction: "BẮT BUỘC: Viết hoàn toàn bằng tiếng Việt. Trình bày kiểu sư phạm I, II, III. KHÔNG dùng dấu sao (*)."
+        systemInstruction: "BẮT BUỘC: Viết hoàn toàn bằng tiếng Việt. Trình bày kiểu sư phạm I, II, III. Tuyệt đối không dùng dấu sao (*) để trình bày tiêu đề."
       });
       const result = await model.generateContent(customPrompt);
       setAiResponse(result.response.text());
@@ -67,17 +114,14 @@ const App: React.FC = () => {
     } catch (e: any) { setAiResponse("Lỗi AI: " + e.message); } finally { setLoading(false); }
   };
 
-  // Hàm xử lý Chat với trợ lý
   const handleAssistantChat = async () => {
     if (!chatInput.trim()) return;
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
     if (!apiKey) return alert("Nhập API Key trước khi chat!");
-    
     const newHistory = [...chatHistory, { role: "user", text: chatInput }];
     setChatHistory(newHistory);
     setChatInput("");
     setIsChatLoading(true);
-
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -148,13 +192,13 @@ const App: React.FC = () => {
             <div className="p-5 flex-1 flex flex-col overflow-hidden">
               <div onClick={() => fileInputRef.current?.click()} className="h-20 shrink-0 border-2 border-dashed border-slate-500 rounded-2xl flex items-center justify-center cursor-pointer mb-4 bg-slate-800/60">
                 <span className="text-4xl text-emerald-500 font-bold">+</span>
-                <input type="file" ref={fileInputRef} className="hidden" multiple onChange={(e) => e.target.files && setSelectedFiles(prev => [...prev, ...Array.from(e.target.files!)])} />
+                <input type="file" ref={fileInputRef} className="hidden" multiple onChange={(e) => { if(e.target.files) setSelectedFiles([...selectedFiles, ...Array.from(e.target.files)]); }} />
               </div>
               <div className="flex-1 overflow-y-auto space-y-2 custom-scrollbar">
                 {selectedFiles.map((f, i) => (
                   <div key={i} className="bg-slate-900 p-3 rounded-xl border border-slate-700 text-[10px] flex justify-between items-center italic">
                     <span className="truncate w-40 text-emerald-300 font-bold">📄 {f.name}</span>
-                    <button onClick={() => setSelectedFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-red-500 font-black">✕</button>
+                    <button onClick={() => setSelectedFiles(selectedFiles.filter((_, idx) => idx !== i))} className="text-red-500 font-black">✕</button>
                   </div>
                 ))}
               </div>
@@ -199,9 +243,8 @@ const App: React.FC = () => {
         </section>
       </main>
 
-      {/* HỘP CHAT TRỢ LÝ AI HIỆN ĐẠI */}
       {isChatOpen && (
-        <div className="fixed bottom-32 right-10 w-96 h-[500px] bg-slate-800 border-4 border-emerald-600 rounded-3xl shadow-2xl z-[2000] flex flex-col overflow-hidden animate-in slide-in-from-bottom-5">
+        <div className="fixed bottom-32 right-10 w-96 h-[500px] bg-slate-800 border-4 border-emerald-600 rounded-3xl shadow-2xl z-[2000] flex flex-col overflow-hidden">
            <div className="bg-emerald-600 p-4 flex justify-between items-center">
               <span className="text-xs font-black uppercase text-white tracking-widest">Trợ lý AI Thầy Tùng</span>
               <button onClick={() => setIsChatOpen(false)} className="text-white font-black">✕</button>
@@ -224,7 +267,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* NÚT KÍCH HOẠT ROBOT */}
       <div onClick={() => setIsChatOpen(!isChatOpen)} className="fixed bottom-10 right-10 z-[2001] animate-bounce cursor-pointer group">
         <div className="w-20 h-20 bg-emerald-500 rounded-full shadow-2xl flex items-center justify-center border-4 border-white/30 hover:scale-125 transition-all">
            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" className="w-12 h-12" alt="AI Bot" />
