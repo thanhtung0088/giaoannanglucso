@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import confetti from 'canvas-confetti';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
-// Login Screen - Giữ nguyên như cũ (màu xanh đẹp)
+// Login Screen (giữ nguyên như cũ)
 const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }) => {
   const [activeTab, setActiveTab] = useState<"teacher" | "admin">("teacher");
   const [password, setPassword] = useState("");
@@ -101,7 +101,7 @@ const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }
   );
 };
 
-// Main App - Trang chính với nền sáng hơn, glassmorphism 3D
+// Main App
 const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const [showPackageModal, setShowPackageModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -242,7 +242,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
       <main className="flex-1 grid grid-cols-12 gap-10 p-10 overflow-hidden">
         <aside className="col-span-3 space-y-10 flex flex-col min-h-0">
-          <div className="bg-gradient-to-br from-slate-700/80 to-slate-800/80 backdrop-blur-xl rounded-3xl p-7 border border-white/20 shadow-2xl shadow-cyan-500/30 space-y-5 shrink-0">
+          <div className="bg-gradient-to-br from-slate-700/85 to-slate-800/85 backdrop-blur-xl rounded-3xl p-7 border border-white/20 shadow-2xl shadow-cyan-500/30 space-y-5 shrink-0">
             <h2 className="text-xl font-black text-cyan-300 uppercase italic tracking-wide">⚙️ CẤU HÌNH THIẾT KẾ</h2>
             <select value={monHoc} onChange={(e) => setMonHoc(e.target.value)} className="w-full bg-slate-800/70 border border-cyan-400/40 rounded-xl p-4 text-base font-bold text-white italic focus:ring-2 focus:ring-cyan-400/60 transition">
               {dsMonHoc.map(m => <option key={m}>{m}</option>)}
@@ -261,7 +261,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
               📜 CHỌN LỆNH MẪU (5) ▼
             </button>
             {showPromptMenu && (
-              <div className="absolute left-10 w-96 bg-slate-800/90 backdrop-blur-xl border border-cyan-400/30 rounded-2xl z-[100] shadow-2xl shadow-cyan-500/30 font-black italic overflow-hidden">
+              <div className="absolute top-0 left-0 w-96 bg-slate-800/95 backdrop-blur-xl border border-cyan-400/30 rounded-2xl z-[200] shadow-2xl shadow-cyan-500/40 font-black italic overflow-hidden mt-14">
                 <button onClick={() => { setCustomPrompt(getHardcodedPrompt('khbd')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-cyan-700/50 border-b border-cyan-400/30 text-base transition">
                   🔹 SOẠN KẾ HOẠCH BÀI DẠY (KHBD) THEO CV 5512 – GDPT 2018
                 </button>
@@ -281,8 +281,8 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             )}
           </div>
 
-          <div className="bg-gradient-to-br from-slate-700/80 to-slate-800/80 backdrop-blur-xl rounded-3xl border border-white/15 shadow-2xl shadow-cyan-500/30 flex flex-col flex-1 overflow-hidden">
-            <div className="bg-slate-900/60 px-6 py-4 border-b border-cyan-400/30 text-cyan-300 font-black text-base uppercase italic">📁 HÀNH TRANG (+)</div>
+          <div className="bg-gradient-to-br from-slate-700/85 to-slate-800/85 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl shadow-cyan-500/30 flex flex-col flex-1 overflow-hidden">
+            <div className="bg-slate-900/60 px-6 py-4 border-b border-cyan-400/30 text-cyan-300 font-black text-base uppercase italic">THÊM DỮ LIỆU, HÌNH ẢNH (+)</div>
             <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
               <div onClick={() => fileInputRef.current?.click()} className="h-20 border-2 border-dashed border-cyan-400/50 rounded-3xl flex items-center justify-center cursor-pointer mb-5 bg-slate-900/50 hover:bg-cyan-900/30 transition">
                 <span className="text-5xl text-cyan-300 font-black">+</span>
@@ -303,14 +303,14 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         </aside>
 
         <section className="col-span-3">
-          <div className="bg-gradient-to-br from-slate-700/80 to-slate-800/80 backdrop-blur-xl rounded-3xl border border-white/15 shadow-2xl shadow-cyan-500/30 flex flex-col h-full overflow-hidden">
+          <div className="bg-gradient-to-br from-slate-700/85 to-slate-800/85 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl shadow-cyan-500/30 flex flex-col h-full overflow-hidden">
             <div className="px-6 py-5 bg-slate-900/60 border-b border-cyan-400/30 text-xl font-black text-orange-300 uppercase italic">Workspace Editor</div>
             <textarea value={customPrompt} onChange={(e) => setCustomPrompt(e.target.value)} className="w-full flex-1 bg-transparent p-6 text-base text-slate-100 outline-none resize-none font-bold italic placeholder-cyan-300" placeholder="Nhập prompt tùy chỉnh hoặc chọn lệnh mẫu..." />
           </div>
         </section>
 
         <section className="col-span-6 flex flex-col relative">
-          <div className="bg-gradient-to-br from-slate-700/80 to-slate-800/80 backdrop-blur-xl rounded-3xl border border-white/15 shadow-2xl shadow-cyan-500/30 flex flex-col h-full overflow-hidden">
+          <div className="bg-gradient-to-br from-slate-700/85 to-slate-800/85 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl shadow-cyan-500/30 flex flex-col h-full overflow-hidden">
             <div className="px-10 py-6 bg-slate-900/60 border-b border-cyan-400/30 flex justify-between items-center">
               <span className="text-base font-black text-emerald-300 uppercase italic">PREVIEW KẾT QUẢ</span>
               <div className="relative">
