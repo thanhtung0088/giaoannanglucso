@@ -10,7 +10,7 @@ const App: React.FC = () => {
   const [aiResponse, setAiResponse] = useState("");
   const [showPromptMenu, setShowPromptMenu] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(localStorage.getItem("permanent_logo_v90"));
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(localStorage.getItem("permanent_logo_v91"));
 
   const [monHoc, setMonHoc] = useState("GD Công dân");
   const [khoiLop, setKhoiLop] = useState("Lớp 6");
@@ -25,11 +25,11 @@ const App: React.FC = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // XỬ LÝ CHỌN FILE (FIX LỖI NÚT +)
+  // XỬ LÝ CHỌN FILE (ĐẢM BẢO KHÔNG BỊ ĐƠ)
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
-      setSelectedFiles(prev => [...prev, ...newFiles].slice(0, 10)); // Cho phép tối đa 10 file
+      setSelectedFiles(prev => [...prev, ...newFiles].slice(0, 10));
     }
   };
 
@@ -39,7 +39,7 @@ const App: React.FC = () => {
       reader.onload = (event) => {
         const base64 = event.target?.result as string;
         setAvatarUrl(base64);
-        localStorage.setItem("permanent_logo_v90", base64);
+        localStorage.setItem("permanent_logo_v91", base64);
       };
       reader.readAsDataURL(e.target.files[0]);
     }
@@ -70,13 +70,13 @@ const App: React.FC = () => {
 
   if (!isLoggedIn) {
     return (
-      <div className="h-screen bg-slate-900 flex items-center justify-center p-6 italic">
+      <div className="h-screen bg-slate-900 flex items-center justify-center p-6 italic font-sans">
         <div className="bg-slate-800 p-12 rounded-3xl border-2 border-emerald-500 shadow-2xl w-full max-w-md space-y-8 text-center">
-          <h1 className="text-white text-3xl font-black uppercase tracking-tighter text-emerald-500">HỆ THỐNG V90.0</h1>
-          <button onClick={() => setIsLoggedIn(true)} className="w-full py-4 bg-white text-slate-900 rounded-xl font-black flex items-center justify-center gap-3 shadow-xl hover:scale-105 transition-transform">
+          <h1 className="text-white text-3xl font-black uppercase tracking-tighter text-emerald-500">HỆ THỐNG V91.0</h1>
+          <button onClick={() => setIsLoggedIn(true)} className="w-full py-4 bg-white text-slate-900 rounded-xl font-black flex items-center justify-center gap-3 shadow-xl hover:scale-105 transition-transform italic">
              <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" className="w-6 h-6" /> Đăng nhập Google
           </button>
-          <p className="text-slate-500 text-[10px] uppercase font-bold">Hỗ trợ kỹ thuật: 0916033681</p>
+          <p className="text-slate-500 text-[10px] uppercase font-bold tracking-widest">Hỗ trợ: 0916033681</p>
         </div>
       </div>
     );
@@ -86,24 +86,24 @@ const App: React.FC = () => {
     <div className="h-screen bg-slate-600 text-slate-100 overflow-hidden flex flex-col font-sans italic relative">
       <header className="h-28 bg-emerald-700 px-10 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
         <div className="flex items-center gap-6 w-1/4">
-          <div onClick={() => document.getElementById('avatar-input')?.click()} className="w-20 h-20 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:border-emerald-400">
+          <div onClick={() => document.getElementById('avatar-input')?.click()} className="w-20 h-20 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:border-emerald-400 transition-all">
              {avatarUrl ? <img src={avatarUrl} className="w-full h-full object-cover" /> : <span className="text-[10px] text-white font-black">LOGO</span>}
              <input type="file" id="avatar-input" className="hidden" accept="image/*" onChange={handleAvatarChange} />
           </div>
           <div>
-            <h1 className="text-white text-lg font-black uppercase leading-none">Năng lực số V90</h1>
+            <h1 className="text-white text-lg font-black uppercase leading-none">Năng lực số V91</h1>
             <p className="text-[9px] font-bold text-emerald-200 uppercase mt-1 italic">GV: NGUYỄN THANH TÙNG</p>
           </div>
         </div>
 
         <div className="flex-1 flex justify-center">
           <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-12 py-3 rounded-2xl shadow-[0_0_20px_rgba(251,191,36,0.6)] border-2 border-yellow-300">
-             <h2 className="text-white text-3xl font-black uppercase italic animate-pulse">Chào mừng quý thầy cô !</h2>
+             <h2 className="text-white text-3xl font-black uppercase italic animate-pulse drop-shadow-md">Chào mừng quý thầy cô !</h2>
           </div>
         </div>
 
         <div className="flex gap-4 w-1/4 justify-end">
-           <button onClick={() => setShowUpgradeModal(true)} className="bg-yellow-400 text-slate-900 px-6 py-3 rounded-xl font-black text-xs uppercase shadow-xl border-b-4 border-yellow-700">🚀 Nâng cấp</button>
+           <button onClick={() => setShowUpgradeModal(true)} className="bg-yellow-400 text-slate-900 px-6 py-3 rounded-xl font-black text-xs uppercase shadow-xl border-b-4 border-yellow-700 hover:bg-yellow-300 transition-colors">🚀 Nâng cấp</button>
         </div>
       </header>
 
@@ -122,19 +122,19 @@ const App: React.FC = () => {
             )}
           </div>
 
-          {/* FIX NÚT DẤU + BỊ ĐƠ */}
           <div className="bg-[#1e293b] rounded-3xl border border-slate-500 flex flex-col flex-1 overflow-hidden shadow-2xl min-h-[180px]">
             <div className="bg-slate-900 px-6 py-3 border-b border-slate-700 text-emerald-400 font-black text-xs uppercase italic">📁 HÀNH TRANG (+)</div>
             <div className="p-4 flex flex-col h-full bg-slate-800/40">
-              <div onClick={() => fileInputRef.current?.click()} className="h-12 border-2 border-dashed border-emerald-500/50 rounded-xl flex items-center justify-center cursor-pointer mb-2 bg-slate-900 hover:bg-emerald-900/20 transition-all">
-                <span className="text-3xl text-emerald-500 font-black">+</span>
+              {/* NÚT + ĐÃ FIX HẾT ĐƠ */}
+              <div onClick={() => fileInputRef.current?.click()} className="h-14 border-2 border-dashed border-emerald-500/50 rounded-2xl flex items-center justify-center cursor-pointer mb-2 bg-slate-900 hover:bg-emerald-900/20 hover:border-emerald-400 transition-all group">
+                <span className="text-3xl text-emerald-500 font-black group-hover:scale-125 transition-transform">+</span>
                 <input type="file" ref={fileInputRef} className="hidden" multiple onChange={handleFileSelect} />
               </div>
-              <div className="flex-1 overflow-y-auto space-y-1 custom-scrollbar">
+              <div className="flex-1 overflow-y-auto space-y-1 custom-scrollbar px-1">
                 {selectedFiles.map((f, i) => (
                   <div key={i} className="bg-slate-900 p-2 rounded-lg border border-slate-700 text-[9px] flex justify-between italic text-emerald-300">
-                    <span className="truncate w-32">📄 {f.name}</span>
-                    <button onClick={() => setSelectedFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-red-500 font-black">✕</button>
+                    <span className="truncate w-32 font-bold">📄 {f.name}</span>
+                    <button onClick={() => setSelectedFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-red-500 font-black px-1">✕</button>
                   </div>
                 ))}
               </div>
@@ -156,7 +156,7 @@ const App: React.FC = () => {
         <section className="col-span-6 flex flex-col relative">
           <div className="bg-[#1e293b] rounded-3xl border border-slate-500 flex flex-col h-full shadow-2xl overflow-hidden">
              <div className="px-10 py-5 bg-slate-900 border-b border-slate-700 flex justify-between items-center">
-               <span className="text-xs font-black text-emerald-500 uppercase underline italic">Preview Kết Quả Chuẩn Word</span>
+               <span className="text-xs font-black text-emerald-500 uppercase underline italic">Preview Soạn Bài Chuẩn Word</span>
                <button onClick={() => saveAs(new Blob([aiResponse], {type:'text/plain'}), 'SoanGiang.doc')} className="px-8 py-3 bg-emerald-600 text-white rounded-xl text-xs font-black uppercase shadow-xl border-b-4 border-emerald-900 italic">♻️ XUẤT FILE</button>
              </div>
              <div className="flex-1 bg-white p-10 overflow-y-auto italic text-slate-900 render-content">
@@ -166,47 +166,44 @@ const App: React.FC = () => {
         </section>
       </main>
 
-      {/* MODAL NÂNG CẤP - SĐT MỚI 0916033681 */}
+      {/* MODAL NÂNG CẤP - DONGA BANK - 916033681 */}
       {showUpgradeModal && (
-        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[3000] p-4 italic">
-          <div className="bg-slate-800 border-4 border-yellow-500 rounded-3xl p-10 max-w-4xl w-full relative">
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[3000] p-4 italic font-sans">
+          <div className="bg-slate-800 border-4 border-yellow-500 rounded-3xl p-10 max-w-4xl w-full relative shadow-[0_0_50px_rgba(234,179,8,0.3)]">
             <button onClick={() => setShowUpgradeModal(false)} className="absolute top-4 right-6 text-white text-3xl font-black">✕</button>
-            <h2 className="text-yellow-400 text-3xl font-black text-center uppercase mb-8 tracking-widest">BẢNG GIÁ & THANH TOÁN CHÍNH CHỦ</h2>
+            <h2 className="text-yellow-400 text-3xl font-black text-center uppercase mb-8 tracking-widest">THÔNG TIN THANH TOÁN CHÍNH CHỦ</h2>
             
             <div className="grid grid-cols-3 gap-6 mb-10">
                <div className="bg-slate-900 p-6 rounded-2xl border border-slate-700 text-center space-y-3">
                  <h3 className="text-white font-black text-lg uppercase">Gói FREE</h3>
                  <div className="text-3xl font-black text-white">0đ</div>
-                 <p className="text-[9px] text-slate-400 italic">10 giáo án/tháng</p>
                </div>
                <div className="bg-slate-900 p-6 rounded-2xl border-2 border-emerald-500 text-center space-y-3 transform scale-110 shadow-2xl">
                  <h3 className="text-emerald-400 font-black text-lg uppercase">PREMIUM</h3>
                  <div className="text-3xl font-black text-white">199k<span className="text-xs">/tháng</span></div>
-                 <p className="text-[9px] text-slate-400 italic">Soạn full 4 loại bài dạy</p>
                </div>
                <div className="bg-slate-900 p-6 rounded-2xl border-2 border-orange-500 text-center space-y-3">
                  <h3 className="text-orange-500 font-black text-lg uppercase">Gói PRO AI</h3>
                  <div className="text-3xl font-black text-white">499k<span className="text-xs">/năm</span></div>
-                 <p className="text-[9px] text-slate-400 italic">Giáo án tích hợp nâng cao</p>
                </div>
             </div>
 
             <div className="border-t border-slate-700 pt-8 grid grid-cols-2 gap-10">
                <div className="space-y-4">
-                 <p className="text-sm text-emerald-400 font-black uppercase italic">💳 Thông tin thanh toán:</p>
-                 <div className="bg-slate-900 p-6 rounded-2xl border-2 border-slate-600">
-                    <p className="text-white text-sm font-bold">NGÂN HÀNG: <span className="text-yellow-400 uppercase tracking-widest">Agribank</span></p>
-                    <p className="text-white text-sm font-bold">CHỦ TK: <span className="text-yellow-400 uppercase tracking-widest">Nguyễn Thanh Tùng</span></p>
-                    <p className="text-emerald-400 text-2xl font-black tracking-widest mt-2">5500 2055 35147</p>
+                 <p className="text-sm text-emerald-400 font-black uppercase italic">💳 Thông tin ngân hàng:</p>
+                 <div className="bg-slate-900 p-6 rounded-2xl border-2 border-slate-600 shadow-inner">
+                    <p className="text-white text-sm font-bold mb-2 uppercase italic tracking-wider">NGÂN HÀNG: <span className="text-yellow-400">DONGA BANK</span></p>
+                    <p className="text-white text-sm font-bold mb-2 uppercase italic tracking-wider">CHỦ TK: <span className="text-yellow-400">Nguyễn Thanh Tùng</span></p>
+                    <p className="text-emerald-400 text-3xl font-black tracking-[0.2em] mt-2">916033681</p>
                  </div>
-                 <p className="text-[10px] text-orange-400 font-black italic uppercase">Hotline: 0916033681 (Zalo)</p>
+                 <p className="text-[10px] text-orange-400 font-black italic uppercase">Hotline Zalo hỗ trợ: 0916033681</p>
                </div>
-               <div className="flex flex-col items-center justify-center gap-4 bg-white/5 rounded-2xl p-6">
-                  <div className="w-44 h-44 bg-white p-2 rounded-xl">
-                    {/* QR Zalo chính xác của Thầy với SĐT mới */}
+               <div className="flex flex-col items-center justify-center gap-4 bg-white/5 rounded-2xl p-6 border border-white/10">
+                  <div className="w-44 h-44 bg-white p-2 rounded-xl shadow-white/20 shadow-lg">
+                    {/* QR Zalo dẫn về số 0916033681 */}
                     <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://zalo.me/0916033681`} className="w-full h-full" alt="QR Zalo" />
                   </div>
-                  <p className="text-[10px] text-slate-300 font-black uppercase italic">Quét QR Zalo hỗ trợ (SĐT: 0916033681)</p>
+                  <p className="text-[10px] text-slate-300 font-black uppercase italic">Quét mã QR Zalo (Thanh Tùng)</p>
                </div>
             </div>
           </div>
