@@ -20,7 +20,6 @@ const App: React.FC = () => {
   const [showPromptMenu, setShowPromptMenu] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   
-  // LOGO CHỐT CHẾT - LƯU TRỮ VĨNH VIỄN
   const [avatarUrl, setAvatarUrl] = useState<string | null>(localStorage.getItem("permanent_logo_fixed_v2"));
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +34,6 @@ const App: React.FC = () => {
     }
   };
 
-  // KHÓA CỨNG 4 NỘI DUNG PROMPT CHUẨN CỦA THẦY TÙNG
   const getHardcodedPrompt = (type: string) => {
     const bai = tenBai || "[Tên bài dạy]";
     const thongTin = `cho môn ${monHoc}, ${khoiLop}, bài "${bai}" (${soTiet} tiết), đối tượng học sinh ${doiTuongHS}.`;
@@ -84,7 +82,6 @@ Trình bày ngôn ngữ sư phạm chính quy, tuyệt đối không dùng dấu
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    // MÀU NỀN SÁNG HƠN (Slate-600)
     <div className="h-screen bg-slate-600 text-slate-100 overflow-hidden flex flex-col font-sans">
       <header className="h-32 bg-emerald-700 px-10 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
         <div className="flex items-center gap-6">
@@ -101,14 +98,13 @@ Trình bày ngôn ngữ sư phạm chính quy, tuyệt đối không dùng dấu
         <div className="bg-orange-600 px-10 py-3 rounded-2xl text-white font-black text-2xl shadow-2xl uppercase animate-pulse border-2 border-orange-400">Chào mừng quý thầy cô !</div>
 
         <div className="flex gap-4">
-           {/* KÍCH HOẠT 2 NÚT GÓC PHẢI */}
-           <button onClick={() => alert("Tính năng Quay màn hình đang khởi tạo...")} title="Quay màn hình" className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl hover:bg-red-600 transition-colors">📹</button>
-           <button onClick={() => window.open('https://www.google.com', '_blank')} title="Tìm kiếm" className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl hover:bg-blue-600 transition-colors">🔍</button>
+           <button onClick={() => alert("Hệ thống đang mở trình quay màn hình...")} title="Quay màn hình" className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl hover:bg-red-600 transition-colors">📹</button>
+           {/* THAY KÍNH LÚP BẰNG QUÉT MÃ QR */}
+           <button onClick={() => alert("Đang khởi động Camera quét mã QR...")} title="Quét mã QR" className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl hover:bg-blue-600 transition-colors">🔳</button>
         </div>
       </header>
 
       <main className="flex-1 grid grid-cols-12 gap-6 p-6 overflow-hidden">
-        {/* SIDEBAR TRÁI - TĂNG SIZE CHỮ */}
         <aside className="col-span-3 space-y-6 flex flex-col min-h-0">
           <div className="bg-[#1e293b] rounded-3xl p-6 border border-slate-500 shadow-2xl space-y-4 shrink-0">
             <h2 className="text-xs font-black text-emerald-400 uppercase italic tracking-widest">⚙️ Thiết lập bài dạy</h2>
@@ -161,7 +157,6 @@ Trình bày ngôn ngữ sư phạm chính quy, tuyệt đối không dùng dấu
           </button>
         </aside>
 
-        {/* THẺ WORKSPACE - TĂNG SIZE CHỮ */}
         <section className="col-span-3 flex flex-col min-h-0">
           <div className="bg-[#1e293b] rounded-3xl border border-slate-500 flex flex-col h-full shadow-2xl overflow-hidden">
              <div className="px-6 py-4 bg-slate-900 border-b border-slate-700 text-[10px] font-black text-orange-500 uppercase italic">Thẻ Workspace</div>
@@ -169,7 +164,6 @@ Trình bày ngôn ngữ sư phạm chính quy, tuyệt đối không dùng dấu
           </div>
         </section>
 
-        {/* BẢNG PREVIEW CHUYÊN DỤNG */}
         <section className="col-span-6 flex flex-col min-h-0 relative">
           <div className="bg-[#1e293b] rounded-3xl border border-slate-500 flex flex-col h-full shadow-2xl overflow-hidden">
              <div className="px-10 py-5 bg-slate-900 border-b border-slate-700 flex justify-between items-center shrink-0">
@@ -198,8 +192,8 @@ Trình bày ngôn ngữ sư phạm chính quy, tuyệt đối không dùng dấu
         </section>
       </main>
 
-      {/* TRỢ LÝ AI DỄ THƯƠNG GÓC PHẢI */}
-      <div className="fixed bottom-10 right-10 z-[1000] animate-bounce cursor-pointer group">
+      {/* KÍCH HOẠT TRỢ LÝ AI GÓC PHẢI */}
+      <div onClick={() => alert("Chào Thầy Tùng! Trợ lý AI đang sẵn sàng hỗ trợ Thầy soạn giảng.")} className="fixed bottom-10 right-10 z-[1000] animate-bounce cursor-pointer group">
         <div className="w-20 h-20 bg-emerald-500 rounded-full shadow-2xl flex items-center justify-center border-4 border-white/30 hover:scale-125 transition-all">
            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" className="w-12 h-12" alt="AI Bot" />
         </div>
