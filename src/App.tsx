@@ -44,10 +44,68 @@ const App: React.FC = () => {
     const bai = tenBai || "[Tên bài dạy]";
     const thongTin = `cho môn ${monHoc}, ${khoiLop}, bài "${bai}" (${soTiet} tiết), đối tượng học sinh ${doiTuongHS}.`;
     
-    if (type === '5512') return `Bạn là chuyên gia xây dựng Kế hoạch bài dạy theo Chương trình GDPT 2018. Hãy soạn KẾ HOẠCH BÀI DẠY (KHBD) theo Công văn 5512/BGDĐT-GDTrH, Phụ lục 4 ${thongTin}. Yêu cầu bắt buộc: Đúng cấu trúc KHBD theo CV 5512 – Phụ lục 4. TÍCH HỢP: Năng lực số; Quyền con người; Lồng ghép Giáo dục Quốc phòng – An ninh; Học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh. Trình bày ngôn ngữ hành chính sư phạm, không dùng dấu sao (*).`;
-    if (type === 'ppt') return `Bạn là chuyên gia thiết kế bài giảng số. Hãy soạn BÀI GIẢNG TRÌNH CHIẾU (PowerPoint) phục vụ bài học ${thongTin}. Yêu cầu: Ít nhất 10 slide, bám sát KHBD, định hướng năng lực. Mỗi slide gồm: Tiêu đề; Nội dung ngắn gọn; Gợi ý hình ảnh minh họa.`;
-    if (type === '7991') return `Soạn ĐỀ KIỂM TRA chuẩn CV 7991 cho ${thongTin}. Gồm: Ma trận đề; Bảng đặc tả; Đề kiểm tra; Đáp án chi tiết.`;
-    if (type === 'ontap') return `Soạn ĐỀ CƯƠNG ÔN TẬP cho ${thongTin}. Gồm: Kiến thức trọng tâm; Kỹ năng cần đạt; Câu hỏi ôn luyện.`;
+    if (type === '5512') return `Bạn là chuyên gia xây dựng Kế hoạch bài dạy theo Chương trình GDPT 2018.
+
+Hãy soạn KẾ HOẠCH BÀI DẠY (KHBD) theo Công văn 5512/BGDĐT-GDTrH, Phụ lục 4 ${thongTin}, đảm bảo đầy đủ và đúng chuẩn.
+Yêu cầu bắt buộc:
+- Đúng cấu trúc KHBD theo CV 5512 – Phụ lục 4
+- Dạy học theo định hướng phát triển phẩm chất và năng lực
+- TÍCH HỢP:
+  * Năng lực số
+  * Quyền con người
+  * Lồng ghép Giáo dục Quốc phòng – An ninh
+  * Học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh
+Cấu trúc KHBD gồm:
+- Mục tiêu bài học (Phẩm chất, Năng lực chung, Năng lực đặc thù)
+- Thiết bị dạy học và học liệu
+- Tiến trình dạy học: (Hoạt động 1: Mở đầu; Hoạt động 2: Hình thành kiến thức; Hoạt động 3: Luyện tập; Hoạt động 4: Vận dụng)
+- Điều chỉnh – bổ sung (nếu có)
+Trình bày ngôn ngữ hành chính – sư phạm, đúng để in nộp hồ sơ chuyên môn.`;
+
+    if (type === 'ppt') return `Bạn là chuyên gia thiết kế bài giảng số và mỹ thuật sư phạm.
+
+Hãy soạn BÀI GIẢNG TRÌNH CHIẾU (PowerPoint) phục vụ bài học trên ${thongTin}, đảm bảo:
+Yêu cầu:
+- Ít nhất 10 slide
+- Nội dung bám sát KHBD
+- Dạy học theo định hướng phát triển năng lực
+- AI tự chọn màu sắc – bố cục đẹp – dễ nhìn
+- Phù hợp học sinh theo chương trình GDPT 2018
+Mỗi slide gồm:
+- Tiêu đề
+- Nội dung ngắn gọn (gạch đầu dòng)
+- Gợi ý hình ảnh / sơ đồ / biểu tượng minh họa
+Cấu trúc gợi ý:
+- Slide 1: Tiêu đề
+- Slide 2: Mục tiêu
+- Slide 3–8: Nội dung trọng tâm
+- Slide 9: Hoạt động – câu hỏi tương tác
+- Slide 10: Tổng kết – liên hệ thực tiễn`;
+
+    if (type === '7991') return `Bạn là chuyên gia ra đề và đánh giá học sinh theo định hướng phát triển năng lực.
+
+Hãy soạn ĐỀ KIỂM TRA theo Công văn 7991/BGDĐT-GDTrH ${thongTin}, đảm bảo:
+Yêu cầu:
+- Đúng ma trận và đặc tả theo CV 7991
+- Đánh giá mức độ nhận thức: Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao
+- Câu hỏi gắn với thực tiễn, năng lực, phẩm chất
+Sản phẩm gồm:
+- Ma trận đề
+- Bảng đặc tả
+- Đề kiểm tra
+- Đáp án – thang điểm chi tiết
+Ngôn ngữ chuẩn, dùng được cho kiểm tra định kỳ / giữa kỳ / cuối kỳ.`;
+
+    if (type === 'ontap') return `Bạn là giáo viên giàu kinh nghiệm, am hiểu chương trình GDPT 2018.
+
+Hãy soạn ĐỀ CƯƠNG ÔN TẬP cho học sinh ${thongTin}, đảm bảo:
+Yêu cầu:
+- Hệ thống kiến thức ngắn gọn – dễ nhớ
+- Phân chia rõ: Kiến thức trọng tâm, Kỹ năng cần đạt, Dạng bài thường gặp
+- Có câu hỏi gợi ý ôn luyện
+- Phù hợp đánh giá theo định hướng năng lực
+Trình bày mạch lạc, dễ in phát cho học sinh.`;
+
     return "";
   };
 
@@ -57,31 +115,17 @@ const App: React.FC = () => {
     setLoading(true); setAiResponse("");
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
-        systemInstruction: "Viết tiếng Việt chuẩn sư phạm. Không dùng dấu sao (*)."
-      });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const result = await model.generateContent(customPrompt);
       setAiResponse(result.response.text());
       confetti({ particleCount: 150, spread: 70 });
-    } catch (e: any) { setAiResponse("Lỗi: " + e.message); } finally { setLoading(false); }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files);
-      setSelectedFiles(prev => [...prev, ...filesArray]);
-    }
-  };
-
-  const removeFile = (index: number) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    } catch (e: any) { setAiResponse("Lỗi AI: " + e.message); } finally { setLoading(false); }
   };
 
   const handleAssistantChat = async () => {
     if (!chatInput.trim()) return;
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
-    if (!apiKey) return alert("Nhập API Key!");
+    if (!apiKey) return alert("Nhập API Key trước!");
     const newHistory = [...chatHistory, { role: "user", text: chatInput }];
     setChatHistory(newHistory);
     setChatInput("");
@@ -91,7 +135,9 @@ const App: React.FC = () => {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const result = await model.generateContent(chatInput);
       setChatHistory([...newHistory, { role: "ai", text: result.response.text() }]);
-    } catch (e) { setChatHistory([...newHistory, { role: "ai", text: "Lỗi kết nối!" }]); } finally { setIsChatLoading(false); }
+    } catch (e) {
+      setChatHistory([...newHistory, { role: "ai", text: "Lỗi kết nối. Thầy kiểm tra API Key nhé!" }]);
+    } finally { setIsChatLoading(false); }
   };
 
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [chatHistory]);
@@ -103,7 +149,7 @@ const App: React.FC = () => {
     <div className="h-screen bg-slate-600 text-slate-100 overflow-hidden flex flex-col font-sans">
       <header className="h-32 bg-emerald-700 px-10 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
         <div className="flex items-center gap-6">
-          <div onClick={() => avatarInputRef.current?.click()} className="w-24 h-24 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer shadow-xl">
+          <div onClick={() => avatarInputRef.current?.click()} className="w-24 h-24 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:scale-105 transition-all shadow-xl">
              {avatarUrl ? <img src={avatarUrl} className="w-full h-full object-cover" /> : <span className="text-xs text-white font-black uppercase">LOGO</span>}
              <input type="file" ref={avatarInputRef} className="hidden" accept="image/*" onChange={handleAvatarChange} />
           </div>
@@ -114,15 +160,15 @@ const App: React.FC = () => {
         </div>
         <div className="bg-orange-600 px-10 py-3 rounded-2xl text-white font-black text-2xl shadow-2xl uppercase animate-pulse border-2 border-orange-400">Chào mừng quý thầy cô !</div>
         <div className="flex gap-4">
-           <button onClick={() => alert("Mở Quay màn hình...")} className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl hover:bg-red-600 transition-colors">📹</button>
-           <button onClick={() => alert("Mở Quét mã QR...")} className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl hover:bg-blue-600 transition-colors">🔳</button>
+           <button onClick={() => alert("Mở trình quay màn hình...")} className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl hover:bg-red-600 transition-colors">📹</button>
+           <button onClick={() => alert("Mở quét mã QR...")} className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl hover:bg-blue-600 transition-colors">🔳</button>
         </div>
       </header>
 
       <main className="flex-1 grid grid-cols-12 gap-6 p-6 overflow-hidden">
         <aside className="col-span-3 space-y-6 flex flex-col min-h-0">
           <div className="bg-[#1e293b] rounded-3xl p-6 border border-slate-500 shadow-2xl space-y-4 shrink-0">
-            <h2 className="text-xs font-black text-emerald-400 uppercase italic">⚙️ Thiết lập bài dạy</h2>
+            <h2 className="text-xs font-black text-emerald-400 uppercase italic tracking-widest">⚙️ Thiết lập bài dạy</h2>
             <select value={monHoc} onChange={(e)=>setMonHoc(e.target.value)} className="w-full bg-slate-900 border border-slate-600 rounded-xl p-4 text-sm font-bold text-white outline-none">
               {dsMonHoc.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
@@ -154,20 +200,20 @@ const App: React.FC = () => {
             <div className="p-5 flex-1 flex flex-col overflow-hidden">
               <div onClick={() => fileInputRef.current?.click()} className="h-20 shrink-0 border-2 border-dashed border-slate-500 rounded-2xl flex items-center justify-center cursor-pointer mb-4 bg-slate-800/60 hover:border-emerald-500 transition-all">
                 <span className="text-4xl text-emerald-500 font-bold">+</span>
-                <input type="file" ref={fileInputRef} className="hidden" multiple onChange={handleFileChange} />
+                <input type="file" ref={fileInputRef} className="hidden" multiple onChange={(e) => { if(e.target.files) setSelectedFiles(prev => [...prev, ...Array.from(e.target.files!)]); }} />
               </div>
-              <div className="flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-1">
+              <div className="flex-1 overflow-y-auto space-y-2 custom-scrollbar">
                 {selectedFiles.map((f, i) => (
-                  <div key={`${f.name}-${i}`} className="bg-slate-900 p-3 rounded-xl border border-slate-700 text-[10px] flex justify-between items-center italic animate-in fade-in slide-in-from-left-2">
+                  <div key={i} className="bg-slate-900 p-3 rounded-xl border border-slate-700 text-[10px] flex justify-between items-center italic">
                     <span className="truncate w-40 text-emerald-300 font-bold">📄 {f.name}</span>
-                    <button onClick={() => removeFile(i)} className="text-red-500 font-black hover:text-red-400">✕</button>
+                    <button onClick={() => setSelectedFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-red-500 font-black">✕</button>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          <button onClick={handleSoanBai} disabled={loading} className="w-full py-8 rounded-3xl font-black text-lg uppercase bg-blue-600 hover:bg-blue-500 shadow-2xl border-b-4 border-blue-900 active:translate-y-1 transition-all">
+          <button onClick={handleSoanBai} disabled={loading} className="w-full py-8 rounded-3xl font-black text-lg uppercase bg-blue-600 hover:bg-blue-500 shadow-2xl border-b-4 border-blue-900 active:translate-y-1 transition-all italic">
             {loading ? "⌛ ĐANG SOẠN..." : "🚀 KÍCH HOẠT HỆ THỐNG"}
           </button>
         </aside>
@@ -186,9 +232,9 @@ const App: React.FC = () => {
                <button onClick={() => setShowExportMenu(!showExportMenu)} className="px-8 py-3 bg-emerald-600 text-white rounded-xl text-xs font-black uppercase shadow-xl border-b-4 border-emerald-900">♻️ XUẤT HỒ SƠ</button>
                {showExportMenu && (
                  <div className="absolute top-16 right-10 w-48 bg-slate-800 border border-slate-500 rounded-2xl shadow-2xl z-[100] overflow-hidden">
-                   <button onClick={() => {saveAs(new Blob([aiResponse]), 'KHBD.docx'); setShowExportMenu(false);}} className="w-full px-6 py-4 text-left text-[11px] font-black text-white hover:bg-blue-600 border-b border-slate-700">📄 FILE WORD</button>
-                   <button onClick={() => {saveAs(new Blob([aiResponse]), 'PPT_Noidung.docx'); setShowExportMenu(false);}} className="w-full px-6 py-4 text-left text-[11px] font-black text-white hover:bg-orange-600 border-b border-slate-700">💻 NỘI DUNG PPT</button>
-                   <button onClick={() => {saveAs(new Blob([aiResponse]), 'KHBD.pdf'); setShowExportMenu(false);}} className="w-full px-6 py-4 text-left text-[11px] font-black text-white hover:bg-red-600">📕 FILE PDF</button>
+                   <button onClick={() => {saveAs(new Blob([aiResponse]), 'KHBD.docx'); setShowExportMenu(false);}} className="w-full px-6 py-4 text-left text-[11px] font-black text-white hover:bg-blue-600 border-b border-slate-700 italic">📄 FILE WORD</button>
+                   <button onClick={() => {saveAs(new Blob([aiResponse]), 'PPT_Noidung.docx'); setShowExportMenu(false);}} className="w-full px-6 py-4 text-left text-[11px] font-black text-white hover:bg-orange-600 border-b border-slate-700 italic">💻 NỘI DUNG PPT</button>
+                   <button onClick={() => {saveAs(new Blob([aiResponse]), 'HOSO.pdf'); setShowExportMenu(false);}} className="w-full px-6 py-4 text-left text-[11px] font-black text-white hover:bg-red-600 italic">📕 FILE PDF</button>
                  </div>
                )}
              </div>
@@ -199,7 +245,7 @@ const App: React.FC = () => {
                      <p className="font-black text-lg text-orange-400 uppercase">Đang kiến tạo giáo án...</p>
                   </div>
                 ) : (
-                  <div className="text-xl leading-loose text-slate-100 whitespace-pre-wrap font-medium">{aiResponse || "Sẵn sàng..."}</div>
+                  <div className="text-xl leading-loose text-slate-100 whitespace-pre-wrap font-medium">{aiResponse || "Hệ thống sẵn sàng..."}</div>
                 )}
              </div>
           </div>
@@ -208,26 +254,26 @@ const App: React.FC = () => {
 
       {isChatOpen && (
         <div className="fixed bottom-32 right-10 w-96 h-[500px] bg-slate-800 border-4 border-emerald-600 rounded-3xl shadow-2xl z-[2000] flex flex-col overflow-hidden animate-in slide-in-from-bottom-5">
-           <div className="bg-emerald-600 p-4 flex justify-between items-center text-white font-black uppercase text-xs"><span>Trợ lý AI</span><button onClick={() => setIsChatOpen(false)}>✕</button></div>
+           <div className="bg-emerald-600 p-4 flex justify-between items-center text-white font-black uppercase text-[10px] tracking-widest"><span>Trợ lý AI Thầy Tùng</span><button onClick={() => setIsChatOpen(false)}>✕</button></div>
            <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-900 custom-scrollbar">
               {chatHistory.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                   <div className={`max-w-[80%] p-3 rounded-2xl text-[11px] font-bold ${msg.role === 'user' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-emerald-300'}`}>{msg.text}</div>
+                   <div className={`max-w-[80%] p-3 rounded-2xl text-[11px] font-bold ${msg.role === 'user' ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-700 text-emerald-300 border border-emerald-900'}`}>{msg.text}</div>
                 </div>
               ))}
-              {isChatLoading && <div className="text-[10px] text-emerald-500 animate-pulse font-black italic">Đang trả lời...</div>}
+              {isChatLoading && <div className="text-[10px] text-emerald-500 animate-pulse font-black italic">Đang phân tích dữ liệu...</div>}
               <div ref={chatEndRef} />
            </div>
            <div className="p-4 bg-slate-800 flex gap-2 border-t border-slate-700">
-              <input type="text" value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAssistantChat()} placeholder="Hỏi AI..." className="flex-1 bg-slate-900 rounded-xl px-4 py-2 text-xs text-white outline-none border border-slate-600" />
-              <button onClick={handleAssistantChat} className="bg-emerald-600 px-4 rounded-xl text-white font-black text-xs">GỬI</button>
+              <input type="text" value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAssistantChat()} placeholder="Gõ câu hỏi tại đây..." className="flex-1 bg-slate-900 rounded-xl px-4 py-2 text-xs text-white outline-none border border-slate-600 focus:ring-2 ring-emerald-500" />
+              <button onClick={handleAssistantChat} className="bg-emerald-600 px-4 rounded-xl text-white font-black text-xs hover:bg-emerald-500 shadow-lg">GỬI</button>
            </div>
         </div>
       )}
 
       <div onClick={() => setIsChatOpen(!isChatOpen)} className="fixed bottom-10 right-10 z-[2001] animate-bounce cursor-pointer">
-        <div className="w-20 h-20 bg-emerald-500 rounded-full shadow-2xl flex items-center justify-center border-4 border-white/30 hover:scale-110 transition-all">
-           <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" className="w-12 h-12" alt="AI" />
+        <div className="w-20 h-20 bg-emerald-500 rounded-full shadow-2xl flex items-center justify-center border-4 border-white/30 hover:scale-125 transition-all">
+           <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" className="w-12 h-12" alt="AI Bot" />
         </div>
       </div>
     </div>
