@@ -26,7 +26,7 @@ const App: React.FC = () => {
   const [isChatLoading, setIsChatLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(localStorage.getItem("permanent_logo_v74"));
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(localStorage.getItem("permanent_logo_v75"));
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -34,7 +34,7 @@ const App: React.FC = () => {
       reader.onload = (event) => {
         const base64 = event.target?.result as string;
         setAvatarUrl(base64);
-        localStorage.setItem("permanent_logo_v74", base64);
+        localStorage.setItem("permanent_logo_v75", base64);
       };
       reader.readAsDataURL(e.target.files[0]);
     }
@@ -115,7 +115,7 @@ Trình bày mạch lạc, dễ in phát cho học sinh.`;
       const result = await model.generateContent(customPrompt);
       setAiResponse(result.response.text());
       confetti({ particleCount: 150, spread: 70 });
-    } catch (e: any) { setAiResponse("Lỗi: " + e.message); } finally { setLoading(false); }
+    } catch (e: any) { setAiResponse("Lỗi AI: " + e.message); } finally { setLoading(false); }
   };
 
   const handleAssistantChat = async () => {
@@ -154,15 +154,15 @@ Trình bày mạch lạc, dễ in phát cho học sinh.`;
         </div>
         <div className="bg-orange-600 px-10 py-3 rounded-2xl text-white font-black text-2xl shadow-2xl uppercase border-2 border-orange-400">Chào mừng quý thầy cô !</div>
         <div className="flex gap-4">
-           <button className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl">📹</button>
-           <button className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl">🔳</button>
+           <button className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl hover:bg-red-600 transition-colors">📹</button>
+           <button className="bg-white/10 p-4 rounded-2xl border-2 border-white/20 text-2xl hover:bg-blue-600 transition-colors">🔳</button>
         </div>
       </header>
 
       <main className="flex-1 grid grid-cols-12 gap-6 p-6 overflow-hidden">
         <aside className="col-span-3 space-y-6 flex flex-col min-h-0">
           <div className="bg-[#1e293b] rounded-3xl p-6 border border-slate-500 shadow-2xl space-y-4 shrink-0">
-            <h2 className="text-xs font-black text-emerald-400 uppercase italic underline">⚙️ Thiết lập bài dạy</h2>
+            <h2 className="text-xs font-black text-emerald-400 uppercase italic">⚙️ Thiết lập bài dạy</h2>
             <select value={monHoc} onChange={(e)=>setMonHoc(e.target.value)} className="w-full bg-slate-900 border border-slate-600 rounded-xl p-4 text-sm font-bold text-white outline-none">
               {dsMonHoc.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
@@ -177,40 +177,45 @@ Trình bày mạch lạc, dễ in phát cho học sinh.`;
               </select>
             </div>
             <div className="relative">
-              <button onClick={() => setShowPromptMenu(!showPromptMenu)} className="w-full py-5 bg-orange-600 text-white rounded-2xl font-black text-xs uppercase shadow-xl hover:bg-orange-500">📜 LỆNH PROMPT MẪU ▼</button>
+              <button onClick={() => setShowPromptMenu(!showPromptMenu)} className="w-full py-5 bg-orange-600 text-white rounded-2xl font-black text-xs uppercase shadow-xl hover:bg-orange-500 transition-all">📜 LỆNH PROMPT MẪU ▼</button>
               {showPromptMenu && (
-                <div className="absolute top-full left-0 w-full bg-slate-800 border-2 border-slate-500 rounded-2xl mt-2 overflow-hidden z-[100] shadow-2xl">
-                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('5512')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] text-white border-b border-slate-700 font-black italic uppercase">📑 SOẠN KHBD CV 5512</button>
-                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('ppt')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] text-white border-b border-slate-700 font-black italic uppercase">💻 BÀI GIẢNG PPT</button>
-                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('7991')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] text-white border-b border-slate-700 font-black italic uppercase">✍️ ĐỀ KIỂM TRA 7991</button>
-                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('ontap')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] text-white font-black italic uppercase">📚 ĐỀ CƯƠNG ÔN TẬP</button>
+                <div className="absolute top-full left-0 w-full bg-slate-800 border-2 border-slate-500 rounded-2xl mt-2 overflow-hidden z-[100] shadow-2xl font-black italic">
+                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('5512')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] text-white border-b border-slate-700 uppercase italic">📑 SOẠN KHBD CV 5512</button>
+                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('ppt')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] text-white border-b border-slate-700 uppercase italic">💻 BÀI GIẢNG PPT</button>
+                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('7991')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] text-white border-b border-slate-700 uppercase italic">✍️ ĐỀ KIỂM TRA 7991</button>
+                  <button onClick={() => {setCustomPrompt(getHardcodedPrompt('ontap')); setShowPromptMenu(false);}} className="w-full text-left px-6 py-4 hover:bg-emerald-600 text-[10px] text-white uppercase italic">📚 ĐỀ CƯƠNG ÔN TẬP</button>
                 </div>
               )}
             </div>
           </div>
 
-          {/* RESET LẠI CẤU TRÚC HIỂN THỊ FILE */}
-          <div className="bg-[#1e293b] rounded-3xl border border-slate-500 flex flex-col h-[300px] overflow-hidden shadow-2xl shrink-0">
+          {/* KHÓA CỨNG KHUNG HIỂN THỊ 5 FILE */}
+          <div className="bg-[#1e293b] rounded-3xl border border-slate-500 flex flex-col flex-1 overflow-hidden shadow-2xl shrink-0 min-h-[350px]">
             <div className="bg-slate-900 px-6 py-4 border-b border-slate-700 text-emerald-400 font-black italic text-xs uppercase underline">📁 HỒ SƠ TÀI LIỆU (+)</div>
-            <div className="p-4 flex flex-col h-full bg-slate-800/40">
-              <div onClick={() => fileInputRef.current?.click()} className="h-16 shrink-0 border-2 border-dashed border-slate-500 rounded-2xl flex items-center justify-center cursor-pointer mb-4 hover:border-emerald-500 bg-slate-900/50 transition-all">
-                <span className="text-3xl text-emerald-500 font-bold">+</span>
-                <input type="file" ref={fileInputRef} className="hidden" multiple onChange={(e) => { if(e.target.files) setSelectedFiles(prev => [...prev, ...Array.from(e.target.files!)]); }} />
+            <div className="p-4 flex flex-col h-full">
+              <div onClick={() => fileInputRef.current?.click()} className="h-20 shrink-0 border-2 border-dashed border-slate-500 rounded-2xl flex items-center justify-center cursor-pointer mb-4 bg-slate-900/50 hover:border-emerald-500 transition-all">
+                <span className="text-4xl text-emerald-500 font-bold">+</span>
+                <input type="file" ref={fileInputRef} className="hidden" multiple onChange={(e) => { 
+                  if(e.target.files) {
+                    const newFiles = Array.from(e.target.files);
+                    setSelectedFiles(prev => [...prev, ...newFiles].slice(0, 5)); // GIỚI HẠN TỐI ĐA 5 FILE
+                  }
+                }} />
               </div>
-              <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+              <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
                 {selectedFiles.length > 0 ? selectedFiles.map((f, i) => (
-                  <div key={i} className="bg-slate-900 p-3 rounded-xl border border-slate-700 text-[10px] flex justify-between items-center italic animate-in slide-in-from-left-2">
-                    <span className="truncate w-44 text-emerald-300 font-bold">📄 {f.name}</span>
-                    <button onClick={() => setSelectedFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-red-500 font-black hover:text-red-400 ml-2">✕</button>
+                  <div key={i} className="bg-slate-900 p-4 rounded-xl border border-slate-700 text-[11px] flex justify-between items-center italic animate-in fade-in slide-in-from-left-2">
+                    <span className="truncate w-40 text-emerald-300 font-black tracking-tight">📄 {f.name}</span>
+                    <button onClick={() => setSelectedFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-red-500 font-black hover:text-red-400 px-2">✕</button>
                   </div>
                 )) : (
-                  <div className="h-full flex items-center justify-center text-[10px] text-slate-500 italic uppercase font-bold opacity-50">Sẵn sàng đính kèm...</div>
+                  <div className="h-full flex flex-col items-center justify-center text-[10px] text-slate-500 italic uppercase font-black opacity-40">Chưa có tài liệu đính kèm</div>
                 )}
               </div>
             </div>
           </div>
 
-          <button onClick={handleSoanBai} disabled={loading} className="w-full py-7 rounded-3xl font-black text-lg uppercase bg-blue-600 hover:bg-blue-500 shadow-2xl border-b-4 border-blue-900 active:translate-y-1 transition-all italic">
+          <button onClick={handleSoanBai} disabled={loading} className="w-full py-8 rounded-3xl font-black text-lg uppercase bg-blue-600 hover:bg-blue-500 shadow-2xl border-b-4 border-blue-900 active:translate-y-1 transition-all italic">
             {loading ? "⌛ ĐANG SOẠN..." : "🚀 KÍCH HOẠT HỆ THỐNG"}
           </button>
         </aside>
@@ -239,7 +244,7 @@ Trình bày mạch lạc, dễ in phát cho học sinh.`;
                 {loading ? (
                   <div className="h-full flex flex-col items-center justify-center space-y-8 animate-pulse">
                      <div className="w-16 h-16 border-8 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                     <p className="font-black text-lg text-orange-400 uppercase italic">Đang kiến tạo giáo án...</p>
+                     <p className="font-black text-lg text-orange-400 uppercase italic">Đang soạn giáo án...</p>
                   </div>
                 ) : (
                   <div className="text-xl leading-loose text-slate-100 whitespace-pre-wrap font-medium">{aiResponse || "Hệ thống đã sẵn sàng..."}</div>
@@ -249,6 +254,12 @@ Trình bày mạch lạc, dễ in phát cho học sinh.`;
         </section>
       </main>
 
+      <div onClick={() => setIsChatOpen(!isChatOpen)} className="fixed bottom-10 right-10 z-[2001] animate-bounce cursor-pointer hover:scale-110 transition-all">
+        <div className="w-20 h-20 bg-emerald-500 rounded-full shadow-2xl flex items-center justify-center border-4 border-white/30">
+           <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" className="w-12 h-12" alt="AI Bot" />
+        </div>
+      </div>
+      
       {isChatOpen && (
         <div className="fixed bottom-32 right-10 w-96 h-[500px] bg-slate-800 border-4 border-emerald-600 rounded-3xl shadow-2xl z-[2000] flex flex-col overflow-hidden animate-in slide-in-from-bottom-5">
            <div className="bg-emerald-600 p-4 flex justify-between items-center text-white font-black uppercase text-[10px] tracking-widest"><span>Trợ lý AI Thầy Tùng</span><button onClick={() => setIsChatOpen(false)}>✕</button></div>
@@ -261,17 +272,11 @@ Trình bày mạch lạc, dễ in phát cho học sinh.`;
               <div ref={chatEndRef} />
            </div>
            <div className="p-4 bg-slate-800 flex gap-2 border-t border-slate-700">
-              <input type="text" value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAssistantChat()} placeholder="Gõ câu hỏi..." className="flex-1 bg-slate-900 rounded-xl px-4 py-2 text-xs text-white outline-none border border-slate-600" />
+              <input type="text" value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAssistantChat()} placeholder="Hỏi trợ lý..." className="flex-1 bg-slate-900 rounded-xl px-4 py-2 text-xs text-white outline-none border border-slate-600" />
               <button onClick={handleAssistantChat} className="bg-emerald-600 px-4 rounded-xl text-white font-black text-xs">GỬI</button>
            </div>
         </div>
       )}
-
-      <div onClick={() => setIsChatOpen(!isChatOpen)} className="fixed bottom-10 right-10 z-[2001] animate-bounce cursor-pointer hover:scale-110 transition-all">
-        <div className="w-20 h-20 bg-emerald-500 rounded-full shadow-2xl flex items-center justify-center border-4 border-white/30">
-           <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" className="w-12 h-12" alt="AI Bot" />
-        </div>
-      </div>
     </div>
   );
 };
