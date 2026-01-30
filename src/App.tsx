@@ -216,7 +216,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setIsLoggedIn(false);
-    window.location.href = window.location.origin + '/'; // Force reload về gốc để reset sạch state
+    window.location.href = window.location.origin;
   };
 
   return (
@@ -232,7 +232,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             <p className="text-base font-bold text-emerald-200 uppercase mt-2">NĂNG LỰC SỐ THẾ HỆ MỚI</p>
           </div>
         </div>
-        <div className="flex-1 flex justify-center ml-10">
+        <div className="flex-1 flex justify-center ml-16"> {/* Dời sang trái rõ ràng hơn (ml-16 ≈ 4rem ≈ 1.6cm) */}
           <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-48 py-8 rounded-3xl border-2 border-yellow-300 shadow-xl">
             <h2 className="text-white text-6xl font-black uppercase italic tracking-widest animate-pulse whitespace-nowrap">
               CHÀO MỪNG QUÝ THẦY CÔ !
@@ -363,8 +363,8 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
                 )}
               </div>
             </div>
-            {/* Preview có thanh cuộn */}
-            <div className="flex-1 bg-white/95 p-10 overflow-y-auto text-slate-900 render-content custom-scrollbar" style={{ maxHeight: 'calc(100vh - 220px)' }}>
+            {/* Preview có thanh cuộn mạnh hơn */}
+            <div className="flex-1 bg-white/95 p-10 overflow-y-auto text-slate-900 render-content custom-scrollbar" style={{ maxHeight: '70vh', minHeight: '300px' }}>
               <div dangerouslySetInnerHTML={{ __html: aiResponse || "<p className='text-center text-gray-500 italic text-lg'>Chưa có kết quả. Nhấn Kích hoạt soạn giảng để bắt đầu!</p>" }} />
             </div>
           </div>
@@ -479,8 +479,10 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         .render-content h3 { font-size: 1.5rem; font-weight: bold; margin: 1.5rem 0 0.75rem; color: #1e40af; }
         .render-content ul, .render-content ol { margin: 1.5rem 0; padding-left: 2rem; }
         .render-content li { margin-bottom: 0.8rem; font-size: 1.1rem; }
-        .custom-scrollbar::-webkit-scrollbar { width: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #64748b, #475569); border-radius: 12px; border: 3px solid transparent; background-clip: padding-box; }
+        .custom-scrollbar::-webkit-scrollbar { width: 12px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #555; }
         @keyframes bounce-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .animate-bounce-slow { animation: bounce-slow 4s infinite; }
         @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -498,13 +500,12 @@ const App: React.FC = () => {
     setUserInfo(info);
     setIsLoggedIn(true);
     localStorage.setItem("user", JSON.stringify(info));
-    // Force reload sau khi login để đảm bảo vào MainApp sạch
     window.location.href = window.location.origin;
   };
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
-    console.log("User từ localStorage:", savedUser); // Log để debug
+    console.log("User từ localStorage:", savedUser);
     if (savedUser) {
       setUserInfo(JSON.parse(savedUser));
       setIsLoggedIn(true);
@@ -513,7 +514,6 @@ const App: React.FC = () => {
     }
   }, []);
 
-  // Nếu không có user trong localStorage, buộc vào LoginScreen
   if (!isLoggedIn || !localStorage.getItem("user")) {
     return <LoginScreen onLogin={handleLogin} />;
   }
