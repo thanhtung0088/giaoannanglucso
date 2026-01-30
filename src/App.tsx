@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import confetti from 'canvas-confetti';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
-// LoginScreen (giữ nguyên)
+// LoginScreen giữ nguyên
 const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }) => {
   const [activeTab, setActiveTab] = useState<"teacher" | "admin">("teacher");
   const [password, setPassword] = useState("");
@@ -101,7 +101,7 @@ const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }
   );
 };
 
-// Main App - Đã bỏ glassmorphism hoàn toàn
+// Main App - Bỏ glass ở menu + modal đen
 const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const [showPackageModal, setShowPackageModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -134,7 +134,6 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
     if (type === 'khbd') {
       return `Bạn là chuyên gia xây dựng Kế hoạch bài dạy theo Chương trình GDPT 2018.\n\nHãy soạn KẾ HOẠCH BÀI DẠY (KHBD) theo Công văn 5512/BGDĐT-GDTrH, Phụ lục 4, đảm bảo đầy đủ và đúng chuẩn.\nYêu cầu bắt buộc:\n* Đúng cấu trúc KHBD theo CV 5512 – Phụ lục 4\n* Dạy học theo định hướng phát triển phẩm chất và năng lực\n* TÍCH HỢP:\n  * Năng lực số\n  * Quyền con người\n  * Lồng ghép Giáo dục Quốc phòng – An ninh\n  * Học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh\n\nCấu trúc KHBD gồm:\n1. MỤC TIÊU BÀI HỌC\n   * Phẩm chất\n   * Năng lực chung\n   * Năng lực đặc thù\n2. THIẾT BỊ DẠY HỌC VÀ HỌC LIỆU\n3. TIẾN TRÌNH DẠY HỌC:\n   * Hoạt động 1: Mở đầu\n   * Hoạt động 2: Hình thành kiến thức\n   * Hoạt động 3: Luyện tập\n   * Hoạt động 4: Vận dụng\n4. ĐIỀU CHỈNH – BỔ SUNG (nếu có)\n\nTrình bày ngôn ngữ hành chính – sư phạm, đúng để in nộp hồ sơ chuyên môn. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc.\n${mucDo}\n${context}`;
     }
-    // Các prompt khác giữ nguyên
     return "";
   };
 
@@ -241,7 +240,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
       <main className="flex-1 grid grid-cols-12 gap-10 p-10 overflow-hidden">
         <aside className="col-span-3 space-y-10 flex flex-col min-h-0 relative z-[100]">
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 p-7 rounded-3xl border border-slate-700 shadow-2xl space-y-5 shrink-0">
+          <div className="bg-slate-800 p-7 rounded-3xl border border-slate-700 shadow-2xl space-y-5 shrink-0">
             <h2 className="text-xl font-black text-cyan-300 uppercase italic tracking-wide">⚙️ CẤU HÌNH THIẾT KẾ</h2>
             <select value={monHoc} onChange={(e) => setMonHoc(e.target.value)} className="w-full bg-slate-900 border border-cyan-600 rounded-xl p-4 text-base font-bold text-white focus:ring-2 focus:ring-cyan-400">
               {dsMonHoc.map(m => <option key={m}>{m}</option>)}
@@ -265,19 +264,19 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
               </button>
               {showPromptMenu && (
                 <div className="absolute top-full left-0 mt-2 w-full bg-slate-900 border border-cyan-500 rounded-2xl shadow-2xl font-black italic overflow-hidden z-[999]">
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('khbd')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-cyan-800 border-b border-cyan-600 text-base transition">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('khbd')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-slate-800 border-b border-slate-700 text-base transition">
                     🔹 SOẠN KẾ HOẠCH BÀI DẠY (KHBD) THEO CV 5512 – GDPT 2018
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('ppt')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-cyan-800 border-b border-cyan-600 text-base transition">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('ppt')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-slate-800 border-b border-slate-700 text-base transition">
                     🖥️ SOẠN BÀI GIẢNG TRÌNH CHIẾU (PPT) – THẨM MỸ, HIỆN ĐẠI
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('kiemtra')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-cyan-800 border-b border-cyan-600 text-base transition">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('kiemtra')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-slate-800 border-b border-slate-700 text-base transition">
                     📝 SOẠN ĐỀ KIỂM TRA THEO CÔNG VĂN 7991
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('ontap')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-cyan-800 border-b border-cyan-600 text-base transition">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('ontap')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-slate-800 border-b border-slate-700 text-base transition">
                     📚 SOẠN ĐỀ CƯƠNG ÔN TẬP
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('trochoi')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-cyan-800 text-base transition">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('trochoi')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-slate-800 text-base transition">
                     🎮 SOẠN TRÒ CHƠI TƯƠNG TÁC
                   </button>
                 </div>
@@ -285,7 +284,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl border border-slate-700 shadow-2xl flex flex-col flex-1 overflow-hidden relative z-[9999]">
+          <div className="bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl flex flex-col flex-1 overflow-hidden relative z-[9999]">
             <div className="bg-slate-900 px-6 py-4 border-b border-slate-700 text-cyan-300 font-black text-base uppercase italic">THÊM DỮ LIỆU, HÌNH ẢNH (+)</div>
             <div className="p-6 flex-1 overflow-y-auto custom-scrollbar relative z-[10000]">
               <div 
@@ -324,14 +323,14 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         </aside>
 
         <section className="col-span-3">
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl border border-slate-700 shadow-2xl flex flex-col h-full overflow-hidden">
+          <div className="bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl flex flex-col h-full overflow-hidden">
             <div className="px-6 py-5 bg-slate-900 border-b border-slate-700 text-xl font-black text-orange-300 uppercase italic">Workspace Editor</div>
             <textarea value={customPrompt} onChange={(e) => setCustomPrompt(e.target.value)} className="w-full flex-1 bg-transparent p-6 text-base text-slate-100 outline-none resize-none font-bold italic placeholder-cyan-300" placeholder="Nhập prompt tùy chỉnh hoặc chọn lệnh mẫu..." />
           </div>
         </section>
 
         <section className="col-span-6 flex flex-col relative">
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl border border-slate-700 shadow-2xl flex flex-col h-full overflow-hidden">
+          <div className="bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl flex flex-col h-full overflow-hidden">
             <div className="px-10 py-6 bg-slate-900 border-b border-slate-700 flex justify-between items-center">
               <span className="text-base font-black text-emerald-300 uppercase italic">PREVIEW KẾT QUẢ</span>
               <div className="relative">
@@ -354,14 +353,58 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         </section>
       </main>
 
-      {/* Modal Cập nhật nâng cao */}
+      {/* Modal Cập nhật nâng cao - nền đen */}
       {showPackageModal && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[3000] p-4">
-          {/* Nội dung modal giữ nguyên */}
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[3000] p-4">
+          <div className="bg-slate-900 border-4 border-yellow-500 rounded-3xl p-10 max-w-5xl w-full relative shadow-2xl">
+            <button onClick={() => setShowPackageModal(false)} className="absolute top-4 right-6 text-white text-3xl font-black hover:text-yellow-400 transition">✕</button>
+            <h2 className="text-yellow-400 text-3xl font-black text-center uppercase mb-8">THANH TOÁN & NÂNG CẤP PRO</h2>
+
+            <div className="grid grid-cols-3 gap-8">
+              <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 text-center">
+                <h3 className="text-white font-black uppercase mb-4">Gói FREE</h3>
+                <div className="text-3xl font-black text-emerald-400 mb-4">MIỄN PHÍ</div>
+                <ul className="text-sm text-slate-400 text-left space-y-2">
+                  <li>- Soạn 10 giáo án/tháng</li>
+                  <li>- KHBD 5512, Đề 7991</li>
+                </ul>
+              </div>
+              <div className="bg-slate-800 p-8 rounded-2xl border-2 border-emerald-500 text-center transform scale-105 shadow-2xl">
+                <h3 className="text-emerald-400 font-black uppercase mb-4">PREMIUM</h3>
+                <div className="text-3xl font-black text-white mb-4">199k/tháng</div>
+                <ul className="text-sm text-slate-300 text-left space-y-2">
+                  <li>- Soạn 4 loại bài soạn</li>
+                  <li>- Không giới hạn số lượng</li>
+                </ul>
+              </div>
+              <div className="bg-slate-800 p-8 rounded-2xl border-2 border-orange-500 text-center">
+                <h3 className="text-orange-500 font-black uppercase mb-4">LOẠI PRO</h3>
+                <div className="text-3xl font-black text-white mb-4">499k/năm</div>
+                <ul className="text-sm text-slate-300 text-left space-y-2">
+                  <li>- Soạn được 5 loại bài soạn</li>
+                  <li>- KHBD 5512, PPT, Đề KT 7991</li>
+                  <li>- Đề cương, Trò chơi tương tác</li>
+                  <li>- Sử dụng Trợ lý AI đặc biệt</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-8 border-t border-slate-700 pt-6 flex justify-between items-center text-white">
+              <div className="space-y-1">
+                <p className="font-black">Ngân hàng: <span className="text-yellow-400 uppercase">DONGA BANK</span></p>
+                <p className="font-black">Số tài khoản: <span className="text-emerald-400 text-2xl">916033681</span></p>
+                <p className="font-black">Chủ TK: <span className="text-yellow-400 uppercase">NGUYỄN THANH TÙNG</span></p>
+                <p className="text-orange-400 font-black">Liên hệ Zalo: 0916033681</p>
+              </div>
+              <div className="w-32 h-32 bg-white p-2 rounded-xl">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://zalo.me/0916033681" className="w-full h-full" alt="QR" />
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Trợ lý AI - Robot dễ thương */}
+      {/* Trợ lý AI robot */}
       <div className="fixed bottom-8 right-8 z-[2000] flex flex-col items-end">
         <div 
           onClick={() => setShowAIChat(!showAIChat)} 
