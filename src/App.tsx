@@ -209,14 +209,15 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setIsLoggedIn(false);
+    window.location.reload(); // Force reload để đảm bảo về trang đăng nhập
   };
 
   return (
     <div className="h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 text-slate-100 overflow-hidden flex flex-col font-sans italic relative">
-      <header className="h-48 bg-gradient-to-r from-emerald-700 to-emerald-800 px-12 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
-        <div className="flex items-center gap-8 w-1/3 pl-0">
-          <div onClick={() => document.getElementById('avatar-input')?.click()} className="w-32 h-32 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:border-yellow-400 transition-all shadow-lg">
-            {avatarUrl ? <img src={avatarUrl} className="w-full h-full object-cover" /> : <span className="text-xs text-white font-black uppercase text-center">DÁN<br/>HÌNH</span>}
+      <header className="h-48 bg-gradient-to-r from-emerald-700 to-emerald-800 px-6 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
+        <div className="flex items-center gap-6 w-1/3 pl-2">
+          <div onClick={() => document.getElementById('avatar-input')?.click()} className="w-36 h-36 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:border-yellow-400 transition-all shadow-lg">
+            {avatarUrl ? <img src={avatarUrl} className="w-full h-full object-cover" /> : <span className="text-sm text-white font-black uppercase text-center leading-tight">DÁN<br/>LOGO</span>}
             <input type="file" id="avatar-input" className="hidden" accept="image/*" onChange={handleAvatarChange} />
           </div>
           <div>
@@ -225,8 +226,8 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
           </div>
         </div>
         <div className="flex-1 flex justify-center">
-          <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-32 py-6 rounded-3xl border-2 border-yellow-300 shadow-xl">
-            <h2 className="text-white text-5xl font-black uppercase italic tracking-wider animate-pulse">
+          <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-40 py-6 rounded-3xl border-2 border-yellow-300 shadow-xl">
+            <h2 className="text-white text-6xl font-black uppercase italic tracking-widest animate-pulse whitespace-nowrap">
               CHÀO MỪNG QUÝ THẦY CÔ !
             </h2>
           </div>
