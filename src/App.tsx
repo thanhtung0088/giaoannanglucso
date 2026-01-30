@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import confetti from 'canvas-confetti';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
-// LoginScreen giữ nguyên
+// Login Screen
 const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }) => {
   const [activeTab, setActiveTab] = useState<"teacher" | "admin">("teacher");
   const [password, setPassword] = useState("");
@@ -101,7 +101,7 @@ const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }
   );
 };
 
-// Main App - Bỏ glass ở menu + modal đen
+// Main App
 const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const [showPackageModal, setShowPackageModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -239,8 +239,8 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
       </header>
 
       <main className="flex-1 grid grid-cols-12 gap-10 p-10 overflow-hidden">
-        <aside className="col-span-3 space-y-10 flex flex-col min-h-0 relative z-[100]">
-          <div className="bg-slate-800 p-7 rounded-3xl border border-slate-700 shadow-2xl space-y-5 shrink-0">
+        <aside className="col-span-3 space-y-10 flex flex-col min-h-0 relative overflow-visible z-[50]">
+          <div className="bg-slate-800 p-7 rounded-3xl border border-slate-700 shadow-2xl space-y-5 shrink-0 relative z-[60]">
             <h2 className="text-xl font-black text-cyan-300 uppercase italic tracking-wide">⚙️ CẤU HÌNH THIẾT KẾ</h2>
             <select value={monHoc} onChange={(e) => setMonHoc(e.target.value)} className="w-full bg-slate-900 border border-cyan-600 rounded-xl p-4 text-base font-bold text-white focus:ring-2 focus:ring-cyan-400">
               {dsMonHoc.map(m => <option key={m}>{m}</option>)}
@@ -263,20 +263,20 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
                 📜 CHỌN LỆNH MẪU (5) ▼
               </button>
               {showPromptMenu && (
-                <div className="absolute top-full left-0 mt-2 w-full bg-slate-900 border border-cyan-500 rounded-2xl shadow-2xl font-black italic overflow-hidden z-[999]">
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('khbd')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-slate-800 border-b border-slate-700 text-base transition">
+                <div className="absolute top-full left-0 mt-2 w-full bg-slate-900 border border-cyan-500 rounded-2xl shadow-2xl font-black italic overflow-hidden z-[9999]">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('khbd')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-cyan-800 border-b border-cyan-600 text-base transition">
                     🔹 SOẠN KẾ HOẠCH BÀI DẠY (KHBD) THEO CV 5512 – GDPT 2018
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('ppt')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-slate-800 border-b border-slate-700 text-base transition">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('ppt')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-cyan-800 border-b border-cyan-600 text-base transition">
                     🖥️ SOẠN BÀI GIẢNG TRÌNH CHIẾU (PPT) – THẨM MỸ, HIỆN ĐẠI
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('kiemtra')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-slate-800 border-b border-slate-700 text-base transition">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('kiemtra')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-cyan-800 border-b border-cyan-600 text-base transition">
                     📝 SOẠN ĐỀ KIỂM TRA THEO CÔNG VĂN 7991
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('ontap')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-slate-800 border-b border-slate-700 text-base transition">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('ontap')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-cyan-800 border-b border-cyan-600 text-base transition">
                     📚 SOẠN ĐỀ CƯƠNG ÔN TẬP
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('trochoi')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-slate-800 text-base transition">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('trochoi')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-cyan-800 text-base transition">
                     🎮 SOẠN TRÒ CHƠI TƯƠNG TÁC
                   </button>
                 </div>
@@ -284,9 +284,9 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             </div>
           </div>
 
-          <div className="bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl flex flex-col flex-1 overflow-hidden relative z-[9999]">
+          <div className="bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl flex flex-col flex-1 overflow-visible relative z-[50]">
             <div className="bg-slate-900 px-6 py-4 border-b border-slate-700 text-cyan-300 font-black text-base uppercase italic">THÊM DỮ LIỆU, HÌNH ẢNH (+)</div>
-            <div className="p-6 flex-1 overflow-y-auto custom-scrollbar relative z-[10000]">
+            <div className="p-6 flex-1 overflow-y-auto custom-scrollbar relative z-[60]">
               <div 
                 onClick={(e) => {
                   e.stopPropagation();
@@ -294,7 +294,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
                   console.log("=== DẤU + ĐƯỢC CLICK - MỞ FILE PICKER ===");
                   fileInputRef.current?.click();
                 }}
-                className="h-20 border-2 border-dashed border-cyan-500 rounded-3xl flex items-center justify-center cursor-pointer mb-5 bg-slate-900 hover:bg-cyan-900/30 transition-all duration-300 hover:scale-105 active:scale-95 pointer-events-auto relative z-[10001]"
+                className="h-20 border-2 border-dashed border-cyan-500 rounded-3xl flex items-center justify-center cursor-pointer mb-5 bg-slate-900 hover:bg-cyan-900/30 transition-all duration-300 hover:scale-105 active:scale-95 pointer-events-auto relative z-[70]"
               >
                 <span className="text-5xl text-cyan-400 font-black">+</span>
               </div>
