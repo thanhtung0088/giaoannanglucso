@@ -101,7 +101,7 @@ const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }
   );
 };
 
-// Main App - Dropdown chữ nhỏ hơn, không bị đè
+// Main App
 const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const [showPackageModal, setShowPackageModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -119,6 +119,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const [showAIChat, setShowAIChat] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<string[]>(["Chào Thầy! 🌸 Em là trợ lý AI dễ thương đây ạ! Thầy cần em giúp gì hôm nay? 💕"]);
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // Để logout
 
   const dsMonHoc = ["Toán", "Ngữ văn", "Tiếng Anh", "Tin học", "Vật lí", "Hóa học", "Sinh học", "Lịch sử", "Địa lí", "GD Công dân", "Công nghệ", "KHTN"];
   const dsKhoi = Array.from({ length: 12 }, (_, i) => `Lớp ${i + 1}`);
@@ -205,6 +206,11 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
     window.open("https://meet.google.com/new", "_blank");
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+  };
+
   return (
     <div className="h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 text-slate-100 overflow-hidden flex flex-col font-sans italic relative">
       <header className="h-28 bg-gradient-to-r from-emerald-700 to-emerald-800 px-10 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
@@ -234,6 +240,9 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
           </button>
           <button onClick={() => setShowPackageModal(true)} className="bg-purple-600 text-white px-5 py-3 rounded-xl font-black text-xs uppercase shadow-xl border-b-4 border-purple-800 hover:bg-purple-500 transition">
             CẬP NHẬT NÂNG CAO
+          </button>
+          <button onClick={handleLogout} className="bg-red-600 text-white px-5 py-3 rounded-xl font-black text-xs uppercase shadow-xl border-b-4 border-red-800 hover:bg-red-500 transition">
+            THOÁT ỨNG DỤNG
           </button>
         </div>
       </header>
@@ -353,10 +362,54 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         </section>
       </main>
 
-      {/* Modal Cập nhật nâng cao */}
+      {/* Modal Cập nhật nâng cao - nền đen mờ */}
       {showPackageModal && (
         <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[3000] p-4">
-          {/* Nội dung modal giữ nguyên */}
+          <div className="bg-slate-900 border-4 border-yellow-500 rounded-3xl p-10 max-w-5xl w-full relative shadow-2xl text-white">
+            <button onClick={() => setShowPackageModal(false)} className="absolute top-4 right-6 text-3xl font-black hover:text-yellow-400 transition">✕</button>
+            <h2 className="text-yellow-400 text-3xl font-black text-center uppercase mb-8">THANH TOÁN & NÂNG CẤP PRO</h2>
+
+            <div className="grid grid-cols-3 gap-8">
+              <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 text-center">
+                <h3 className="text-white font-black uppercase mb-4">Gói FREE</h3>
+                <div className="text-3xl font-black text-emerald-400 mb-4">MIỄN PHÍ</div>
+                <ul className="text-sm text-slate-400 text-left space-y-2">
+                  <li>- Soạn 10 giáo án/tháng</li>
+                  <li>- KHBD 5512, Đề 7991</li>
+                </ul>
+              </div>
+              <div className="bg-slate-800 p-8 rounded-2xl border-2 border-emerald-500 text-center transform scale-105 shadow-2xl">
+                <h3 className="text-emerald-400 font-black uppercase mb-4">PREMIUM</h3>
+                <div className="text-3xl font-black text-white mb-4">199k/tháng</div>
+                <ul className="text-sm text-slate-300 text-left space-y-2">
+                  <li>- Soạn 4 loại bài soạn</li>
+                  <li>- Không giới hạn số lượng</li>
+                </ul>
+              </div>
+              <div className="bg-slate-800 p-8 rounded-2xl border-2 border-orange-500 text-center">
+                <h3 className="text-orange-500 font-black uppercase mb-4">LOẠI PRO</h3>
+                <div className="text-3xl font-black text-white mb-4">499k/năm</div>
+                <ul className="text-sm text-slate-300 text-left space-y-2">
+                  <li>- Soạn được 5 loại bài soạn</li>
+                  <li>- KHBD 5512, PPT, Đề KT 7991</li>
+                  <li>- Đề cương, Trò chơi tương tác</li>
+                  <li>- Sử dụng Trợ lý AI đặc biệt</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-8 border-t border-slate-700 pt-6 flex justify-between items-center">
+              <div className="space-y-1">
+                <p className="font-black">Ngân hàng: <span className="text-yellow-400 uppercase">DONGA BANK</span></p>
+                <p className="font-black">Số tài khoản: <span className="text-emerald-400 text-2xl">916033681</span></p>
+                <p className="font-black">Chủ TK: <span className="text-yellow-400 uppercase">NGUYỄN THANH TÙNG</span></p>
+                <p className="text-orange-400 font-black">Liên hệ Zalo: 0916033681</p>
+              </div>
+              <div className="w-32 h-32 bg-white p-2 rounded-xl">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://zalo.me/0916033681" className="w-full h-full" alt="QR" />
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
