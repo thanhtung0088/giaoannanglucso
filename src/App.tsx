@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import confetti from 'canvas-confetti';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
-// Login Screen - Đã to hơn từ lần trước
+// Login Screen
 const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }) => {
   const [activeTab, setActiveTab] = useState<"teacher" | "admin">("teacher");
   const [password, setPassword] = useState("");
@@ -101,7 +101,7 @@ const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }
   );
 };
 
-// Main App - Header to hơn, nút thoát kích hoạt, phần thêm dữ liệu có cuộn
+// Main App
 const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const [showPackageModal, setShowPackageModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -214,8 +214,8 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   return (
     <div className="h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 text-slate-100 overflow-hidden flex flex-col font-sans italic relative">
       <header className="h-48 bg-gradient-to-r from-emerald-700 to-emerald-800 px-12 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
-        <div className="flex items-center gap-8 w-1/3">
-          <div onClick={() => document.getElementById('avatar-input')?.click()} className="w-28 h-28 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:border-yellow-400 transition-all shadow-lg">
+        <div className="flex items-center gap-8 w-1/3 pl-0">
+          <div onClick={() => document.getElementById('avatar-input')?.click()} className="w-32 h-32 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:border-yellow-400 transition-all shadow-lg">
             {avatarUrl ? <img src={avatarUrl} className="w-full h-full object-cover" /> : <span className="text-xs text-white font-black uppercase text-center">DÁN<br/>HÌNH</span>}
             <input type="file" id="avatar-input" className="hidden" accept="image/*" onChange={handleAvatarChange} />
           </div>
@@ -225,8 +225,8 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
           </div>
         </div>
         <div className="flex-1 flex justify-center">
-          <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-24 py-6 rounded-3xl border-2 border-yellow-300 shadow-xl">
-            <h2 className="text-white text-4xl font-black uppercase italic tracking-wide animate-pulse">
+          <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-32 py-6 rounded-3xl border-2 border-yellow-300 shadow-xl">
+            <h2 className="text-white text-5xl font-black uppercase italic tracking-wider animate-pulse">
               CHÀO MỪNG QUÝ THẦY CÔ !
             </h2>
           </div>
@@ -293,7 +293,6 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             </div>
           </div>
 
-          {/* Phần thêm dữ liệu - có thanh cuộn, giới hạn chiều cao */}
           <div className="bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl flex flex-col overflow-hidden relative z-[50] max-h-[60vh]">
             <div className="bg-slate-900 px-6 py-4 border-b border-slate-700 text-cyan-300 font-black text-base uppercase italic">THÊM DỮ LIỆU, HÌNH ẢNH (+)</div>
             <div className="p-6 flex-1 overflow-y-auto custom-scrollbar relative z-[60]">
