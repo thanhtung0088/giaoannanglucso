@@ -163,7 +163,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
   const handleSoanBai = async () => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    console.log("API Key đang dùng:", apiKey); // Log để kiểm tra key
+    console.log("API Key đang dùng:", apiKey);
     if (!apiKey) return alert("Hệ thống chưa có API Key!");
 
     setLoading(true);
@@ -171,7 +171,6 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
-      // Giữ nguyên model gemini-2.5-flash như Thầy đang dùng ngon lành
       const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
       const result = await model.generateContent(
@@ -217,7 +216,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setIsLoggedIn(false);
-    window.location.href = window.location.origin; // Chuyển về gốc để reload sạch
+    window.location.href = window.location.origin;
   };
 
   return (
@@ -233,7 +232,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             <p className="text-base font-bold text-emerald-200 uppercase mt-2">NĂNG LỰC SỐ THẾ HỆ MỚI</p>
           </div>
         </div>
-        <div className="flex-1 flex justify-center">
+        <div className="flex-1 flex justify-center ml-4"> {/* Dời thẻ chào mừng sang trái khoảng 1cm */}
           <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-48 py-8 rounded-3xl border-2 border-yellow-300 shadow-xl">
             <h2 className="text-white text-6xl font-black uppercase italic tracking-widest animate-pulse whitespace-nowrap">
               CHÀO MỪNG QUÝ THẦY CÔ !
@@ -364,7 +363,8 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
                 )}
               </div>
             </div>
-            <div className="flex-1 bg-white/95 p-10 overflow-y-auto text-slate-900 render-content custom-scrollbar">
+            {/* Thêm thanh cuộn cho preview kết quả */}
+            <div className="flex-1 bg-white/95 p-10 overflow-y-auto text-slate-900 render-content custom-scrollbar" style={{ maxHeight: 'calc(100vh - 200px)' }}>
               <div dangerouslySetInnerHTML={{ __html: aiResponse || "<p className='text-center text-gray-500 italic text-lg'>Chưa có kết quả. Nhấn Kích hoạt soạn giảng để bắt đầu!</p>" }} />
             </div>
           </div>
