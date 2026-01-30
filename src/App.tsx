@@ -119,7 +119,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const [showAIChat, setShowAIChat] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<string[]>(["Chào Thầy! 🌸 Em là trợ lý AI dễ thương đây ạ! Thầy cần em giúp gì hôm nay? 💕"]);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Để logout
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const dsMonHoc = ["Toán", "Ngữ văn", "Tiếng Anh", "Tin học", "Vật lí", "Hóa học", "Sinh học", "Lịch sử", "Địa lí", "GD Công dân", "Công nghệ", "KHTN"];
   const dsKhoi = Array.from({ length: 12 }, (_, i) => `Lớp ${i + 1}`);
@@ -213,7 +213,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
   return (
     <div className="h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 text-slate-100 overflow-hidden flex flex-col font-sans italic relative">
-      <header className="h-28 bg-gradient-to-r from-emerald-700 to-emerald-800 px-10 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
+      <header className="h-40 bg-gradient-to-r from-emerald-700 to-emerald-800 px-10 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
         <div className="flex items-center gap-6 w-1/3">
           <div onClick={() => document.getElementById('avatar-input')?.click()} className="w-20 h-20 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:border-yellow-400 transition-all shadow-lg">
             {avatarUrl ? <img src={avatarUrl} className="w-full h-full object-cover" /> : <span className="text-[10px] text-white font-black uppercase">DÁN ẢNH</span>}
@@ -225,8 +225,8 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
           </div>
         </div>
         <div className="flex-1 flex justify-center">
-          <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-16 py-4 rounded-3xl border-2 border-yellow-300 shadow-xl">
-            <h2 className="text-white text-3xl font-black uppercase italic tracking-wide animate-pulse">
+          <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-20 py-5 rounded-3xl border-2 border-yellow-300 shadow-xl">
+            <h2 className="text-white text-4xl font-black uppercase italic tracking-wide animate-pulse">
               CHÀO MỪNG QUÝ THẦY CÔ !
             </h2>
           </div>
@@ -273,19 +273,19 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
               </button>
               {showPromptMenu && (
                 <div className="absolute top-full left-0 mt-2 w-full bg-slate-900 border border-cyan-500 rounded-2xl shadow-2xl font-black italic overflow-hidden z-[9999]">
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('khbd')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-3 hover:bg-cyan-800 border-b border-cyan-600 text-[11px] leading-tight transition">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('khbd')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-4 hover:bg-cyan-800 border-b border-cyan-600 text-sm leading-tight transition">
                     🔹 SOẠN KẾ HOẠCH BÀI DẠY (KHBD) THEO CV 5512 – GDPT 2018
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('ppt')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-3 hover:bg-cyan-800 border-b border-cyan-600 text-[11px] leading-tight transition">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('ppt')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-4 hover:bg-cyan-800 border-b border-cyan-600 text-sm leading-tight transition">
                     🖥️ SOẠN BÀI GIẢNG TRÌNH CHIẾU (PPT) – THẨM MỸ, HIỆN ĐẠI
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('kiemtra')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-3 hover:bg-cyan-800 border-b border-cyan-600 text-[11px] leading-tight transition">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('kiemtra')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-4 hover:bg-cyan-800 border-b border-cyan-600 text-sm leading-tight transition">
                     📝 SOẠN ĐỀ KIỂM TRA THEO CÔNG VĂN 7991
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('ontap')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-3 hover:bg-cyan-800 border-b border-cyan-600 text-[11px] leading-tight transition">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('ontap')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-4 hover:bg-cyan-800 border-b border-cyan-600 text-sm leading-tight transition">
                     📚 SOẠN ĐỀ CƯƠNG ÔN TẬP
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('trochoi')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-3 hover:bg-cyan-800 text-[11px] leading-tight transition">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('trochoi')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-4 hover:bg-cyan-800 text-sm leading-tight transition">
                     🎮 SOẠN TRÒ CHƠI TƯƠNG TÁC
                   </button>
                 </div>
@@ -362,7 +362,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         </section>
       </main>
 
-      {/* Modal Cập nhật nâng cao - nền đen mờ */}
+      {/* Modal Cập nhật nâng cao */}
       {showPackageModal && (
         <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[3000] p-4">
           <div className="bg-slate-900 border-4 border-yellow-500 rounded-3xl p-10 max-w-5xl w-full relative shadow-2xl text-white">
