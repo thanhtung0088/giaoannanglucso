@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import confetti from 'canvas-confetti';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
-// Login Screen
+// Login Screen - To hơn
 const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }) => {
   const [activeTab, setActiveTab] = useState<"teacher" | "admin">("teacher");
   const [password, setPassword] = useState("");
@@ -31,28 +31,28 @@ const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }
   return (
     <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID_HERE">
       <div className="min-h-screen bg-gradient-to-br from-blue-900 to-cyan-900 flex items-center justify-center p-8">
-        <div className="w-full max-w-5xl flex rounded-3xl overflow-hidden shadow-2xl bg-white">
-          <div className="w-1/2 bg-gradient-to-br from-cyan-700 to-blue-800 p-16 flex flex-col justify-center items-center text-white">
-            <div className="text-8xl mb-8">📚</div>
-            <h1 className="text-5xl font-black mb-6">HỆ THỐNG SOẠN GIẢNG AI</h1>
-            <p className="text-2xl font-semibold opacity-90">Năng lực số thế hệ mới</p>
-            <p className="text-xl mt-12 opacity-80">Trợ lý AI chuyên sâu hỗ trợ giáo viên</p>
+        <div className="w-full max-w-6xl flex rounded-3xl overflow-hidden shadow-2xl bg-white">
+          <div className="w-1/2 bg-gradient-to-br from-cyan-700 to-blue-800 p-20 flex flex-col justify-center items-center text-white">
+            <div className="text-9xl mb-10">📚</div>
+            <h1 className="text-6xl font-black mb-8 text-center">HỆ THỐNG SOẠN GIẢNG AI</h1>
+            <p className="text-3xl font-semibold opacity-90">Năng lực số thế hệ mới</p>
+            <p className="text-2xl mt-16 opacity-80">Trợ lý AI chuyên sâu hỗ trợ giáo viên</p>
           </div>
 
-          <div className="w-1/2 p-16 flex flex-col justify-center">
-            <h2 className="text-4xl font-bold text-center mb-4 text-blue-900">Đăng nhập</h2>
-            <p className="text-center text-gray-600 text-xl mb-10">Chào mừng Thầy/Cô quay trở lại!</p>
+          <div className="w-1/2 p-20 flex flex-col justify-center">
+            <h2 className="text-5xl font-bold text-center mb-6 text-blue-900">Đăng nhập</h2>
+            <p className="text-center text-gray-700 text-2xl mb-12">Chào mừng Thầy/Cô quay trở lại!</p>
 
-            <div className="flex mb-8 border-b border-gray-300">
+            <div className="flex mb-10 border-b border-gray-300">
               <button
                 onClick={() => setActiveTab("teacher")}
-                className={`flex-1 py-5 font-bold text-2xl ${activeTab === "teacher" ? "border-b-4 border-cyan-600 text-cyan-700" : "text-gray-600"}`}
+                className={`flex-1 py-6 font-bold text-3xl ${activeTab === "teacher" ? "border-b-4 border-cyan-600 text-cyan-700" : "text-gray-600"}`}
               >
                 GIÁO VIÊN
               </button>
               <button
                 onClick={() => setActiveTab("admin")}
-                className={`flex-1 py-5 font-bold text-2xl ${activeTab === "admin" ? "border-b-4 border-cyan-600 text-cyan-700" : "text-gray-600"}`}
+                className={`flex-1 py-6 font-bold text-3xl ${activeTab === "admin" ? "border-b-4 border-cyan-600 text-cyan-700" : "text-gray-600"}`}
               >
                 QUẢN TRỊ
               </button>
@@ -80,12 +80,12 @@ const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }
                   value={password}
                   onChange={handlePasswordChange}
                   placeholder="Mật khẩu Quản trị"
-                  className="w-full p-6 border border-gray-300 rounded-2xl mb-6 text-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-300"
+                  className="w-full p-8 border border-gray-300 rounded-2xl mb-8 text-2xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-300"
                 />
                 {showAdminButton && (
                   <button
                     onClick={() => onLogin({ name: "Admin", email: "admin@local" })}
-                    className="w-full py-6 bg-green-600 hover:bg-green-700 text-white font-bold text-2xl rounded-2xl transition shadow-lg"
+                    className="w-full py-8 bg-green-600 hover:bg-green-700 text-white font-bold text-3xl rounded-2xl transition shadow-2xl"
                   >
                     VÀO HỆ THỐNG
                   </button>
@@ -93,7 +93,7 @@ const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }
               </>
             )}
 
-            <p className="text-center text-lg text-gray-500 mt-8">Bảo mật dữ liệu chuẩn ngành giáo dục</p>
+            <p className="text-center text-xl text-gray-500 mt-12">Bảo mật dữ liệu chuẩn ngành giáo dục</p>
           </div>
         </div>
       </div>
@@ -293,7 +293,8 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             </div>
           </div>
 
-          <div className="bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl flex flex-col flex-1 overflow-visible relative z-[50]">
+          {/* Phần thêm dữ liệu - có thanh cuộn, không che nút dưới */}
+          <div className="bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl flex flex-col overflow-hidden relative z-[50] max-h-[60vh]">
             <div className="bg-slate-900 px-6 py-4 border-b border-slate-700 text-cyan-300 font-black text-base uppercase italic">THÊM DỮ LIỆU, HÌNH ẢNH (+)</div>
             <div className="p-6 flex-1 overflow-y-auto custom-scrollbar relative z-[60]">
               <div 
@@ -362,12 +363,13 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         </section>
       </main>
 
-      {/* Modal Cập nhật nâng cao */}
+      {/* Modal Cập nhật nâng cao - Nền đen mờ */}
       {showPackageModal && (
         <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[3000] p-4">
           <div className="bg-slate-900 border-4 border-yellow-500 rounded-3xl p-10 max-w-5xl w-full relative shadow-2xl text-white">
             <button onClick={() => setShowPackageModal(false)} className="absolute top-4 right-6 text-3xl font-black hover:text-yellow-400 transition">✕</button>
-            <h2 className="text-yellow-400 text-3xl font-black text-center uppercase mb-8">THANH TOÁN & NÂNG CẤP PRO</h2>
+            <h2 className="text-yellow-400 text-3xl font-black text-center uppercase mb-8">CẬP NHẬT NÂNG CAO</h2>
+            <p className="text-center text-lg mb-6 text-orange-300">Người dùng mới chỉ được phép sử dụng gói FREE thôi!</p>
 
             <div className="grid grid-cols-3 gap-8">
               <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 text-center">
