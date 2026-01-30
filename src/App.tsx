@@ -163,6 +163,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
   const handleSoanBai = async () => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    console.log("API Key đang dùng:", apiKey); // Log để kiểm tra
     if (!apiKey) return alert("Hệ thống chưa có API Key!");
 
     setLoading(true);
@@ -170,7 +171,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Dùng gemini-1.5-flash nếu 2.5 không ổn
       const result = await model.generateContent(`Hãy trả lời với tư cách một Trợ lý AI giáo dục dễ thương, thân thiện. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc và in ấn.\n${customPrompt}`);
       setAiResponse(result.response.text());
       confetti({
@@ -182,6 +183,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
       });
     } catch (e: any) {
       setAiResponse("Lỗi: " + e.message);
+      console.error("Gemini error:", e);
     } finally {
       setLoading(false);
     }
@@ -209,40 +211,40 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setIsLoggedIn(false);
-    window.location.reload(); // Force reload để đảm bảo về trang đăng nhập
+    window.location.href = window.location.origin; // Chuyển hướng về gốc để reload sạch
   };
 
   return (
     <div className="h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 text-slate-100 overflow-hidden flex flex-col font-sans italic relative">
-      <header className="h-48 bg-gradient-to-r from-emerald-700 to-emerald-800 px-6 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
+      <header className="h-52 bg-gradient-to-r from-emerald-700 to-emerald-800 px-8 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
         <div className="flex items-center gap-6 w-1/3 pl-2">
-          <div onClick={() => document.getElementById('avatar-input')?.click()} className="w-36 h-36 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:border-yellow-400 transition-all shadow-lg">
-            {avatarUrl ? <img src={avatarUrl} className="w-full h-full object-cover" /> : <span className="text-sm text-white font-black uppercase text-center leading-tight">DÁN<br/>LOGO</span>}
+          <div onClick={() => document.getElementById('avatar-input')?.click()} className="w-40 h-40 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:border-yellow-400 transition-all shadow-lg">
+            {avatarUrl ? <img src={avatarUrl} className="w-full h-full object-cover" /> : <span className="text-base text-white font-black uppercase text-center leading-tight">DÁN<br/>LOGO</span>}
             <input type="file" id="avatar-input" className="hidden" accept="image/*" onChange={handleAvatarChange} />
           </div>
           <div>
-            <h1 className="text-white text-2xl font-black uppercase leading-tight">HỆ THỐNG SOẠN GIẢNG</h1>
-            <p className="text-sm font-bold text-emerald-200 uppercase mt-1">NĂNG LỰC SỐ THẾ HỆ MỚI</p>
+            <h1 className="text-white text-3xl font-black uppercase leading-tight">HỆ THỐNG SOẠN GIẢNG</h1>
+            <p className="text-base font-bold text-emerald-200 uppercase mt-2">NĂNG LỰC SỐ THẾ HỆ MỚI</p>
           </div>
         </div>
         <div className="flex-1 flex justify-center">
-          <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-40 py-6 rounded-3xl border-2 border-yellow-300 shadow-xl">
+          <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-48 py-8 rounded-3xl border-2 border-yellow-300 shadow-xl">
             <h2 className="text-white text-6xl font-black uppercase italic tracking-widest animate-pulse whitespace-nowrap">
               CHÀO MỪNG QUÝ THẦY CÔ !
             </h2>
           </div>
         </div>
-        <div className="w-1/3 flex justify-end gap-4">
-          <button onClick={openGoogleMeet} className="bg-green-600 text-white px-6 py-4 rounded-xl font-black text-lg uppercase shadow-xl border-b-4 border-green-800 flex items-center gap-2 hover:bg-green-500 transition">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="w-1/3 flex justify-end gap-5">
+          <button onClick={openGoogleMeet} className="bg-green-600 text-white px-8 py-5 rounded-xl font-black text-xl uppercase shadow-xl border-b-6 border-green-800 flex items-center gap-3 hover:bg-green-500 transition">
+            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
             GOOGLE MEET
           </button>
-          <button onClick={() => setShowPackageModal(true)} className="bg-purple-600 text-white px-6 py-4 rounded-xl font-black text-lg uppercase shadow-xl border-b-4 border-purple-800 hover:bg-purple-500 transition">
+          <button onClick={() => setShowPackageModal(true)} className="bg-purple-600 text-white px-8 py-5 rounded-xl font-black text-xl uppercase shadow-xl border-b-6 border-purple-800 hover:bg-purple-500 transition">
             CẬP NHẬT NÂNG CAO
           </button>
-          <button onClick={handleLogout} className="bg-red-600 text-white px-6 py-4 rounded-xl font-black text-lg uppercase shadow-xl border-b-4 border-red-800 hover:bg-red-500 transition">
+          <button onClick={handleLogout} className="bg-red-600 text-white px-8 py-5 rounded-xl font-black text-xl uppercase shadow-xl border-b-6 border-red-800 hover:bg-red-500 transition">
             THOÁT ỨNG DỤNG
           </button>
         </div>
