@@ -163,7 +163,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
   const handleSoanBai = async () => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    console.log("API Key đang dùng:", apiKey); // Log để kiểm tra
+    console.log("API Key đang dùng:", apiKey); // Log để kiểm tra key
     if (!apiKey) return alert("Hệ thống chưa có API Key!");
 
     setLoading(true);
@@ -171,9 +171,15 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Dùng gemini-1.5-flash nếu 2.5 không ổn
-      const result = await model.generateContent(`Hãy trả lời với tư cách một Trợ lý AI giáo dục dễ thương, thân thiện. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc và in ấn.\n${customPrompt}`);
+      // Giữ nguyên model gemini-2.5-flash như Thầy đang dùng ngon lành
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+      const result = await model.generateContent(
+        `Hãy trả lời với tư cách một Trợ lý AI giáo dục dễ thương, thân thiện. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc và in ấn.\n${customPrompt}`
+      );
+
       setAiResponse(result.response.text());
+
       confetti({
         particleCount: 200,
         spread: 90,
@@ -183,7 +189,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
       });
     } catch (e: any) {
       setAiResponse("Lỗi: " + e.message);
-      console.error("Gemini error:", e);
+      console.error("Gemini error chi tiết:", e);
     } finally {
       setLoading(false);
     }
@@ -211,7 +217,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setIsLoggedIn(false);
-    window.location.href = window.location.origin; // Chuyển hướng về gốc để reload sạch
+    window.location.href = window.location.origin; // Chuyển về gốc để reload sạch
   };
 
   return (
