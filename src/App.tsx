@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import confetti from 'canvas-confetti';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
-// Login Screen (giữ nguyên)
+// LoginScreen (giữ nguyên)
 const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }) => {
   const [activeTab, setActiveTab] = useState<"teacher" | "admin">("teacher");
   const [password, setPassword] = useState("");
@@ -101,7 +101,7 @@ const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }
   );
 };
 
-// Main App
+// Main App - Đã bỏ glassmorphism hoàn toàn
 const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const [showPackageModal, setShowPackageModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -134,7 +134,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
     if (type === 'khbd') {
       return `Bạn là chuyên gia xây dựng Kế hoạch bài dạy theo Chương trình GDPT 2018.\n\nHãy soạn KẾ HOẠCH BÀI DẠY (KHBD) theo Công văn 5512/BGDĐT-GDTrH, Phụ lục 4, đảm bảo đầy đủ và đúng chuẩn.\nYêu cầu bắt buộc:\n* Đúng cấu trúc KHBD theo CV 5512 – Phụ lục 4\n* Dạy học theo định hướng phát triển phẩm chất và năng lực\n* TÍCH HỢP:\n  * Năng lực số\n  * Quyền con người\n  * Lồng ghép Giáo dục Quốc phòng – An ninh\n  * Học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh\n\nCấu trúc KHBD gồm:\n1. MỤC TIÊU BÀI HỌC\n   * Phẩm chất\n   * Năng lực chung\n   * Năng lực đặc thù\n2. THIẾT BỊ DẠY HỌC VÀ HỌC LIỆU\n3. TIẾN TRÌNH DẠY HỌC:\n   * Hoạt động 1: Mở đầu\n   * Hoạt động 2: Hình thành kiến thức\n   * Hoạt động 3: Luyện tập\n   * Hoạt động 4: Vận dụng\n4. ĐIỀU CHỈNH – BỔ SUNG (nếu có)\n\nTrình bày ngôn ngữ hành chính – sư phạm, đúng để in nộp hồ sơ chuyên môn. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc.\n${mucDo}\n${context}`;
     }
-    // Các prompt khác giữ nguyên (em rút gọn để code ngắn)
+    // Các prompt khác giữ nguyên
     return "";
   };
 
@@ -208,7 +208,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
   return (
     <div className="h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 text-slate-100 overflow-hidden flex flex-col font-sans italic relative">
-      <header className="h-28 bg-gradient-to-r from-emerald-700 to-emerald-800 px-10 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50 backdrop-blur-sm">
+      <header className="h-28 bg-gradient-to-r from-emerald-700 to-emerald-800 px-10 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
         <div className="flex items-center gap-6 w-1/3">
           <div onClick={() => document.getElementById('avatar-input')?.click()} className="w-20 h-20 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:border-yellow-400 transition-all shadow-lg">
             {avatarUrl ? <img src={avatarUrl} className="w-full h-full object-cover" /> : <span className="text-[10px] text-white font-black uppercase">DÁN ẢNH</span>}
@@ -220,7 +220,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
           </div>
         </div>
         <div className="flex-1 flex justify-center">
-          <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-16 py-4 rounded-3xl border-2 border-yellow-300 shadow-xl backdrop-blur-sm">
+          <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-16 py-4 rounded-3xl border-2 border-yellow-300 shadow-xl">
             <h2 className="text-white text-3xl font-black uppercase italic tracking-wide animate-pulse">
               CHÀO MỪNG QUÝ THẦY CÔ !
             </h2>
@@ -241,7 +241,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
       <main className="flex-1 grid grid-cols-12 gap-10 p-10 overflow-hidden">
         <aside className="col-span-3 space-y-10 flex flex-col min-h-0 relative z-[100]">
-          <div className="bg-gradient-to-br from-slate-700 to-slate-800 p-7 rounded-3xl border border-slate-600 shadow-2xl space-y-5 shrink-0">
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 p-7 rounded-3xl border border-slate-700 shadow-2xl space-y-5 shrink-0">
             <h2 className="text-xl font-black text-cyan-300 uppercase italic tracking-wide">⚙️ CẤU HÌNH THIẾT KẾ</h2>
             <select value={monHoc} onChange={(e) => setMonHoc(e.target.value)} className="w-full bg-slate-900 border border-cyan-600 rounded-xl p-4 text-base font-bold text-white focus:ring-2 focus:ring-cyan-400">
               {dsMonHoc.map(m => <option key={m}>{m}</option>)}
@@ -264,7 +264,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
                 📜 CHỌN LỆNH MẪU (5) ▼
               </button>
               {showPromptMenu && (
-                <div className="absolute top-full left-0 mt-2 w-full bg-slate-900 border border-cyan-500 rounded-2xl shadow-2xl font-black italic overflow-hidden z-[200]">
+                <div className="absolute top-full left-0 mt-2 w-full bg-slate-900 border border-cyan-500 rounded-2xl shadow-2xl font-black italic overflow-hidden z-[999]">
                   <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('khbd')); setShowPromptMenu(false); }} className="w-full text-left px-6 py-5 hover:bg-cyan-800 border-b border-cyan-600 text-base transition">
                     🔹 SOẠN KẾ HOẠCH BÀI DẠY (KHBD) THEO CV 5512 – GDPT 2018
                   </button>
@@ -285,7 +285,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-3xl border border-slate-600 shadow-2xl flex flex-col flex-1 overflow-hidden relative z-[9999]">
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl border border-slate-700 shadow-2xl flex flex-col flex-1 overflow-hidden relative z-[9999]">
             <div className="bg-slate-900 px-6 py-4 border-b border-slate-700 text-cyan-300 font-black text-base uppercase italic">THÊM DỮ LIỆU, HÌNH ẢNH (+)</div>
             <div className="p-6 flex-1 overflow-y-auto custom-scrollbar relative z-[10000]">
               <div 
@@ -324,14 +324,14 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         </aside>
 
         <section className="col-span-3">
-          <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-3xl border border-slate-600 shadow-2xl flex flex-col h-full overflow-hidden">
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl border border-slate-700 shadow-2xl flex flex-col h-full overflow-hidden">
             <div className="px-6 py-5 bg-slate-900 border-b border-slate-700 text-xl font-black text-orange-300 uppercase italic">Workspace Editor</div>
             <textarea value={customPrompt} onChange={(e) => setCustomPrompt(e.target.value)} className="w-full flex-1 bg-transparent p-6 text-base text-slate-100 outline-none resize-none font-bold italic placeholder-cyan-300" placeholder="Nhập prompt tùy chỉnh hoặc chọn lệnh mẫu..." />
           </div>
         </section>
 
         <section className="col-span-6 flex flex-col relative">
-          <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-3xl border border-slate-600 shadow-2xl flex flex-col h-full overflow-hidden">
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl border border-slate-700 shadow-2xl flex flex-col h-full overflow-hidden">
             <div className="px-10 py-6 bg-slate-900 border-b border-slate-700 flex justify-between items-center">
               <span className="text-base font-black text-emerald-300 uppercase italic">PREVIEW KẾT QUẢ</span>
               <div className="relative">
@@ -339,7 +339,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
                   ♻️ XUẤT FILE ▼
                 </button>
                 {showExportMenu && (
-                  <div className="absolute right-0 mt-3 w-48 bg-white/95 backdrop-blur-lg rounded-xl shadow-2xl overflow-hidden z-[100] border border-emerald-400/30">
+                  <div className="absolute right-0 mt-3 w-48 bg-white/95 rounded-xl shadow-2xl overflow-hidden z-[100] border border-emerald-400/30">
                     <button onClick={() => exportFile('html')} className="w-full px-5 py-4 text-left text-slate-900 hover:bg-emerald-100 font-black text-base uppercase border-b">📄 HTML (in ấn đẹp)</button>
                     <button onClick={() => exportFile('doc')} className="w-full px-5 py-4 text-left text-slate-900 hover:bg-emerald-100 font-black text-base uppercase border-b">📄 File Word (.doc)</button>
                     <button onClick={() => exportFile('pdf')} className="w-full px-5 py-4 text-left text-slate-900 hover:bg-emerald-100 font-black text-base uppercase">📕 File PDF (.pdf)</button>
@@ -347,7 +347,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
                 )}
               </div>
             </div>
-            <div className="flex-1 bg-white/95 backdrop-blur-md p-10 overflow-y-auto text-slate-900 render-content custom-scrollbar">
+            <div className="flex-1 bg-white/95 p-10 overflow-y-auto text-slate-900 render-content custom-scrollbar">
               <div dangerouslySetInnerHTML={{ __html: aiResponse || "<p className='text-center text-gray-500 italic text-lg'>Chưa có kết quả. Nhấn Kích hoạt soạn giảng để bắt đầu!</p>" }} />
             </div>
           </div>
@@ -376,7 +376,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         </div>
 
         {showAIChat && (
-          <div className="mt-4 w-96 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-purple-300/50 p-5 animate-fade-in">
+          <div className="mt-4 w-96 bg-white/95 rounded-2xl shadow-2xl border border-purple-300/50 p-5 animate-fade-in">
             <div className="flex justify-between items-center mb-3">
               <h3 className="font-bold text-purple-900 text-lg flex items-center gap-2">
                 <span className="text-2xl">🤖</span> Trợ lý AI dễ thương
