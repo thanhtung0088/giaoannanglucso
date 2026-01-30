@@ -216,7 +216,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setIsLoggedIn(false);
-    window.location.href = window.location.origin;
+    window.location.href = window.location.origin + '/'; // Force reload về gốc để reset sạch state
   };
 
   return (
@@ -232,7 +232,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             <p className="text-base font-bold text-emerald-200 uppercase mt-2">NĂNG LỰC SỐ THẾ HỆ MỚI</p>
           </div>
         </div>
-        <div className="flex-1 flex justify-center ml-10"> {/* Dời sang trái khoảng 1cm (ml-10) */}
+        <div className="flex-1 flex justify-center ml-10">
           <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-48 py-8 rounded-3xl border-2 border-yellow-300 shadow-xl">
             <h2 className="text-white text-6xl font-black uppercase italic tracking-widest animate-pulse whitespace-nowrap">
               CHÀO MỪNG QUÝ THẦY CÔ !
@@ -363,7 +363,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
                 )}
               </div>
             </div>
-            {/* Thêm thanh cuộn cho preview */}
+            {/* Preview có thanh cuộn */}
             <div className="flex-1 bg-white/95 p-10 overflow-y-auto text-slate-900 render-content custom-scrollbar" style={{ maxHeight: 'calc(100vh - 220px)' }}>
               <div dangerouslySetInnerHTML={{ __html: aiResponse || "<p className='text-center text-gray-500 italic text-lg'>Chưa có kết quả. Nhấn Kích hoạt soạn giảng để bắt đầu!</p>" }} />
             </div>
@@ -498,17 +498,23 @@ const App: React.FC = () => {
     setUserInfo(info);
     setIsLoggedIn(true);
     localStorage.setItem("user", JSON.stringify(info));
+    // Force reload sau khi login để đảm bảo vào MainApp sạch
+    window.location.href = window.location.origin;
   };
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
+    console.log("User từ localStorage:", savedUser); // Log để debug
     if (savedUser) {
       setUserInfo(JSON.parse(savedUser));
       setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
     }
   }, []);
 
-  if (!isLoggedIn) {
+  // Nếu không có user trong localStorage, buộc vào LoginScreen
+  if (!isLoggedIn || !localStorage.getItem("user")) {
     return <LoginScreen onLogin={handleLogin} />;
   }
 
