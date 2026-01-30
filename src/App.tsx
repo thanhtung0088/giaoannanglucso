@@ -232,24 +232,24 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             <p className="text-base font-bold text-emerald-200 uppercase mt-2">NĂNG LỰC SỐ THẾ HỆ MỚI</p>
           </div>
         </div>
-        <div className="flex-1 flex justify-center ml-16"> {/* Dời sang trái rõ ràng hơn (ml-16 ≈ 4rem ≈ 1.6cm) */}
+        <div className="flex-1 flex justify-center ml-16">
           <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-48 py-8 rounded-3xl border-2 border-yellow-300 shadow-xl">
             <h2 className="text-white text-6xl font-black uppercase italic tracking-widest animate-pulse whitespace-nowrap">
               CHÀO MỪNG QUÝ THẦY CÔ !
             </h2>
           </div>
         </div>
-        <div className="w-1/3 flex justify-end gap-5">
-          <button onClick={openGoogleMeet} className="bg-green-600 text-white px-8 py-5 rounded-xl font-black text-xl uppercase shadow-xl border-b-6 border-green-800 flex items-center gap-3 hover:bg-green-500 transition">
-            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="w-1/3 flex justify-end gap-4">
+          <button onClick={openGoogleMeet} className="bg-green-600 text-white px-6 py-3 rounded-xl font-bold text-base uppercase shadow-xl border-b-4 border-green-800 flex items-center gap-2 hover:bg-green-500 transition">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
             GOOGLE MEET
           </button>
-          <button onClick={() => setShowPackageModal(true)} className="bg-purple-600 text-white px-8 py-5 rounded-xl font-black text-xl uppercase shadow-xl border-b-6 border-purple-800 hover:bg-purple-500 transition">
+          <button onClick={() => setShowPackageModal(true)} className="bg-purple-600 text-white px-6 py-3 rounded-xl font-bold text-base uppercase shadow-xl border-b-4 border-purple-800 hover:bg-purple-500 transition">
             CẬP NHẬT NÂNG CAO
           </button>
-          <button onClick={handleLogout} className="bg-red-600 text-white px-8 py-5 rounded-xl font-black text-xl uppercase shadow-xl border-b-6 border-red-800 hover:bg-red-500 transition">
+          <button onClick={handleLogout} className="bg-red-600 text-white px-6 py-3 rounded-xl font-bold text-base uppercase shadow-xl border-b-4 border-red-800 hover:bg-red-500 transition">
             THOÁT ỨNG DỤNG
           </button>
         </div>
@@ -363,8 +363,8 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
                 )}
               </div>
             </div>
-            {/* Preview có thanh cuộn mạnh hơn */}
-            <div className="flex-1 bg-white/95 p-10 overflow-y-auto text-slate-900 render-content custom-scrollbar" style={{ maxHeight: '70vh', minHeight: '300px' }}>
+            {/* Preview có thanh cuộn rõ ràng */}
+            <div className="flex-1 bg-white/95 p-10 overflow-y-auto text-slate-900 render-content custom-scrollbar" style={{ maxHeight: '70vh', minHeight: '400px' }}>
               <div dangerouslySetInnerHTML={{ __html: aiResponse || "<p className='text-center text-gray-500 italic text-lg'>Chưa có kết quả. Nhấn Kích hoạt soạn giảng để bắt đầu!</p>" }} />
             </div>
           </div>
@@ -472,7 +472,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
-        .render-content { overflow-y: auto; max-height: 100%; padding-right: 10px; }
+        .render-content { overflow-y: auto; max-height: 100%; padding-right: 10px; word-wrap: break-word; }
         .render-content table { width: 100%; border-collapse: collapse; border: 2px solid #1e40af; margin: 20px 0; background: #f8fafc; box-shadow: 0 4px 10px rgba(30,64,175,0.2); }
         .render-content td, .render-content th { border: 1px solid #cbd5e1; padding: 14px; font-size: 15px; }
         .render-content h2 { font-size: 2rem; font-weight: bold; margin: 2rem 0 1rem; color: #1e40af; border-bottom: 3px solid #e2e8f0; padding-bottom: 0.5rem; }
