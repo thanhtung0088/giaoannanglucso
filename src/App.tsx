@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import confetti from 'canvas-confetti';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
-// Login Screen - To hơn
+// Login Screen - Đã to hơn từ lần trước
 const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }) => {
   const [activeTab, setActiveTab] = useState<"teacher" | "admin">("teacher");
   const [password, setPassword] = useState("");
@@ -101,7 +101,7 @@ const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }
   );
 };
 
-// Main App
+// Main App - Header to hơn, nút thoát kích hoạt, phần thêm dữ liệu có cuộn
 const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const [showPackageModal, setShowPackageModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -213,35 +213,35 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
   return (
     <div className="h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 text-slate-100 overflow-hidden flex flex-col font-sans italic relative">
-      <header className="h-40 bg-gradient-to-r from-emerald-700 to-emerald-800 px-10 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
-        <div className="flex items-center gap-6 w-1/3">
-          <div onClick={() => document.getElementById('avatar-input')?.click()} className="w-20 h-20 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:border-yellow-400 transition-all shadow-lg">
-            {avatarUrl ? <img src={avatarUrl} className="w-full h-full object-cover" /> : <span className="text-[10px] text-white font-black uppercase">DÁN ẢNH</span>}
+      <header className="h-48 bg-gradient-to-r from-emerald-700 to-emerald-800 px-12 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
+        <div className="flex items-center gap-8 w-1/3">
+          <div onClick={() => document.getElementById('avatar-input')?.click()} className="w-28 h-28 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:border-yellow-400 transition-all shadow-lg">
+            {avatarUrl ? <img src={avatarUrl} className="w-full h-full object-cover" /> : <span className="text-xs text-white font-black uppercase text-center">DÁN<br/>HÌNH</span>}
             <input type="file" id="avatar-input" className="hidden" accept="image/*" onChange={handleAvatarChange} />
           </div>
           <div>
-            <h1 className="text-white text-lg font-black uppercase leading-none">HỆ THỐNG SOẠN GIẢNG</h1>
-            <p className="text-[10px] font-bold text-emerald-200 uppercase mt-1">NĂNG LỰC SỐ THẾ HỆ MỚI</p>
+            <h1 className="text-white text-2xl font-black uppercase leading-tight">HỆ THỐNG SOẠN GIẢNG</h1>
+            <p className="text-sm font-bold text-emerald-200 uppercase mt-1">NĂNG LỰC SỐ THẾ HỆ MỚI</p>
           </div>
         </div>
         <div className="flex-1 flex justify-center">
-          <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-20 py-5 rounded-3xl border-2 border-yellow-300 shadow-xl">
+          <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-24 py-6 rounded-3xl border-2 border-yellow-300 shadow-xl">
             <h2 className="text-white text-4xl font-black uppercase italic tracking-wide animate-pulse">
               CHÀO MỪNG QUÝ THẦY CÔ !
             </h2>
           </div>
         </div>
-        <div className="w-1/3 flex justify-end gap-3">
-          <button onClick={openGoogleMeet} className="bg-green-600 text-white px-5 py-3 rounded-xl font-black text-xs uppercase shadow-xl border-b-4 border-green-800 flex items-center gap-2 hover:bg-green-500 transition">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="w-1/3 flex justify-end gap-4">
+          <button onClick={openGoogleMeet} className="bg-green-600 text-white px-6 py-4 rounded-xl font-black text-lg uppercase shadow-xl border-b-4 border-green-800 flex items-center gap-2 hover:bg-green-500 transition">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
             GOOGLE MEET
           </button>
-          <button onClick={() => setShowPackageModal(true)} className="bg-purple-600 text-white px-5 py-3 rounded-xl font-black text-xs uppercase shadow-xl border-b-4 border-purple-800 hover:bg-purple-500 transition">
+          <button onClick={() => setShowPackageModal(true)} className="bg-purple-600 text-white px-6 py-4 rounded-xl font-black text-lg uppercase shadow-xl border-b-4 border-purple-800 hover:bg-purple-500 transition">
             CẬP NHẬT NÂNG CAO
           </button>
-          <button onClick={handleLogout} className="bg-red-600 text-white px-5 py-3 rounded-xl font-black text-xs uppercase shadow-xl border-b-4 border-red-800 hover:bg-red-500 transition">
+          <button onClick={handleLogout} className="bg-red-600 text-white px-6 py-4 rounded-xl font-black text-lg uppercase shadow-xl border-b-4 border-red-800 hover:bg-red-500 transition">
             THOÁT ỨNG DỤNG
           </button>
         </div>
@@ -293,7 +293,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             </div>
           </div>
 
-          {/* Phần thêm dữ liệu - có thanh cuộn, không che nút dưới */}
+          {/* Phần thêm dữ liệu - có thanh cuộn, giới hạn chiều cao */}
           <div className="bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl flex flex-col overflow-hidden relative z-[50] max-h-[60vh]">
             <div className="bg-slate-900 px-6 py-4 border-b border-slate-700 text-cyan-300 font-black text-base uppercase italic">THÊM DỮ LIỆU, HÌNH ẢNH (+)</div>
             <div className="p-6 flex-1 overflow-y-auto custom-scrollbar relative z-[60]">
@@ -363,13 +363,13 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         </section>
       </main>
 
-      {/* Modal Cập nhật nâng cao - Nền đen mờ */}
+      {/* Modal Cập nhật nâng cao */}
       {showPackageModal && (
         <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[3000] p-4">
           <div className="bg-slate-900 border-4 border-yellow-500 rounded-3xl p-10 max-w-5xl w-full relative shadow-2xl text-white">
             <button onClick={() => setShowPackageModal(false)} className="absolute top-4 right-6 text-3xl font-black hover:text-yellow-400 transition">✕</button>
             <h2 className="text-yellow-400 text-3xl font-black text-center uppercase mb-8">CẬP NHẬT NÂNG CAO</h2>
-            <p className="text-center text-lg mb-6 text-orange-300">Người dùng mới chỉ được phép sử dụng gói FREE thôi!</p>
+            <p className="text-center text-lg mb-6 text-orange-300 font-bold">Người dùng mới chỉ được phép sử dụng gói FREE thôi!</p>
 
             <div className="grid grid-cols-3 gap-8">
               <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 text-center">
