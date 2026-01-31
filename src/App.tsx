@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import confetti from 'canvas-confetti';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
-// Login Screen
+// Login Screen (giữ nguyên)
 const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }) => {
   const [activeTab, setActiveTab] = useState<"teacher" | "admin">("teacher");
   const [password, setPassword] = useState("");
@@ -29,7 +29,7 @@ const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }
   };
 
   return (
-    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID_HERE"> {/* Thay bằng Client ID thật của Thầy */}
+    <GoogleOAuthProvider clientId="709918336708-70ivgeftafg1n2uqd0p68ec659qhidoh.apps.googleusercontent.com"> {/* Dán Client ID thật của Thầy */}
       <div className="min-h-screen bg-gradient-to-br from-blue-900 to-cyan-900 flex items-center justify-center p-8">
         <div className="w-full max-w-6xl flex rounded-3xl overflow-hidden shadow-2xl bg-white">
           <div className="w-1/2 bg-gradient-to-br from-cyan-700 to-blue-800 p-20 flex flex-col justify-center items-center text-white">
@@ -132,18 +132,25 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
     const mucDo = isHSHN ? "Yêu cầu: Giảm độ khó 50%, nội dung ngắn gọn, dùng từ ngữ đơn giản, dễ hiểu nhất cho học sinh hòa nhập." : "Yêu cầu: Đúng chuẩn định hướng phát triển năng lực.";
     const context = `môn ${monHoc}, ${khoiLop}, bài "${tenBai || '[Tên bài]'}" (${soTiet || 1} tiết), đối tượng ${doiTuongHS}.`;
 
+    const header = `
+Ngày soạn: .................
+Tuần dạy: ...................
+    `.trim();
+
+    const basePrompt = `Bạn là chuyên gia giáo dục. Hãy trả lời với tư cách một Trợ lý AI giáo dục dễ thương, thân thiện. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc và in ấn. Bắt đầu bằng phần header sau:\n<pre>${header}</pre>\n\n`;
+
     if (type === 'khbd') {
-      return `Bạn là chuyên gia xây dựng Kế hoạch bài dạy theo Chương trình GDPT 2018.\n\nHãy soạn KẾ HOẠCH BÀI DẠY (KHBD) theo Công văn 5512/BGDĐT-GDTrH, Phụ lục 4, đảm bảo đầy đủ và đúng chuẩn.\nYêu cầu bắt buộc:\n* Đúng cấu trúc KHBD theo CV 5512 – Phụ lục 4\n* Dạy học theo định hướng phát triển phẩm chất và năng lực\n* TÍCH HỢP:\n  * Năng lực số\n  * Quyền con người\n  * Lồng ghép Giáo dục Quốc phòng – An ninh\n  * Học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh\n\nCấu trúc KHBD gồm:\n1. MỤC TIÊU BÀI HỌC\n   * Phẩm chất\n   * Năng lực chung\n   * Năng lực đặc thù\n2. THIẾT BỊ DẠY HỌC VÀ HỌC LIỆU\n3. TIẾN TRÌNH DẠY HỌC:\n   * Hoạt động 1: Mở đầu\n   * Hoạt động 2: Hình thành kiến thức\n   * Hoạt động 3: Luyện tập\n   * Hoạt động 4: Vận dụng\n4. ĐIỀU CHỈNH – BỔ SUNG (nếu có)\n\nTrình bày ngôn ngữ hành chính – sư phạm, đúng để in nộp hồ sơ chuyên môn. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc.\n${mucDo}\n${context}`;
+      return basePrompt + `Hãy soạn KẾ HOẠCH BÀI DẠY (KHBD) theo Công văn 5512/BGDĐT-GDTrH, Phụ lục 4, đảm bảo đầy đủ và đúng chuẩn.\nYêu cầu bắt buộc:\n* Đúng cấu trúc KHBD theo CV 5512 – Phụ lục 4\n* Dạy học theo định hướng phát triển phẩm chất và năng lực\n* TÍCH HỢP:\n  * Năng lực số\n  * Quyền con người\n  * Lồng ghép Giáo dục Quốc phòng – An ninh\n  * Học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh\n\nCấu trúc KHBD gồm:\n1. MỤC TIÊU BÀI HỌC\n   * Phẩm chất\n   * Năng lực chung\n   * Năng lực đặc thù\n2. THIẾT BỊ DẠY HỌC VÀ HỌC LIỆU\n3. TIẾN TRÌNH DẠY HỌC:\n   * Hoạt động 1: Mở đầu\n   * Hoạt động 2: Hình thành kiến thức\n   * Hoạt động 3: Luyện tập\n   * Hoạt động 4: Vận dụng\n4. ĐIỀU CHỈNH – BỔ SUNG (nếu có)\n\nTrình bày ngôn ngữ hành chính – sư phạm, đúng để in nộp hồ sơ chuyên môn.\n${mucDo}\n${context}`;
     } else if (type === 'ppt') {
-      return `Soạn bài giảng PowerPoint hiện đại, thẩm mỹ cao cho ${context}. Sử dụng ngôn ngữ dễ hiểu, slide đẹp, có hình ảnh minh họa, bảng biểu, animation nhẹ nhàng.`;
+      return basePrompt + `Soạn bài giảng PowerPoint hiện đại, thẩm mỹ cao cho ${context}. Sử dụng ngôn ngữ dễ hiểu, slide đẹp, có hình ảnh minh họa, bảng biểu, animation nhẹ nhàng.`;
     } else if (type === 'kiemtra') {
-      return `Soạn đề kiểm tra theo Công văn 7991, môn ${monHoc}, lớp ${khoiLop}, bài ${tenBai}, đối tượng ${doiTuongHS}. Đề gồm trắc nghiệm và tự luận, có đáp án chi tiết.`;
+      return basePrompt + `Soạn đề kiểm tra theo Công văn 7991, môn ${monHoc}, lớp ${khoiLop}, bài ${tenBai}, đối tượng ${doiTuongHS}. Đề gồm trắc nghiệm và tự luận, có đáp án chi tiết.`;
     } else if (type === 'ontap') {
-      return `Soạn đề cương ôn tập chi tiết cho bài ${tenBai}, môn ${monHoc}, lớp ${khoiLop}. Bao gồm kiến thức trọng tâm, bài tập, câu hỏi ôn.`;
+      return basePrompt + `Soạn đề cương ôn tập chi tiết cho bài ${tenBai}, môn ${monHoc}, lớp ${khoiLop}. Bao gồm kiến thức trọng tâm, bài tập, câu hỏi ôn.`;
     } else if (type === 'trochoi') {
-      return `Soạn trò chơi tương tác giáo dục vui nhộn cho bài ${tenBai}, môn ${monHoc}, lớp ${khoiLop}. Có thể là trò chơi nhóm, quiz, đố vui, phù hợp ${doiTuongHS}.`;
+      return basePrompt + `Soạn trò chơi tương tác giáo dục vui nhộn cho bài ${tenBai}, môn ${monHoc}, lớp ${khoiLop}. Có thể là trò chơi nhóm, quiz, đố vui, phù hợp ${doiTuongHS}.`;
     }
-    return "";
+    return basePrompt + "Hãy trả lời theo yêu cầu của người dùng.";
   };
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,7 +192,20 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         `Hãy trả lời với tư cách một Trợ lý AI giáo dục dễ thương, thân thiện. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc và in ấn.\n${customPrompt}`
       );
 
-      setAiResponse(result.response.text());
+      let html = result.response.text();
+
+      // Nếu Gemini không tự thêm header, em thêm thủ công để chắc chắn
+      if (!html.includes("Ngày soạn") || !html.includes("Tuần dạy")) {
+        const header = `
+<div style="text-align: right; margin-bottom: 20px; font-style: italic;">
+  <p>Ngày soạn: ................</p>
+  <p>Tuần dạy: ...................</p>
+</div>
+        `;
+        html = header + html;
+      }
+
+      setAiResponse(html);
 
       confetti({
         particleCount: 200,
@@ -367,8 +387,9 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
                 )}
               </div>
             </div>
-            <div className="flex-1 bg-white/95 p-10 overflow-y-auto text-slate-900 render-content custom-scrollbar" style={{ maxHeight: '70vh', minHeight: '500px' }}>
-              <div dangerouslySetInnerHTML={{ __html: aiResponse || "<p className='text-center text-gray-500 italic text-lg'>Chưa có kết quả. Nhấn Kích hoạt soạn giảng để bắt đầu!</p>" }} />
+            {/* Preview: nội dung rộng sát viền, có thanh cuộn */}
+            <div className="flex-1 bg-white/95 p-0 overflow-y-auto text-slate-900 render-content custom-scrollbar" style={{ maxHeight: '70vh', minHeight: '500px' }}>
+              <div className="w-full" dangerouslySetInnerHTML={{ __html: aiResponse || "<p className='text-center text-gray-500 italic text-lg p-10'>Chưa có kết quả. Nhấn Kích hoạt soạn giảng để bắt đầu!</p>" }} />
             </div>
           </div>
         </section>
@@ -475,7 +496,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
-        .render-content { overflow-y: auto; max-height: 100%; padding-right: 10px; word-wrap: break-word; }
+        .render-content { width: 100%; max-width: 100%; padding: 20px; box-sizing: border-box; word-wrap: break-word; }
         .render-content table { width: 100%; border-collapse: collapse; border: 2px solid #1e40af; margin: 20px 0; background: #f8fafc; box-shadow: 0 4px 10px rgba(30,64,175,0.2); }
         .render-content td, .render-content th { border: 1px solid #cbd5e1; padding: 14px; font-size: 15px; }
         .render-content h2 { font-size: 2rem; font-weight: bold; margin: 2rem 0 1rem; color: #1e40af; border-bottom: 3px solid #e2e8f0; padding-bottom: 0.5rem; }
@@ -500,18 +521,23 @@ const App: React.FC = () => {
   const [userInfo, setUserInfo] = useState<any>(null);
 
   const handleLogin = (info: any) => {
+    console.log("handleLogin được gọi với info:", info);
     setUserInfo(info);
     setIsLoggedIn(true);
     localStorage.setItem("user", JSON.stringify(info));
-    window.location.href = window.location.origin;
+    window.location.reload(); // Reload để đảm bảo render lại sạch
   };
 
   useEffect(() => {
+    console.log("useEffect chạy - kiểm tra localStorage");
     const savedUser = localStorage.getItem("user");
     console.log("User từ localStorage:", savedUser);
+
     if (savedUser) {
       try {
-        setUserInfo(JSON.parse(savedUser));
+        const parsed = JSON.parse(savedUser);
+        console.log("Parse user thành công:", parsed);
+        setUserInfo(parsed);
         setIsLoggedIn(true);
       } catch (e) {
         console.error("Lỗi parse user:", e);
@@ -519,14 +545,19 @@ const App: React.FC = () => {
         setIsLoggedIn(false);
       }
     } else {
+      console.log("Không có user trong localStorage");
       setIsLoggedIn(false);
     }
   }, []);
 
-  if (!isLoggedIn || !localStorage.getItem("user")) {
+  console.log("Render App - isLoggedIn hiện tại:", isLoggedIn);
+
+  if (!isLoggedIn) {
+    console.log("Render LoginScreen");
     return <LoginScreen onLogin={handleLogin} />;
   }
 
+  console.log("Render MainApp");
   return <MainApp userInfo={userInfo} />;
 };
 
