@@ -118,7 +118,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const [customPrompt, setCustomPrompt] = useState("");
   const [showAIChat, setShowAIChat] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
-  const [chatHistory, setChatHistory] = useState<string[]>(["Chào Thầy! 🌸 Em là trợ lý AI dễ thương đây ạ! Thầy cần em giúp gì hôm nay? 💕"]);
+  const [chatHistory, setChatHistory] = useState<string[]>(["Chào Thầy/Cô ! 🌸 Em là trợ lý AI dễ thương đây ạ! Thầy/Cô cần em giúp gì hôm nay? 💕"]);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const dsMonHoc = ["Toán", "Ngữ văn", "Tiếng Anh", "Tin học", "Vật lí", "Hóa học", "Sinh học", "Lịch sử", "Địa lí", "GD Công dân", "Công nghệ", "KHTN"];
@@ -179,7 +179,6 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
       let html = result.response.text();
 
-      // Thêm header ngày soạn / tuần dạy
       const header = `
 <div style="text-align: right; margin-bottom: 20px; font-size: 15px; color: #555;">
   <p><strong>Ngày soạn:</strong> .......................</p>
@@ -226,10 +225,10 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
   const sendChatMessage = () => {
     if (!chatMessage.trim()) return;
-    setChatHistory(prev => [...prev, `Thầy: ${chatMessage}`]);
+    setChatHistory(prev => [...prev, `Thầy/Cô: ${chatMessage}`]);
     setChatMessage("");
     setTimeout(() => {
-      setChatHistory(prev => [...prev, "Trợ lý AI: Dạ Thầy, em hiểu rồi ạ! Thầy cần em hỗ trợ soạn gì cụ thể nào? Em sẽ cố gắng làm thật đẹp và đúng chuẩn luôn 💕"]);
+      setChatHistory(prev => [...prev, "Trợ lý AI: Dạ Thầy/Cô, em hiểu rồi ạ! Thầy/Cô cần em hỗ trợ soạn gì cụ thể nào? Em sẽ cố gắng làm thật đẹp và đúng chuẩn luôn 💕"]);
     }, 1500);
   };
 
@@ -254,6 +253,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
           <div>
             <h1 className="text-white text-3xl font-black uppercase leading-tight">HỆ THỐNG SOẠN GIẢNG</h1>
             <p className="text-base font-bold text-emerald-200 uppercase mt-2">NĂNG LỰC SỐ THẾ HỆ MỚI</p>
+            <p className="text-sm italic text-emerald-300 mt-1">Thiết kế bởi : Nguyễn Thanh Tùng</p>
           </div>
         </div>
         <div className="flex-1 flex justify-center ml-16">
@@ -390,7 +390,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         </section>
       </main>
 
-      {/* Modal Cập nhật nâng cao - ĐÃ FIX ĐƠ */}
+      {/* Modal Cập nhật nâng cao */}
       {showPackageModal && (
         <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[3000] p-4" onClick={() => setShowPackageModal(false)}>
           <div className="bg-slate-900 border-4 border-yellow-500 rounded-3xl p-10 max-w-5xl w-full relative shadow-2xl text-white" onClick={(e) => e.stopPropagation()}>
@@ -442,7 +442,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         </div>
       )}
 
-      {/* Trợ lý AI robot - ĐÃ TRẢ LẠI */}
+      {/* Trợ lý AI robot */}
       <div className="fixed bottom-8 right-8 z-[2000] flex flex-col items-end">
         <div 
           onClick={() => setShowAIChat(!showAIChat)} 
@@ -466,8 +466,8 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
             </div>
             <div className="h-64 overflow-y-auto mb-4 p-4 bg-gray-50 rounded-xl text-slate-900 custom-scrollbar">
               {chatHistory.map((msg, i) => (
-                <div key={i} className={`mb-3 ${msg.startsWith("Thầy:") ? "text-right" : "text-left"}`}>
-                  <span className={`inline-block p-3 rounded-2xl max-w-[80%] shadow-sm ${msg.startsWith("Thầy:") ? "bg-blue-100 text-blue-900" : "bg-pink-100 text-pink-900"}`}>
+                <div key={i} className={`mb-3 ${msg.startsWith("Thầy/Cô:") ? "text-right" : "text-left"}`}>
+                  <span className={`inline-block p-3 rounded-2xl max-w-[80%] shadow-sm ${msg.startsWith("Thầy/Cô:") ? "bg-blue-100 text-blue-900" : "bg-pink-100 text-pink-900"}`}>
                     {msg}
                   </span>
                 </div>
@@ -479,7 +479,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
                 value={chatMessage}
                 onChange={(e) => setChatMessage(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
-                placeholder="Gõ tin nhắn cho em nè Thầy..."
+                placeholder="Gõ tin nhắn cho em nè Thầy/Cô..."
                 className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-purple-500 text-slate-900"
               />
               <button onClick={sendChatMessage} className="px-5 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-bold transition">
