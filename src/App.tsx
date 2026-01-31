@@ -134,6 +134,14 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
     if (type === 'khbd') {
       return `Bạn là chuyên gia xây dựng Kế hoạch bài dạy theo Chương trình GDPT 2018.\n\nHãy soạn KẾ HOẠCH BÀI DẠY (KHBD) theo Công văn 5512/BGDĐT-GDTrH, Phụ lục 4, đảm bảo đầy đủ và đúng chuẩn.\nYêu cầu bắt buộc:\n* Đúng cấu trúc KHBD theo CV 5512 – Phụ lục 4\n* Dạy học theo định hướng phát triển phẩm chất và năng lực\n* TÍCH HỢP:\n  * Năng lực số\n  * Quyền con người\n  * Lồng ghép Giáo dục Quốc phòng – An ninh\n  * Học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh\n\nCấu trúc KHBD gồm:\n1. MỤC TIÊU BÀI HỌC\n   * Phẩm chất\n   * Năng lực chung\n   * Năng lực đặc thù\n2. THIẾT BỊ DẠY HỌC VÀ HỌC LIỆU\n3. TIẾN TRÌNH DẠY HỌC:\n   * Hoạt động 1: Mở đầu\n   * Hoạt động 2: Hình thành kiến thức\n   * Hoạt động 3: Luyện tập\n   * Hoạt động 4: Vận dụng\n4. ĐIỀU CHỈNH – BỔ SUNG (nếu có)\n\nTrình bày ngôn ngữ hành chính – sư phạm, đúng để in nộp hồ sơ chuyên môn. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc.\n${mucDo}\n${context}`;
+    } else if (type === 'ppt') {
+      return `Soạn bài giảng PowerPoint hiện đại, thẩm mỹ cao cho ${context}. Sử dụng ngôn ngữ dễ hiểu, slide đẹp, có hình ảnh minh họa, bảng biểu, animation nhẹ nhàng. Output dưới dạng HTML mô tả cấu trúc slide.`;
+    } else if (type === 'kiemtra') {
+      return `Soạn đề kiểm tra theo Công văn 7991, môn ${monHoc}, lớp ${khoiLop}, bài ${tenBai}, đối tượng ${doiTuongHS}. Đề gồm trắc nghiệm và tự luận, có đáp án chi tiết. Output dưới dạng HTML đẹp.`;
+    } else if (type === 'ontap') {
+      return `Soạn đề cương ôn tập chi tiết cho bài ${tenBai}, môn ${monHoc}, lớp ${khoiLop}. Bao gồm kiến thức trọng tâm, bài tập, câu hỏi ôn. Output dưới dạng HTML.`;
+    } else if (type === 'trochoi') {
+      return `Soạn trò chơi tương tác giáo dục vui nhộn cho bài ${tenBai}, môn ${monHoc}, lớp ${khoiLop}. Có thể là trò chơi nhóm, quiz, đố vui, phù hợp ${doiTuongHS}. Output dưới dạng HTML mô tả cách chơi.`;
     }
     return "";
   };
@@ -179,6 +187,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
       let html = result.response.text();
 
+      // Thêm header ngày soạn / tuần dạy
       const header = `
 <div style="text-align: right; margin-bottom: 20px; font-size: 15px; color: #555;">
   <p><strong>Ngày soạn:</strong> .......................</p>
