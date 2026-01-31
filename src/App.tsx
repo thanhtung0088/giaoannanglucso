@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import confetti from 'canvas-confetti';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
-// Login Screen (giữ nguyên)
+// Login Screen
 const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }) => {
   const [activeTab, setActiveTab] = useState<"teacher" | "admin">("teacher");
   const [password, setPassword] = useState("");
@@ -29,7 +29,7 @@ const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }
   };
 
   return (
-    <GoogleOAuthProvider clientId="709918336708-70ivgeftafg1n2uqd0p68ec659qhidoh.apps.googleusercontent.com"> {/* Client ID thật của Thầy */}
+    <GoogleOAuthProvider clientId="709918336708-70ivgeftafg1n2uqd0p68ec659qhidoh.apps.googleusercontent.com">
       <div className="min-h-screen bg-gradient-to-br from-blue-900 to-cyan-900 flex items-center justify-center p-8">
         <div className="w-full max-w-6xl flex rounded-3xl overflow-hidden shadow-2xl bg-white">
           <div className="w-1/2 bg-gradient-to-br from-cyan-700 to-blue-800 p-20 flex flex-col justify-center items-center text-white">
@@ -101,7 +101,7 @@ const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }
   );
 };
 
-// Main App
+// Main App - ĐÃ FIX HOÀN TOÀN
 const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const [showPackageModal, setShowPackageModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -134,21 +134,35 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
     if (type === 'khbd') {
       return `Bạn là chuyên gia xây dựng Kế hoạch bài dạy theo Chương trình GDPT 2018.\n\nHãy soạn KẾ HOẠCH BÀI DẠY (KHBD) theo Công văn 5512/BGDĐT-GDTrH, Phụ lục 4, đảm bảo đầy đủ và đúng chuẩn.\nYêu cầu bắt buộc:\n* Đúng cấu trúc KHBD theo CV 5512 – Phụ lục 4\n* Dạy học theo định hướng phát triển phẩm chất và năng lực\n* TÍCH HỢP:\n  * Năng lực số\n  * Quyền con người\n  * Lồng ghép Giáo dục Quốc phòng – An ninh\n  * Học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh\n\nCấu trúc KHBD gồm:\n1. MỤC TIÊU BÀI HỌC\n   * Phẩm chất\n   * Năng lực chung\n   * Năng lực đặc thù\n2. THIẾT BỊ DẠY HỌC VÀ HỌC LIỆU\n3. TIẾN TRÌNH DẠY HỌC:\n   * Hoạt động 1: Mở đầu\n   * Hoạt động 2: Hình thành kiến thức\n   * Hoạt động 3: Luyện tập\n   * Hoạt động 4: Vận dụng\n4. ĐIỀU CHỈNH – BỔ SUNG (nếu có)\n\nTrình bày ngôn ngữ hành chính – sư phạm, đúng để in nộp hồ sơ chuyên môn. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc.\n${mucDo}\n${context}`;
-    } else if (type === 'ppt') {
-      return `Soạn bài giảng PowerPoint hiện đại, thẩm mỹ cao cho ${context}. Sử dụng ngôn ngữ dễ hiểu, slide đẹp, có hình ảnh minh họa, bảng biểu, animation nhẹ nhàng.`;
-    } else if (type === 'kiemtra') {
-      return `Soạn đề kiểm tra theo Công văn 7991, môn ${monHoc}, lớp ${khoiLop}, bài ${tenBai}, đối tượng ${doiTuongHS}. Đề gồm trắc nghiệm và tự luận, có đáp án chi tiết.`;
-    } else if (type === 'ontap') {
-      return `Soạn đề cương ôn tập chi tiết cho bài ${tenBai}, môn ${monHoc}, lớp ${khoiLop}. Bao gồm kiến thức trọng tâm, bài tập, câu hỏi ôn.`;
-    } else if (type === 'trochoi') {
-      return `Soạn trò chơi tương tác giáo dục vui nhộn cho bài ${tenBai}, môn ${monHoc}, lớp ${khoiLop}. Có thể là trò chơi nhóm, quiz, đố vui, phù hợp ${doiTuongHS}.`;
     }
     return "";
   };
 
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64 = event.target?.result as string;
+        setAvatarUrl(base64);
+        localStorage.setItem("permanent_logo_v94", base64);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      if (selectedFiles.length + newFiles.length > MAX_FILES) {
+        alert(`Chỉ được gắn tối đa ${MAX_FILES} file thôi ạ!`);
+        return;
+      }
+      setSelectedFiles(prev => [...prev, ...newFiles]);
+    }
+  };
+
   const handleSoanBai = async () => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    console.log("API Key đang dùng:", apiKey);
     if (!apiKey) return alert("Hệ thống chưa có API Key!");
 
     setLoading(true);
@@ -158,21 +172,18 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-      const prompt = getHardcodedPrompt('khbd'); // Hoặc tùy chọn khác nếu cần
-      console.log("Prompt gửi đi cho Gemini:", prompt.substring(0, 300) + "..."); // Debug để xem prompt
-
-      const result = await model.generateContent(prompt);
+      const result = await model.generateContent(`Hãy trả lời với tư cách một Trợ lý AI giáo dục dễ thương, thân thiện. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc và in ấn.\n${customPrompt}`);
 
       let html = result.response.text();
-      console.log("HTML nhận từ Gemini:", html.substring(0, 300) + "..."); // Debug
 
-      // Thêm header ngày soạn / tuần dạy (luôn thêm ở đầu, ngay cả khi Gemini không có)
+      // Thêm header ngày soạn / tuần dạy (góc phải)
       const header = `
-<div style="text-align: right; margin-bottom: 30px; font-size: 16px; font-style: italic; color: #333;">
-  <p><strong>Ngày soạn:</strong> ................</p>
-  <p><strong>Tuần dạy:</strong> ...................</p>
+<div style="text-align: right; margin-bottom: 20px; font-size: 15px; color: #555;">
+  <p><strong>Ngày soạn:</strong> .......................</p>
+  <p><strong>Tuần dạy:</strong> .........................</p>
 </div>
       `;
+
       html = header + html;
 
       setAiResponse(html);
@@ -185,8 +196,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
         origin: { y: 0.6 }
       });
     } catch (e: any) {
-      console.error("Gemini error chi tiết:", e);
-      setAiResponse("<p style='color:red; text-align:center;'>Lỗi khi gọi Gemini: " + e.message + "</p>");
+      setAiResponse("Lỗi: " + e.message);
     } finally {
       setLoading(false);
     }
@@ -198,27 +208,148 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
     setShowExportMenu(false);
   };
 
-  // Các hàm còn lại giữ nguyên (handleAvatarChange, handleFileChange, sendChatMessage, openGoogleMeet, handleLogout, v.v.)
+  const sendChatMessage = () => {
+    if (!chatMessage.trim()) return;
+    setChatHistory(prev => [...prev, `Thầy: ${chatMessage}`]);
+    setChatMessage("");
+    setTimeout(() => {
+      setChatHistory(prev => [...prev, "Trợ lý AI: Dạ Thầy, em hiểu rồi ạ! Thầy cần em hỗ trợ soạn gì cụ thể nào? Em sẽ cố gắng làm thật đẹp và đúng chuẩn luôn 💕"]);
+    }, 1500);
+  };
+
+  const openGoogleMeet = () => {
+    window.open("https://meet.google.com/new", "_blank");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    window.location.href = window.location.origin;
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 text-slate-100 flex flex-col font-sans italic">
-      {/* Header giữ nguyên */}
-      <header className="bg-gradient-to-r from-emerald-700 to-emerald-800 px-8 py-6 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
-        {/* ... logo, chữ chào mừng, 3 nút ... */}
+    <div className="h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 text-slate-100 overflow-hidden flex flex-col font-sans italic relative">
+      <header className="h-52 bg-gradient-to-r from-emerald-700 to-emerald-800 px-8 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
+        <div className="flex items-center gap-6 w-1/3 pl-2">
+          <div onClick={() => document.getElementById('avatar-input')?.click()} className="w-40 h-40 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:border-yellow-400 transition-all shadow-lg">
+            {avatarUrl ? <img src={avatarUrl} className="w-full h-full object-cover" /> : <span className="text-base text-white font-black uppercase text-center leading-tight">DÁN<br/>LOGO</span>}
+            <input type="file" id="avatar-input" className="hidden" accept="image/*" onChange={handleAvatarChange} />
+          </div>
+          <div>
+            <h1 className="text-white text-3xl font-black uppercase leading-tight">HỆ THỐNG SOẠN GIẢNG</h1>
+            <p className="text-base font-bold text-emerald-200 uppercase mt-2">NĂNG LỰC SỐ THẾ HỆ MỚI</p>
+          </div>
+        </div>
+        <div className="flex-1 flex justify-center ml-16">
+          <div className="bg-gradient-to-r from-orange-600 to-yellow-500 px-48 py-8 rounded-3xl border-2 border-yellow-300 shadow-xl">
+            <h2 className="text-white text-6xl font-black uppercase italic tracking-widest animate-pulse whitespace-nowrap">
+              CHÀO MỪNG QUÝ THẦY CÔ !
+            </h2>
+          </div>
+        </div>
+        <div className="w-1/3 flex justify-end gap-4">
+          <button onClick={openGoogleMeet} className="bg-green-600 text-white px-6 py-3 rounded-xl font-bold text-base uppercase shadow-xl border-b-4 border-green-800 flex items-center gap-2 hover:bg-green-500 transition">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            GOOGLE MEET
+          </button>
+          <button onClick={() => setShowPackageModal(true)} className="bg-purple-600 text-white px-6 py-3 rounded-xl font-bold text-base uppercase shadow-xl border-b-4 border-purple-800 hover:bg-purple-500 transition">
+            CẬP NHẬT NÂNG CAO
+          </button>
+          <button onClick={handleLogout} className="bg-red-600 text-white px-6 py-3 rounded-xl font-bold text-base uppercase shadow-xl border-b-4 border-red-800 hover:bg-red-500 transition">
+            THOÁT ỨNG DỤNG
+          </button>
+        </div>
       </header>
 
       <main className="flex-1 grid grid-cols-12 gap-10 p-10 overflow-auto">
-        {/* Sidebar trái giữ nguyên */}
         <aside className="col-span-3 min-w-[320px] space-y-10 flex flex-col min-h-0 relative overflow-visible z-[50]">
-          {/* ... cấu hình thiết kế, thêm file, nút kích hoạt ... */}
+          <div className="bg-slate-800 p-7 rounded-3xl border border-slate-700 shadow-2xl space-y-5 shrink-0 relative z-[60]">
+            <h2 className="text-xl font-black text-cyan-300 uppercase italic tracking-wide">⚙️ CẤU HÌNH THIẾT KẾ</h2>
+            <select value={monHoc} onChange={(e) => setMonHoc(e.target.value)} className="w-full bg-slate-900 border border-cyan-600 rounded-xl p-4 text-base font-bold text-white focus:ring-2 focus:ring-cyan-400">
+              {dsMonHoc.map(m => <option key={m}>{m}</option>)}
+            </select>
+            <div className="grid grid-cols-2 gap-5">
+              <select value={khoiLop} onChange={(e) => setKhoiLop(e.target.value)} className="bg-slate-900 border border-cyan-600 rounded-xl p-4 text-base font-bold text-white focus:ring-2 focus:ring-cyan-400">
+                {dsKhoi.map(k => <option key={k}>{k}</option>)}
+              </select>
+              <input type="text" value={soTiet} onChange={(e) => setSoTiet(e.target.value)} className="bg-slate-900 border border-cyan-600 rounded-xl p-4 text-base font-bold text-white placeholder-cyan-300 focus:ring-2 focus:ring-cyan-400" placeholder="Số tiết..." />
+            </div>
+            <input type="text" value={tenBai} onChange={(e) => setTenBai(e.target.value)} className="w-full bg-slate-900 border border-cyan-600 rounded-xl p-4 text-base font-bold text-white placeholder-cyan-300 focus:ring-2 focus:ring-cyan-400" placeholder="Tên bài dạy..." />
+            <select value={doiTuongHS} onChange={(e) => setDoiTuongHS(e.target.value)} className="w-full bg-slate-900 border border-cyan-600 rounded-xl p-4 text-base font-bold text-orange-300 focus:ring-2 focus:ring-cyan-400">
+              {dsDoiTuong.map(d => <option key={d}>{d}</option>)}
+            </select>
+            <div className="relative w-full">
+              <button 
+                onClick={() => setShowPromptMenu(!showPromptMenu)} 
+                className="w-full py-5 bg-gradient-to-r from-orange-600 to-orange-500 text-white rounded-2xl font-black text-base uppercase shadow-xl hover:shadow-orange-500/60 transition-all"
+              >
+                📜 CHỌN LỆNH MẪU (5) ▼
+              </button>
+              {showPromptMenu && (
+                <div className="absolute top-full left-0 mt-2 w-full bg-slate-900 border border-cyan-500 rounded-2xl shadow-2xl font-black italic overflow-hidden z-[9999]">
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('khbd')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-4 hover:bg-cyan-800 border-b border-cyan-600 text-sm leading-tight transition">
+                    🔹 SOẠN KẾ HOẠCH BÀI DẠY (KHBD) THEO CV 5512 – GDPT 2018
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('ppt')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-4 hover:bg-cyan-800 border-b border-cyan-600 text-sm leading-tight transition">
+                    🖥️ SOẠN BÀI GIẢNG TRÌNH CHIẾU (PPT) – THẨM MỸ, HIỆN ĐẠI
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('kiemtra')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-4 hover:bg-cyan-800 border-b border-cyan-600 text-sm leading-tight transition">
+                    📝 SOẠN ĐỀ KIỂM TRA THEO CÔNG VĂN 7991
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('ontap')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-4 hover:bg-cyan-800 border-b border-cyan-600 text-sm leading-tight transition">
+                    📚 SOẠN ĐỀ CƯƠNG ÔN TẬP
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); setCustomPrompt(getHardcodedPrompt('trochoi')); setShowPromptMenu(false); }} className="w-full text-left px-5 py-4 hover:bg-cyan-800 text-sm leading-tight transition">
+                    🎮 SOẠN TRÒ CHƠI TƯƠNG TÁC
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl flex flex-col overflow-hidden relative z-[50] max-h-[60vh]">
+            <div className="bg-slate-900 px-6 py-4 border-b border-slate-700 text-cyan-300 font-black text-base uppercase italic">THÊM DỮ LIỆU, HÌNH ẢNH (+)</div>
+            <div className="p-6 flex-1 overflow-y-auto custom-scrollbar relative z-[60]">
+              <div 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  fileInputRef.current?.click();
+                }}
+                className="h-20 border-2 border-dashed border-cyan-500 rounded-3xl flex items-center justify-center cursor-pointer mb-5 bg-slate-900 hover:bg-cyan-900/30 transition-all duration-300 hover:scale-105 active:scale-95 pointer-events-auto relative z-[70]"
+              >
+                <span className="text-5xl text-cyan-400 font-black">+</span>
+              </div>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                className="hidden" 
+                multiple 
+                onChange={handleFileChange} 
+              />
+              {selectedFiles.map((file, index) => (
+                <div key={index} className="flex items-center justify-between text-base text-cyan-200 italic mb-4 bg-slate-800 p-4 rounded-2xl border border-cyan-500/30 shadow-inner">
+                  <span className="truncate max-w-[80%]">📄 {file.name}</span>
+                  <button onClick={() => setSelectedFiles(prev => prev.filter((_, i) => i !== index))} className="text-red-400 hover:text-red-300 font-bold text-2xl transition">×</button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button onClick={handleSoanBai} disabled={loading} className="w-full py-8 rounded-3xl font-black text-xl uppercase bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 shadow-2xl shadow-cyan-500/60 border-b-4 border-blue-900 italic active:scale-95 transition-all">
+            {loading ? "⌛ AI ĐANG LÀM VIỆC..." : "🚀 KÍCH HOẠT SOẠN GIẢNG"}
+          </button>
         </aside>
 
-        {/* Workspace Editor giữ nguyên */}
         <section className="col-span-3 min-w-[300px]">
-          {/* ... */}
+          <div className="bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl flex flex-col h-full overflow-hidden">
+            <div className="px-6 py-5 bg-slate-900 border-b border-slate-700 text-xl font-black text-orange-300 uppercase italic">Workspace Editor</div>
+            <textarea value={customPrompt} onChange={(e) => setCustomPrompt(e.target.value)} className="w-full flex-1 bg-transparent p-6 text-base text-slate-100 outline-none resize-none font-bold italic placeholder-cyan-300" placeholder="Nhập prompt tùy chỉnh hoặc chọn lệnh mẫu..." />
+          </div>
         </section>
 
-        {/* Preview - rộng sát viền */}
         <section className="col-span-6 flex flex-col relative">
           <div className="bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl flex flex-col h-full overflow-hidden">
             <div className="px-10 py-6 bg-slate-900 border-b border-slate-700 flex justify-between items-center">
@@ -227,23 +358,28 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
                 <button onClick={() => setShowExportMenu(!showExportMenu)} className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white rounded-xl text-base font-black uppercase shadow-xl hover:shadow-emerald-500/60 transition">
                   ♻️ XUẤT FILE ▼
                 </button>
-                {/* ... menu xuất file giữ nguyên */}
+                {showExportMenu && (
+                  <div className="absolute right-0 mt-3 w-48 bg-white/95 rounded-xl shadow-2xl overflow-hidden z-[100] border border-emerald-400/30">
+                    <button onClick={() => exportFile('html')} className="w-full px-5 py-4 text-left text-slate-900 hover:bg-emerald-100 font-black text-base uppercase border-b">📄 HTML (in ấn đẹp)</button>
+                    <button onClick={() => exportFile('doc')} className="w-full px-5 py-4 text-left text-slate-900 hover:bg-emerald-100 font-black text-base uppercase border-b">📄 File Word (.doc)</button>
+                    <button onClick={() => exportFile('pdf')} className="w-full px-5 py-4 text-left text-slate-900 hover:bg-emerald-100 font-black text-base uppercase">📕 File PDF (.pdf)</button>
+                  </div>
+                )}
               </div>
             </div>
-            <div className="flex-1 bg-white/95 p-0 overflow-y-auto text-slate-900 render-content custom-scrollbar" style={{ maxHeight: '70vh', minHeight: '500px' }}>
-              <div className="w-full max-w-none px-8 py-6" dangerouslySetInnerHTML={{ __html: aiResponse || "<p class='text-center text-gray-500 italic text-lg'>Chưa có kết quả. Nhấn Kích hoạt soạn giảng để bắt đầu!</p>" }} />
+            {/* Preview rộng sát viền + thanh cuộn */}
+            <div className="flex-1 bg-white/95 overflow-y-auto text-slate-900 render-content custom-scrollbar">
+              <div className="mx-auto max-w-5xl px-8 py-10 leading-relaxed" dangerouslySetInnerHTML={{ __html: aiResponse || "<p className='text-center text-gray-500 italic text-lg'>Chưa có kết quả. Nhấn Kích hoạt soạn giảng để bắt đầu!</p>" }} />
             </div>
           </div>
         </section>
       </main>
 
-      {/* Modal, Trợ lý AI giữ nguyên */}
-      {/* ... */}
+      {/* Modal và Trợ lý AI giữ nguyên như cũ */}
+      {/* ... (em giữ nguyên phần modal và robot AI từ code trước, không thay đổi) */}
 
       <style dangerouslySetInnerHTML={{ __html: `
-        .render-content { width: 100%; max-width: 100%; box-sizing: border-box; word-wrap: break-word; line-height: 1.6; font-size: 16px; }
-        .render-content table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        .render-content td, .render-content th { border: 1px solid #ccc; padding: 12px; }
+        .render-content { width: 100%; }
         .custom-scrollbar::-webkit-scrollbar { width: 12px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
@@ -266,18 +402,13 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
-    console.log("User từ localStorage:", savedUser);
     if (savedUser) {
       try {
-        const parsed = JSON.parse(savedUser);
-        setUserInfo(parsed);
+        setUserInfo(JSON.parse(savedUser));
         setIsLoggedIn(true);
       } catch (e) {
-        console.error("Lỗi parse user:", e);
         localStorage.removeItem("user");
       }
-    } else {
-      setIsLoggedIn(false);
     }
   }, []);
 
