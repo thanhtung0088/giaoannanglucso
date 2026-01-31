@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import confetti from 'canvas-confetti';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
-// Login Screen
+// Login Screen (giữ nguyên)
 const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }) => {
   const [activeTab, setActiveTab] = useState<"teacher" | "admin">("teacher");
   const [password, setPassword] = useState("");
@@ -101,7 +101,7 @@ const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }
   );
 };
 
-// Main App - ĐÃ FIX HOÀN TOÀN
+// Main App
 const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const [showPackageModal, setShowPackageModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -163,6 +163,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
 
   const handleSoanBai = async () => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    console.log("API Key đang dùng:", apiKey);
     if (!apiKey) return alert("Hệ thống chưa có API Key!");
 
     setLoading(true);
@@ -172,18 +173,19 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-      const result = await model.generateContent(`Hãy trả lời với tư cách một Trợ lý AI giáo dục dễ thương, thân thiện. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc và in ấn.\n${customPrompt}`);
+      const result = await model.generateContent(
+        `Hãy trả lời với tư cách một Trợ lý AI giáo dục dễ thương, thân thiện. Output dưới dạng HTML đẹp, dùng <h2>, <h3>, <ul>, <ol>, <strong>, <em>, <table> để cấu trúc rõ ràng, dễ đọc và in ấn.\n${customPrompt}`
+      );
 
       let html = result.response.text();
 
-      // Thêm header ngày soạn / tuần dạy (góc phải)
+      // Thêm header ngày soạn / tuần dạy
       const header = `
 <div style="text-align: right; margin-bottom: 20px; font-size: 15px; color: #555;">
   <p><strong>Ngày soạn:</strong> .......................</p>
   <p><strong>Tuần dạy:</strong> .........................</p>
 </div>
       `;
-
       html = header + html;
 
       setAiResponse(html);
@@ -197,14 +199,28 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
       });
     } catch (e: any) {
       setAiResponse("Lỗi: " + e.message);
+      console.error("Gemini error chi tiết:", e);
     } finally {
       setLoading(false);
     }
   };
 
   const exportFile = (format: string) => {
-    const blob = new Blob([aiResponse], { type: 'text/html' });
-    saveAs(blob, `SoanGiang_${tenBai || 'V94'}.${format}`);
+    let blob;
+    let filename = `SoanGiang_${tenBai || 'V94'}`;
+
+    if (format === 'docx') {
+      blob = new Blob([aiResponse], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+      filename += '.docx';
+    } else if (format === 'pdf') {
+      blob = new Blob([aiResponse], { type: 'application/pdf' });
+      filename += '.pdf';
+    } else if (format === 'pptx') {
+      blob = new Blob([aiResponse], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
+      filename += '.pptx';
+    }
+
+    saveAs(blob, filename);
     setShowExportMenu(false);
   };
 
@@ -228,8 +244,8 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 text-slate-100 overflow-hidden flex flex-col font-sans italic relative">
-      <header className="h-52 bg-gradient-to-r from-emerald-700 to-emerald-800 px-8 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 text-slate-100 flex flex-col font-sans italic">
+      <header className="bg-gradient-to-r from-emerald-700 to-emerald-800 px-8 py-6 flex justify-between items-center shrink-0 border-b-4 border-emerald-900 shadow-2xl z-50">
         <div className="flex items-center gap-6 w-1/3 pl-2">
           <div onClick={() => document.getElementById('avatar-input')?.click()} className="w-40 h-40 rounded-full border-4 border-white/40 overflow-hidden bg-emerald-800 flex items-center justify-center cursor-pointer hover:border-yellow-400 transition-all shadow-lg">
             {avatarUrl ? <img src={avatarUrl} className="w-full h-full object-cover" /> : <span className="text-base text-white font-black uppercase text-center leading-tight">DÁN<br/>LOGO</span>}
@@ -359,31 +375,133 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
                   ♻️ XUẤT FILE ▼
                 </button>
                 {showExportMenu && (
-                  <div className="absolute right-0 mt-3 w-48 bg-white/95 rounded-xl shadow-2xl overflow-hidden z-[100] border border-emerald-400/30">
-                    <button onClick={() => exportFile('html')} className="w-full px-5 py-4 text-left text-slate-900 hover:bg-emerald-100 font-black text-base uppercase border-b">📄 HTML (in ấn đẹp)</button>
-                    <button onClick={() => exportFile('doc')} className="w-full px-5 py-4 text-left text-slate-900 hover:bg-emerald-100 font-black text-base uppercase border-b">📄 File Word (.doc)</button>
-                    <button onClick={() => exportFile('pdf')} className="w-full px-5 py-4 text-left text-slate-900 hover:bg-emerald-100 font-black text-base uppercase">📕 File PDF (.pdf)</button>
+                  <div className="absolute right-0 mt-3 w-64 bg-white/95 rounded-xl shadow-2xl overflow-hidden z-[100] border border-emerald-400/30">
+                    <button onClick={() => exportFile('docx')} className="w-full px-5 py-4 text-left text-slate-900 hover:bg-emerald-100 font-black text-base uppercase border-b">📄 Word (.docx)</button>
+                    <button onClick={() => exportFile('pdf')} className="w-full px-5 py-4 text-left text-slate-900 hover:bg-emerald-100 font-black text-base uppercase border-b">📕 PDF (.pdf)</button>
+                    <button onClick={() => exportFile('pptx')} className="w-full px-5 py-4 text-left text-slate-900 hover:bg-emerald-100 font-black text-base uppercase">🖼️ PowerPoint (.pptx)</button>
                   </div>
                 )}
               </div>
             </div>
-            {/* Preview rộng sát viền + thanh cuộn */}
-            <div className="flex-1 bg-white/95 overflow-y-auto text-slate-900 render-content custom-scrollbar">
+            <div className="flex-1 bg-white/95 p-0 overflow-y-auto text-slate-900 render-content custom-scrollbar">
               <div className="mx-auto max-w-5xl px-8 py-10 leading-relaxed" dangerouslySetInnerHTML={{ __html: aiResponse || "<p className='text-center text-gray-500 italic text-lg'>Chưa có kết quả. Nhấn Kích hoạt soạn giảng để bắt đầu!</p>" }} />
             </div>
           </div>
         </section>
       </main>
 
-      {/* Modal và Trợ lý AI giữ nguyên như cũ */}
-      {/* ... (em giữ nguyên phần modal và robot AI từ code trước, không thay đổi) */}
+      {/* Modal Cập nhật nâng cao - ĐÃ FIX ĐƠ */}
+      {showPackageModal && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[3000] p-4" onClick={() => setShowPackageModal(false)}>
+          <div className="bg-slate-900 border-4 border-yellow-500 rounded-3xl p-10 max-w-5xl w-full relative shadow-2xl text-white" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setShowPackageModal(false)} className="absolute top-4 right-6 text-3xl font-black hover:text-yellow-400 transition">✕</button>
+            <h2 className="text-yellow-400 text-3xl font-black text-center uppercase mb-8">CẬP NHẬT NÂNG CAO</h2>
+            <p className="text-center text-lg mb-6 text-orange-300 font-bold">Người dùng mới chỉ được phép sử dụng gói FREE thôi!</p>
+
+            <div className="grid grid-cols-3 gap-8">
+              <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 text-center">
+                <h3 className="text-white font-black uppercase mb-4">Gói FREE</h3>
+                <div className="text-3xl font-black text-emerald-400 mb-4">MIỄN PHÍ</div>
+                <ul className="text-sm text-slate-400 text-left space-y-2">
+                  <li>- Soạn 10 giáo án/tháng</li>
+                  <li>- KHBD 5512, Đề 7991</li>
+                </ul>
+              </div>
+              <div className="bg-slate-800 p-8 rounded-2xl border-2 border-emerald-500 text-center transform scale-105 shadow-2xl">
+                <h3 className="text-emerald-400 font-black uppercase mb-4">PREMIUM</h3>
+                <div className="text-3xl font-black text-white mb-4">199k/tháng</div>
+                <ul className="text-sm text-slate-300 text-left space-y-2">
+                  <li>- Soạn 4 loại bài soạn</li>
+                  <li>- Không giới hạn số lượng</li>
+                </ul>
+              </div>
+              <div className="bg-slate-800 p-8 rounded-2xl border-2 border-orange-500 text-center">
+                <h3 className="text-orange-500 font-black uppercase mb-4">LOẠI PRO</h3>
+                <div className="text-3xl font-black text-white mb-4">499k/năm</div>
+                <ul className="text-sm text-slate-300 text-left space-y-2">
+                  <li>- Soạn được 5 loại bài soạn</li>
+                  <li>- KHBD 5512, PPT, Đề KT 7991</li>
+                  <li>- Đề cương, Trò chơi tương tác</li>
+                  <li>- Sử dụng Trợ lý AI đặc biệt</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-8 border-t border-slate-700 pt-6 flex justify-between items-center">
+              <div className="space-y-1">
+                <p className="font-black">Ngân hàng: <span className="text-yellow-400 uppercase">DONGA BANK</span></p>
+                <p className="font-black">Số tài khoản: <span className="text-emerald-400 text-2xl">916033681</span></p>
+                <p className="font-black">Chủ TK: <span className="text-yellow-400 uppercase">NGUYỄN THANH TÙNG</span></p>
+                <p className="text-orange-400 font-black">Liên hệ Zalo: 0916033681</p>
+              </div>
+              <div className="w-32 h-32 bg-white p-2 rounded-xl">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://zalo.me/0916033681" className="w-full h-full" alt="QR" />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Trợ lý AI robot - ĐÃ TRẢ LẠI */}
+      <div className="fixed bottom-8 right-8 z-[2000] flex flex-col items-end">
+        <div 
+          onClick={() => setShowAIChat(!showAIChat)} 
+          className="relative cursor-pointer group"
+        >
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 shadow-2xl flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-12 animate-bounce-slow">
+            <span className="text-4xl drop-shadow-lg">🤖</span>
+          </div>
+          <div className="absolute -top-2 -right-2 w-7 h-7 bg-yellow-400 rounded-full flex items-center justify-center text-xs font-black text-slate-900 shadow-md animate-pulse">
+            AI
+          </div>
+        </div>
+
+        {showAIChat && (
+          <div className="mt-4 w-96 bg-white/95 rounded-2xl shadow-2xl border border-purple-300/50 p-5 animate-fade-in">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-bold text-purple-900 text-lg flex items-center gap-2">
+                <span className="text-2xl">🤖</span> Trợ lý AI dễ thương
+              </h3>
+              <button onClick={() => setShowAIChat(false)} className="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+            </div>
+            <div className="h-64 overflow-y-auto mb-4 p-4 bg-gray-50 rounded-xl text-slate-900 custom-scrollbar">
+              {chatHistory.map((msg, i) => (
+                <div key={i} className={`mb-3 ${msg.startsWith("Thầy:") ? "text-right" : "text-left"}`}>
+                  <span className={`inline-block p-3 rounded-2xl max-w-[80%] shadow-sm ${msg.startsWith("Thầy:") ? "bg-blue-100 text-blue-900" : "bg-pink-100 text-pink-900"}`}>
+                    {msg}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={chatMessage}
+                onChange={(e) => setChatMessage(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
+                placeholder="Gõ tin nhắn cho em nè Thầy..."
+                className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-purple-500 text-slate-900"
+              />
+              <button onClick={sendChatMessage} className="px-5 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-bold transition">
+                Gửi
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
-        .render-content { width: 100%; }
+        .render-content { width: 100%; max-width: 100%; box-sizing: border-box; word-wrap: break-word; line-height: 1.6; font-size: 16px; }
+        .render-content table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .render-content td, .render-content th { border: 1px solid #ccc; padding: 12px; }
         .custom-scrollbar::-webkit-scrollbar { width: 12px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #555; }
+        @keyframes bounce-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .animate-bounce-slow { animation: bounce-slow 4s infinite; }
+        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fade-in 0.6s ease-out; }
       ` }} />
     </div>
   );
@@ -404,7 +522,8 @@ const App: React.FC = () => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
       try {
-        setUserInfo(JSON.parse(savedUser));
+        const parsed = JSON.parse(savedUser);
+        setUserInfo(parsed);
         setIsLoggedIn(true);
       } catch (e) {
         localStorage.removeItem("user");
