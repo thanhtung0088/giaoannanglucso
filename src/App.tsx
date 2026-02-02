@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import confetti from 'canvas-confetti';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
-// Login Screen
+// Login Screen (giữ nguyên)
 const LoginScreen: React.FC<{ onLogin: (userInfo: any) => void }> = ({ onLogin }) => {
   const [activeTab, setActiveTab] = useState<"teacher" | "admin">("teacher");
   const [password, setPassword] = useState("");
@@ -122,7 +122,14 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [selectedCommand, setSelectedCommand] = useState<string | null>(null);
 
-  const dsMonHoc = ["Toán", "Ngữ văn", "Tiếng Anh", "Tin học", "Vật lí", "Hóa học", "Sinh học", "Lịch sử", "Địa lí", "GD Công dân", "Công nghệ", "KHTN"];
+  // DANH SÁCH MÔN HỌC ĐÃ BỔ SUNG 4 MÔN MỚI
+  const dsMonHoc = [
+    "Toán", "Ngữ văn", "Tiếng Anh", "Tin học", 
+    "Vật lí", "Hóa học", "Sinh học", "Lịch sử", 
+    "Địa lí", "GD Công dân", "Công nghệ", "KHTN",
+    "Giáo dục thể chất", "Giáo dục địa phương", "Âm nhạc", "Mỹ thuật"
+  ];
+
   const dsKhoi = Array.from({ length: 12 }, (_, i) => `Lớp ${i + 1}`);
   const dsDoiTuong = ["HS Đại trà", "HSHN"];
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -213,6 +220,7 @@ const MainApp: React.FC<{ userInfo?: any }> = ({ userInfo }) => {
       });
     } catch (e: any) {
       setAiResponse("Lỗi: " + e.message);
+      console.error("Gemini error chi tiết:", e);
     } finally {
       setLoading(false);
     }
